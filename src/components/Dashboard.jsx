@@ -1,0 +1,18 @@
+import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import './CSS/sidebar.css';
+
+function DashboardLayout() {
+  const [section, setSection] = useState('home');
+  return (
+    <div className="dashboard">
+      <Sidebar setSection={setSection}/>
+      <main className="content">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+export default DashboardLayout;
