@@ -86,7 +86,7 @@ URLApi.interceptors.response.use(
 export const createComisionVenta = (b) => URLApi.post('commissions/comisiones/', b)
 export const getComisionVenta = (id) => URLApi.get(`commissions/comisionventas/${id}`)
 export const getComisionVta = (id) => URLApi.get(`commissions/comisionventa/${id}/detalle/`)
-export const updateComisionVenta =(id, b) => URLApi.put(`comisiones/${id}/update/`, b)
+export const updateComisionVenta =(id, b) => URLApi.put(`commissions/comisiones/${id}/update/`, b)
 
 export const getAllPromoters = () => URLApi.get('promoters/promotores/')
 export const getPromoter = (id) => URLApi.get(`promoters/promotor/${id}/`)
