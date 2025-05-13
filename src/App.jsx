@@ -15,6 +15,9 @@ import { BrokerFormPage } from './components/Brokers/FormBrokers';
 import { ComisionistaPage } from './pages/ComisionistaPage';
 import { ComisionistaFormPage } from "./components/Comisionistas/FormComisionista";
 
+import { CustomersPage } from "./pages/CustomerPage";
+import { CustomerFormPage } from "./components/Customers/FormCustomer";
+
 import LayoutMovimientos from './components/Tesoreria/layoutMovimientos';
 import { TreasuryPage } from './pages/TreasuryPage';
 import { SolicitudFormPage } from './components/Tesoreria/SolicitudFormPage';
@@ -55,6 +58,10 @@ function App() {
           <Route path="comisionistas" element={<ComisionistaPage />} />
           <Route path="comisionista" element={<ComisionistaFormPage/>} />
           <Route path="comisionista/:id" element={<ComisionistaFormPage/>} />
+
+          <Route path="customers" element={<CustomersPage/>} />
+          <Route path="customer" element={<CustomerFormPage/>} />
+          <Route path="customer/:id" element={<CustomerFormPage/>} />
 
           { /*<Route path="treasury/movements/*" element={<TreasuryPage/>} /> */}
           <Route path="treasury/movements/*" element={<Movements/>}>

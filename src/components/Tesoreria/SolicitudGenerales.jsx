@@ -6,12 +6,16 @@ import DatePicker from "react-datepicker";
 
 
 import  SolicitudClientes  from './SolicitudClientes';
+
 import { getMonedas, getFormaPago, getTipoOperacion, getTipoSolicitud, getTipoPago } from "../../api/solicitudes.api";
+import { getAllPromoters } from "../../api/catalogos.api";
+
 
 import "react-datepicker/dist/react-datepicker.css";
 import '../CSS/FormularioCentrado.css';
 
 const SolicitudGeneral = () => {
+    const [promotores_All, setPromotores_All] = useState([]);
     const [promotores, setPromotores] = useState([]);
     const [tipoSolicitud, setTipoSolicitud] = useState('');
     const [selectedPromotor, setSelectedPromotor] = useState('');
@@ -35,12 +39,14 @@ const SolicitudGeneral = () => {
             try {
                 const monedasResponse = await getMonedas();
                 const formapagoResponse = await getFormaPago();
+                const promotorResponse = await getAllPromoters();
                 const tipooperacionResponse = await getTipoOperacion();
                 const tiposolicitudResponse = await getTipoSolicitud();
                 const tipopagoResponse = await getTipoPago();
                 
                 setMonedas(monedasResponse.data);
                 setformaPagos(formapagoResponse.data);
+                setPromotores_All(promotorResponse.data)
                 settipoOperaciones(tipooperacionResponse.data);
                 settipoSolicitudes(tiposolicitudResponse.data);
                 settipoPagos(tipopagoResponse.data);
@@ -55,15 +61,6 @@ const SolicitudGeneral = () => {
         fetchData();
     }, []);
     
-    
-
-  
-
-    useEffect(() => {
-        fetch('http://localhost:8000/api/structure/promotores/')
-        .then(res => res.json())
-        .then(data => setPromotores(data));
-    }, []);
 
     // Manejo de la fecha
     const handleDateChange = (date) => {
@@ -100,7 +97,7 @@ const SolicitudGeneral = () => {
 
     return (
         <div className="">
-            <div className="formulariocustomer">
+            <div className="formulariorequest">
                 <h1>Datos Generales</h1>
                 <div className="input-select-container">
                     <div className="campo-formulariocustomer">
@@ -168,7 +165,7 @@ const SolicitudGeneral = () => {
                             onChange={handlePromoterChange}
                         >
                             <option value="">Seleccione</option>
-                                {promotores.map(p => (
+                                {promotores_All.map(p => (
                             <option key={p.id} value={p.id}>{p.name}</option>
                             ))}
                         </select>

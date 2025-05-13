@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const URLApi = axios.create({
-    baseURL: 'http://192.168.20.75:8000/api/treasury'
+    baseURL: 'http://192.168.20.75:8000/api/customers'
 });
 
 URLApi.interceptors.request.use((config) => {
@@ -81,17 +81,28 @@ URLApi.interceptors.response.use(
   }
 );
 
+export const getAllCustomers = () => URLApi.get('/')
+export const getCustomer = (id) => URLApi.get(`/${id}/`)
+export const createCustomer = (p) => URLApi.post('/create/', p)
+export const updateCustomer =(id, p) => URLApi.put(`/${id}/update/`, p)
 
-export const getAllSolicitudes = () => URLApi.get('/solicitudes')
-export const getSolicitud = (id) => URLApi.get(`/${id}/`)
-export const updateSolicitud = (id, solicitud) => URLApi.put(`/${id}/update/`, solicitud)
-export const createSolicitud = (solicitud) => URLApi.post('/', solicitud)
+export const getCustomersPromotorId = (id) => URLApi.get(`/promotor/${id}/`)
+export const getCustomerIdRequest = (id) => URLApi.get(`/${id}/?tipo=solicitud`)
 
-//   Datos Generales  
-export const getMonedas = () => URLApi.get('/monedas/')
-export const getFormaPago = () => URLApi.get('/formapago/')
-export const getTipoOperacion = () => URLApi.get('/tipooperacion/')
-export const getTipoSolicitud = () => URLApi.get('/tiposolicitud/')
+export const getRegimenTipo = () => URLApi.get('/regimentipo/')
+export const getCountry = () => URLApi.get('/country/')
+export const getStates = () => URLApi.get('/states/')
+export const getMunicpio = () => URLApi.get('/municipios/')
+
+export const getTipoCalculo = () => URLApi.get('/tipocalculo/')
+export const getComprobante = () => URLApi.get('/comprobante/')
+export const getTax = () => URLApi.get('/tax/')
 export const getTipoPago = () => URLApi.get('/tipopago/')
 
+export const getREgimenFiscal = () => URLApi.get('/regimenfiscal/')
+export const getUsoFactura = () => URLApi.get('/usofactura/')
 
+// Comision Venta ****
+//export const getComisionVenta = (id) => URLApi.get(`comisionventa/${id}`)
+
+//export const getBroker = (id) => URLApi.get(`/${id}/`)

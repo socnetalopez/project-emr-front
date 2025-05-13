@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import SolicitudComisiones from './SolicitudComisiones';
+import { getCustomersPromotorId, getCustomerIdRequest } from "../../api/customers.api";
+
 import "../CSS/DataTable.css"
 import '../CSS/TreasuryMovements.css'
 
@@ -16,15 +18,34 @@ const SolicitudClientes = ({ promotorId }) => {
     //const [totalmporte, setTotalImporte] = useState([]);
 
 
-    useEffect(() => {
+    //useEffect(() => {
+    //  console.log(" Promotor",promotorId)
         // Cargar clientes al iniciar o cambiar promotor
-        if (promotorId) {
-          axios.get(`http://localhost:8000/api/customers/promotor/${promotorId}/`).then((res) => {
-            setClientesDisponibles(res.data);
-          });
-        }
+    //    if (promotorId) {
+    //      axios.get(`http://localhost:8000/api/customers/promotor/${promotorId}/`).then((res) => {
+    //        setClientesDisponibles(res.data);
+    //      });
+    //    }
         
+    //}, [promotorId]);
+
+    useEffect(() => {
+        const fetchClientsAvailable = async () => {
+            try {
+
+              const { data }  = await getCustomersPromotorId(promotorId)
+              setClientesDisponibles(data);
+              console.log("promotorId", promotorId, "clientes", clientesDisponibles)
+            }catch(error) {
+                console.error("Error al cargar los datos", error);
+
+            }
+        }
+        if (promotorId) {
+          fetchClientsAvailable();
+        }
     }, [promotorId]);
+      
     
     const agregarCliente = () => {
     setClientesSeleccionados([
@@ -35,7 +56,7 @@ const SolicitudClientes = ({ promotorId }) => {
     };
     
     const actualizarCliente = async (index, clienteId) => {
-        const { data } = await axios.get(`http://localhost:8000/api/customers/${clienteId}/?tipo=solicitud`);
+        const { data } = await getCustomerIdRequest(clienteId)
         const nuevos = [...clientesSeleccionados];
         nuevos[index].cliente = clienteId;
         nuevos[index].tipo_calculo = data.tipo_calculo.name;

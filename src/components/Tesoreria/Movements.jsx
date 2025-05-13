@@ -11,7 +11,7 @@ export function Movements() {
     
     return (
        <div style={{ display: 'flex' }}>
-      <div style={{ width: '150px', background: '#e0e0e0', padding: '10px' }}>
+      <div style={{ width: '100px', height:'100vh', background: '#e0e0e0', padding: '10px' }}>
         <h4>Tesorería</h4>
         <ul>
           <li>

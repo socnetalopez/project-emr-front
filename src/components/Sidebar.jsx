@@ -65,6 +65,12 @@ function Sidebar() {
 	</div>
     <ul>
         <li><Link to="/dashboard">Inicio</Link></li>
+
+        <li>
+          <Link to="/dashboard/customers" style={{ color: "white", textDecoration: "none" }}>
+            Clientes
+          </Link>
+        </li>
         
         <li>
             <Link to="#" style={{ color: "white", textDecoration: "none" }}>
