@@ -1,0 +1,36 @@
+/* App.css */
+.contenedor {
+  display: flex;
+  height: 100vh;
+}
+
+.menu-lateral {
+  width: 150px;
+  background-color: #f0f0f0;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-lateral button {
+  margin-bottom: 10px;
+  padding: 1px;
+  background-color: transparent;
+  color:black;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+}
+
+.menu-lateral button.activo {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.contenido-principal {
+  flex-grow: 1;
+  padding: 30px;
+  background-color: #fff;
+}

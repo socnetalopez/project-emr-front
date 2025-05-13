@@ -15,7 +15,14 @@ import { BrokerFormPage } from './components/Brokers/FormBrokers';
 import { ComisionistaPage } from './pages/ComisionistaPage';
 import { ComisionistaFormPage } from "./components/Comisionistas/FormComisionista";
 
+import LayoutMovimientos from './components/Tesoreria/layoutMovimientos';
+import { TreasuryPage } from './pages/TreasuryPage';
+import { SolicitudFormPage } from './components/Tesoreria/SolicitudFormPage';
+
 import Sidebar from './components/Sidebar';
+import { RequestsList } from './components/Tesoreria/ListsRequests';
+import Layout from './components/Tesoreria/layout';
+import { Movements } from './components/Tesoreria/Movements';
 
 function App() {
   return (
@@ -40,7 +47,6 @@ function App() {
           <Route path="promotor/:id" element={<PromotorFormPage/>} />
           <Route path="promotordetail/:id" element={<PromotorDetail/>} />
           
-          
           <Route index element={<DashboardHome />} />
           <Route path="brokers" element={<BrokersPage />} />
           <Route path="broker" element={<BrokerFormPage/>} />
@@ -49,8 +55,13 @@ function App() {
           <Route path="comisionistas" element={<ComisionistaPage />} />
           <Route path="comisionista" element={<ComisionistaFormPage/>} />
           <Route path="comisionista/:id" element={<ComisionistaFormPage/>} />
+
+          { /*<Route path="treasury/movements/*" element={<TreasuryPage/>} /> */}
+          <Route path="treasury/movements/*" element={<Movements/>}>
+            </Route>
+          </Route>
           
-        </Route>
+        
         
       </Routes>
       
