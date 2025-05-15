@@ -8,7 +8,7 @@ import "../CSS/DataTable.css"
 import '../CSS/TreasuryMovements.css'
 
 
-const SolicitudClientes = ({ promotorId }) => {
+const SolicitudClientes = ({ promotorId, clienteData, setClienteData  }) => {
   
 
     const [clientesDisponibles, setClientesDisponibles] = useState([]);
@@ -28,6 +28,15 @@ const SolicitudClientes = ({ promotorId }) => {
     //    }
         
     //}, [promotorId]);
+
+    const handleChange = (e) => {
+    setClienteData((prev) => ({
+      ...prev,
+    clientesSeleccionados
+    }));
+
+    console.log("for saved", clientesSeleccionados)
+  };
 
     useEffect(() => {
         const fetchClientsAvailable = async () => {
@@ -70,7 +79,7 @@ const SolicitudClientes = ({ promotorId }) => {
         setImporteComision(data.comision_venta.percentage_sales)
         setPercentageTax(data.tax.percentage)
 
-        console.log("clientes", data.comision_venta)
+        console.log("clientez", nuevos)
         setClientesSeleccionados(nuevos);
         };
 
@@ -85,6 +94,7 @@ const SolicitudClientes = ({ promotorId }) => {
         nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)).toFixed(2));
         console.log("actualizar",nuevos)
         setClientesSeleccionados(nuevos);
+        setClienteData(nuevos[index].importe)
     };
     
     const eliminarCliente = (index) => {

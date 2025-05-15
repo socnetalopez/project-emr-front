@@ -10,9 +10,11 @@ import  SolicitudClientes  from './SolicitudClientes';
 import { getMonedas, getFormaPago, getTipoOperacion, getTipoSolicitud, getTipoPago } from "../../api/solicitudes.api";
 import { getAllPromoters } from "../../api/catalogos.api";
 
+import LayoutSUP from "./LayoutSup";
 
 import "react-datepicker/dist/react-datepicker.css";
 import '../CSS/FormularioCentrado.css';
+import '../CSS/Layout.css';
 
 const SolicitudGeneral = () => {
     const [promotores_All, setPromotores_All] = useState([]);
@@ -28,9 +30,12 @@ const SolicitudGeneral = () => {
 
     const [warningVisible, setWarningVisible] = useState(false); // Controla la advertencia de cambio de promotor
 
+    const [clienteData, setClienteData] = useState([{importe: ''}]);
+
     // Estado para el formulario
     const [formData, setFormData] = useState({
         solicitud_date: new Date(),
+
     });
     
     // Obtener los datos de la API
@@ -95,12 +100,32 @@ const SolicitudGeneral = () => {
         setWarningVisible(false);
     };
 
+    const handleSubmit = () => {
+        const data = {
+            solicitud_date
+        }
+        console.log("Save: ", formData, clienteData)
+         alert('Datos guardados');
+
+    }
+
     return (
-        <div className="">
-            <div className="formulariorequest">
+       
+        <div>
+
+            <div className="headerLayoutSup">
+                <h2 style={{width:'500px'}}>Solicitudes : Editar</h2>
+                <button onClick={handleSubmit}>
+                    Guardar
+                </button>
+            </div>
+           
+            <div className="formrequest">
+            
                 <h1>Datos Generales</h1>
+
                 <div className="input-select-container">
-                    <div className="campo-formulariocustomer">
+                    <div>
                         <label>Fecha:</label>
                         <DatePicker
                             id="solicitud_date"
@@ -111,30 +136,31 @@ const SolicitudGeneral = () => {
                         />
                     </div>
 
-                    <div className="campo-formulariocustomer">
-                        <label>Moneda:</label>
-                        <select
-                            //id="moneda"
-                            //name="moneda"
-                            className="select-field"
-                            required
-                        >
-                            <option value="">Selecciona una moneda</option>
-                            {monedas.map((moneda) => (
-                            <option key={moneda.id} value={moneda.id}>
-                                {moneda.name} {/* Suponiendo que 'name' es el nombre de la moneda */}
-                            </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="campo-formulariocustomer">
+                <div >
+                    <label>Moneda:</label>
+                    <select
+                        
+                        //id="moneda"
+                        name="moneda"
+                        value={formData.moneda}
+                        className="select-field"
+                        required
+                    >
+                        <option value="">Selecciona una moneda</option>
+                        {monedas.map((moneda) => (
+                        <option key={moneda.id} value={moneda.id}>
+                            {moneda.name} 
+                        </option>
+                        ))}
+                    </select>
+                </div>
+                    <div>
                         <label>Importe</label>
                         <input
                             //id="importe"
                             type="number"
                             name="importe"
                             placeholder="Importe" 
-                            className=" input-field"
                         />
                     </div>
                     <div className="campo-formulariocustomer">
@@ -231,14 +257,14 @@ const SolicitudGeneral = () => {
                 )}
 
                 {tipoSolicitud === '1' && selectedPromotor && (            
-                    <SolicitudClientes promotorId={selectedPromotor}/>
+                    <SolicitudClientes promotorId={selectedPromotor} clienteData={clienteData} setClienteData={setClienteData}/>
                 )}
 
                 {tipoSolicitud === '2' && selectedPromotor && (
                     <div>
                         <h2>Aplicacion Anticipo de Clientes</h2>
                         <label>Tipo de Ingreso: </label>
-                        <SolicitudClientes promotorId={selectedPromotor}/>
+                        <SolicitudClientes promotorId={selectedPromotor} clienteData={clienteData} setClienteData={setClienteData} />
 
                     </div>
                             
@@ -247,7 +273,6 @@ const SolicitudGeneral = () => {
 
             </div>
         </div>
-
     );
 };
 

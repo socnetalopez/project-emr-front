@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import React, {  useMemo } from 'react';
 import { useTable, useSortBy, usePagination, useFilters, useGlobalFilter } from 'react-table';
 import { getAllSolicitudes } from "../../api/solicitudes.api";
-import '../CSS/DataTable.css'; // Estilos que definiremos después
+import '../CSS/DataTable.css';
+import '../CSS/Layout.css';
 
 import {
     useReactTable,
@@ -14,6 +15,7 @@ import {
 } from '@tanstack/react-table';
 import axios from 'axios';
 import { SolicitudFormPage } from "./SolicitudFormPage";
+
 
 
 export function RequestsList() {
@@ -156,13 +158,15 @@ export function RequestsList() {
     };
 
     return (
+        
         <div style={{ padding: '20px' }}>
-            <button onClick={handleClick} >Nuevo</button>
+            <div className="headerLayoutSup">
+                <h2>Solicitudes</h2>
+                <button onClick={handleClick}>
+                    Nuevo
+                </button>
+            </div>
             
-           { /*}<Routes>
-                <Route path="solicitud" element={<SolicitudFormPage />} />
-            </Routes>
-            */}
             <div >
                 <Outlet />
             </div>
