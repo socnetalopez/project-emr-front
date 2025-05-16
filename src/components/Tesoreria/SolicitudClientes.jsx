@@ -8,7 +8,7 @@ import "../CSS/DataTable.css"
 import '../CSS/TreasuryMovements.css'
 
 
-const SolicitudClientes = ({ promotorId, clienteData, setClienteData  }) => {
+const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, datosComision }) => {
   
 
     const [clientesDisponibles, setClientesDisponibles] = useState([]);
@@ -16,6 +16,9 @@ const SolicitudClientes = ({ promotorId, clienteData, setClienteData  }) => {
     const [importeComision, setImporteComision] = useState([]);
     const [percentageTax, setPercentageTax] = useState([]);
     //const [totalmporte, setTotalImporte] = useState([]);
+
+    //const [datosComision, setDatosComision] = useState(false);
+    
 
 
     //useEffect(() => {
@@ -29,14 +32,9 @@ const SolicitudClientes = ({ promotorId, clienteData, setClienteData  }) => {
         
     //}, [promotorId]);
 
-    const handleChange = (e) => {
-    setClienteData((prev) => ({
-      ...prev,
-    clientesSeleccionados
-    }));
-
-    console.log("for saved", clientesSeleccionados)
-  };
+    useEffect(() => {
+      setClientesData({ clientesSeleccionados });
+    }, [clientesSeleccionados]);
 
     useEffect(() => {
         const fetchClientsAvailable = async () => {
@@ -94,7 +92,6 @@ const SolicitudClientes = ({ promotorId, clienteData, setClienteData  }) => {
         nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)).toFixed(2));
         console.log("actualizar",nuevos)
         setClientesSeleccionados(nuevos);
-        setClienteData(nuevos[index].importe)
     };
     
     const eliminarCliente = (index) => {
@@ -262,7 +259,7 @@ const SolicitudClientes = ({ promotorId, clienteData, setClienteData  }) => {
         </tbody>
         </table>
           
-          <SolicitudComisiones clientes={clientesSeleccionados} />
+          <SolicitudComisiones clientes={clientesSeleccionados} setDatosComision={setDatosComision} datosComision={datosComision} />
         </div>
       );
 

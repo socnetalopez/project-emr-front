@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { useState } from 'react';
+import { useEffect,  useState } from 'react';
 
 
-export default function SolicitudComisiones({ clientes }) {
+export default function SolicitudComisiones({ clientes, setDatosComision,  datosComision}) {
     const resumen = {
       brokers: {},
       comisionistas: {},
@@ -12,9 +12,108 @@ export default function SolicitudComisiones({ clientes }) {
       costo: {},
     };
     //const [percentageTax, setPercentageTax] = useState();
+    const [costos, setCostos] = useState(0);
+    const [totalCostos, settotalCostos] = useState(0);
+    const [house, setHouse] = useState(0);
     
 
     console.log("clientes",clientes, "resumen", resumen)
+        {/*}
+        useEffect(() => {
+            const nuevosCostos = clientes.map((cliente) => {
+                const { comision_venta, importe, taxpercentage } = cliente;
+
+                if (!comision_venta || !importe) return null;
+
+                const costo_porcentaje = parseFloat(comision_venta.percentage_cost || 0);
+                const tax = parseFloat(taxpercentage || 0);
+
+                const costo_com = (costo_porcentaje * importe) / 100;
+                const costo_tax = (costo_com * tax) / 100;
+                const costo_total = costo_com - costo_tax;
+
+                return {
+                    clienteId: cliente.id || null, // puedes agregar un identificador si existe
+                    costo_com,
+                    costo_tax,
+                    costo_total,
+                };
+            }).filter(Boolean); // Filtrar los nulls
+
+            setCostos(nuevosCostos); // Guardar en el estado
+
+            const total_com = nuevosCostos.reduce((sum, c) => sum + c.costo_com, 0);
+            const total_tax = nuevosCostos.reduce((sum, c) => sum + c.costo_tax, 0);
+            const total_total = nuevosCostos.reduce((sum, c) => sum + c.costo_total, 0);
+
+            settotalCostos({
+                total_com,
+                total_tax,
+                total_total,
+            });
+
+        }, [clientes]);
+
+        */}
+    useEffect(() => {
+    const nuevosCostos = [];
+    const totales = {
+        comision: { total_com: 0, total_tax: 0, total_total: 0 },
+        house: { total_com: 0, total_tax: 0, total_total: 0 },
+        promotor: { total_com: 0, total_tax: 0, total_total: 0 },
+    };
+
+    const calcularCostos = ({ entidad, importe, taxpercentage }) => {
+        if (!entidad || !importe) return null;
+
+        const porcentaje = parseFloat(entidad.percentage_cost || 0);
+        const tax = parseFloat(taxpercentage || 0);
+
+        const costo_com = (porcentaje * importe) / 100;
+        const costo_tax = (costo_com * tax) / 100;
+        const costo_total = costo_com - costo_tax;
+
+        return { costo_com, costo_tax, costo_total };
+    };
+
+    for (const cliente of clientes) {
+        const { importe, taxpercentage, id, comision_venta, house, promotor } = cliente;
+
+        const comision = calcularCostos({ entidad: comision_venta, importe, taxpercentage });
+        const houseCost = calcularCostos({ entidad: house, importe, taxpercentage });
+        const promotorCost = calcularCostos({ entidad: promotor, importe, taxpercentage });
+
+        nuevosCostos.push({
+        clienteId: id || null,
+        comision,
+        house: houseCost,
+        promotor: promotorCost,
+        });
+
+        // Acumular por tipo
+        const tipos = { comision, house: houseCost, promotor: promotorCost };
+
+        for (const tipo in tipos) {
+        const costo = tipos[tipo];
+        if (!costo) continue;
+
+        totales[tipo].total_com += costo.costo_com;
+        totales[tipo].total_tax += costo.costo_tax;
+        totales[tipo].total_total += costo.costo_total;
+        }
+    }
+
+    setCostos(nuevosCostos);
+    settotalCostos(totales);
+    console.log(costos, totalCostos)
+    }, [clientes]);
+
+
+
+    useEffect(() => {
+          setDatosComision({ totalCostos, house });
+        }, [totalCostos, house]);
+
 
     clientes.forEach(({ comision_venta, importe, taxpercentage }) => {
       if (!comision_venta || !importe) return;
@@ -113,7 +212,6 @@ export default function SolicitudComisiones({ clientes }) {
         Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.total, 0) +
         Object.values(resumen.comisionistas).reduce((a, b) => a + b.total, 0);
 
-
   
     return (
         <div style={{ marginTop: '2rem' }}>
@@ -132,18 +230,19 @@ export default function SolicitudComisiones({ clientes }) {
                 <tbody>
 
                     {/* Costo */}
-                    {Object.entries(resumen.costo).map(([id, val]) => (
-                    <tr  key={id}> 
+                    { Object.entries(resumen.costo).map(([id, val]) => (
+                    <tr key={id}> 
                         <td style={{ textAlign: 'center' }}>  </td>
                         <td style={{ textAlign: 'left' }}> {id} </td>
                         <td> 
                             <input
-                                value={val.costo_com.toFixed(2)} />
+                                value={val.costo_com.toFixed(2)}
+                            />
                         </td>
                         <td> 
                             <input
                                 value={val.costo_tax}
-                                 />
+                            />
                         </td>
                         <td> 
                             <input
@@ -152,6 +251,9 @@ export default function SolicitudComisiones({ clientes }) {
                     </tr>
                     ))}
 
+                    
+ 
+
                     {/* Casa */}
                     {Object.entries(resumen.casa).map(([id, val]) => (
                     <tr  key={id}> 
@@ -159,7 +261,8 @@ export default function SolicitudComisiones({ clientes }) {
                         <td style={{ textAlign: 'left' }}> {id} </td>
                         <td> 
                             <input
-                                value={val.casa_com.toFixed(2)} />
+                                value={val.casa_com.toFixed(2)} 
+                            />
                         </td>
                         <td> 
                             <input

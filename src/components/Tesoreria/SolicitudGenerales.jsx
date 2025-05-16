@@ -30,8 +30,9 @@ const SolicitudGeneral = () => {
 
     const [warningVisible, setWarningVisible] = useState(false); // Controla la advertencia de cambio de promotor
 
-    const [clienteData, setClienteData] = useState([{importe: ''}]);
-
+    const [clientesData, setClientesData] = useState([{importe: []}]);
+    const [comisionesData, setComisionesData] = useState({mporte: []});
+    const [datosComision, setDatosComision] = useState([{importe: []}]);
     // Estado para el formulario
     const [formData, setFormData] = useState({
         solicitud_date: new Date(),
@@ -100,11 +101,11 @@ const SolicitudGeneral = () => {
         setWarningVisible(false);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
         const data = {
             solicitud_date
         }
-        console.log("Save: ", formData, clienteData)
+        console.log("Save: ", formData, clientesData, comisionesData, datosComision)
          alert('Datos guardados');
 
     }
@@ -257,14 +258,14 @@ const SolicitudGeneral = () => {
                 )}
 
                 {tipoSolicitud === '1' && selectedPromotor && (            
-                    <SolicitudClientes promotorId={selectedPromotor} clienteData={clienteData} setClienteData={setClienteData}/>
+                    <SolicitudClientes promotorId={selectedPromotor} setClientesData={setClientesData} setDatosComision={setDatosComision} datosComision={datosComision}/>
                 )}
 
                 {tipoSolicitud === '2' && selectedPromotor && (
                     <div>
                         <h2>Aplicacion Anticipo de Clientes</h2>
                         <label>Tipo de Ingreso: </label>
-                        <SolicitudClientes promotorId={selectedPromotor} clienteData={clienteData} setClienteData={setClienteData} />
+                        <SolicitudClientes promotorId={selectedPromotor} setClientesData={setClientesData} setDatosComision={setDatosComision} datosComision={datosComision} />
 
                     </div>
                             
