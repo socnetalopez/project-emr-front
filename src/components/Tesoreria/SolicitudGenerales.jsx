@@ -32,7 +32,7 @@ const SolicitudGeneral = () => {
 
     const [clientesData, setClientesData] = useState([{importe: []}]);
     const [comisionesData, setComisionesData] = useState({mporte: []});
-    const [datosComision, setDatosComision] = useState([{importe: []}]);
+    const [datosComision, setDatosComision] = useState([]);
     // Estado para el formulario
     const [formData, setFormData] = useState({
         solicitud_date: new Date(),
@@ -105,7 +105,7 @@ const SolicitudGeneral = () => {
         const data = {
             solicitud_date
         }
-        console.log("Save: ", formData, clientesData, comisionesData, datosComision)
+        console.log("Save: ", formData, datosComision)
          alert('Datos guardados');
 
     }

@@ -11,112 +11,139 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
       casa: {},
       costo: {},
     };
+
+    const [datos, setDatos] = useState([]);
+    const [totales, setTotales] = useState({ sumaComisiones: 0, sumaIVA: 0, sumaTotal: 0 });
     //const [percentageTax, setPercentageTax] = useState();
     const [costos, setCostos] = useState(0);
     const [totalCostos, settotalCostos] = useState(0);
     const [house, setHouse] = useState(0);
+        const [costosClientes, setCostosClientes] = useState([]);
+    const [brokers, setBrokers] = useState({});
+    const [comisionistas, setComisionistas] = useState({});
     
 
     console.log("clientes",clientes, "resumen", resumen)
-        {/*}
-        useEffect(() => {
-            const nuevosCostos = clientes.map((cliente) => {
-                const { comision_venta, importe, taxpercentage } = cliente;
+        
+    // --->
 
-                if (!comision_venta || !importe) return null;
-
-                const costo_porcentaje = parseFloat(comision_venta.percentage_cost || 0);
-                const tax = parseFloat(taxpercentage || 0);
-
-                const costo_com = (costo_porcentaje * importe) / 100;
-                const costo_tax = (costo_com * tax) / 100;
-                const costo_total = costo_com - costo_tax;
-
-                return {
-                    clienteId: cliente.id || null, // puedes agregar un identificador si existe
-                    costo_com,
-                    costo_tax,
-                    costo_total,
-                };
-            }).filter(Boolean); // Filtrar los nulls
-
-            setCostos(nuevosCostos); // Guardar en el estado
-
-            const total_com = nuevosCostos.reduce((sum, c) => sum + c.costo_com, 0);
-            const total_tax = nuevosCostos.reduce((sum, c) => sum + c.costo_tax, 0);
-            const total_total = nuevosCostos.reduce((sum, c) => sum + c.costo_total, 0);
-
-            settotalCostos({
-                total_com,
-                total_tax,
-                total_total,
-            });
-
-        }, [clientes]);
-
-        */}
-    useEffect(() => {
-    const nuevosCostos = [];
-    const totales = {
+    const [costosTotales, setCostosTotales] = useState({
         comision: { total_com: 0, total_tax: 0, total_total: 0 },
         house: { total_com: 0, total_tax: 0, total_total: 0 },
         promotor: { total_com: 0, total_tax: 0, total_total: 0 },
-    };
-
-    const calcularCostos = ({ entidad, importe, taxpercentage }) => {
-        if (!entidad || !importe) return null;
-
-        const porcentaje = parseFloat(entidad.percentage_cost || 0);
-        const tax = parseFloat(taxpercentage || 0);
-
-        const costo_com = (porcentaje * importe) / 100;
-        const costo_tax = (costo_com * tax) / 100;
-        const costo_total = costo_com - costo_tax;
-
-        return { costo_com, costo_tax, costo_total };
-    };
-
-    for (const cliente of clientes) {
-        const { importe, taxpercentage, id, comision_venta, house, promotor } = cliente;
-
-        const comision = calcularCostos({ entidad: comision_venta, importe, taxpercentage });
-        const houseCost = calcularCostos({ entidad: house, importe, taxpercentage });
-        const promotorCost = calcularCostos({ entidad: promotor, importe, taxpercentage });
-
-        nuevosCostos.push({
-        clienteId: id || null,
-        comision,
-        house: houseCost,
-        promotor: promotorCost,
-        });
-
-        // Acumular por tipo
-        const tipos = { comision, house: houseCost, promotor: promotorCost };
-
-        for (const tipo in tipos) {
-        const costo = tipos[tipo];
-        if (!costo) continue;
-
-        totales[tipo].total_com += costo.costo_com;
-        totales[tipo].total_tax += costo.costo_tax;
-        totales[tipo].total_total += costo.costo_total;
-        }
-    }
-
-    setCostos(nuevosCostos);
-    settotalCostos(totales);
-    console.log(costos, totalCostos)
-    }, [clientes]);
-
+    });
 
 
     useEffect(() => {
-          setDatosComision({ totalCostos, house });
-        }, [totalCostos, house]);
+        const nuevosCostos = [];
+        const totales = {
+            comision: { total_com: 0, total_tax: 0, total_total: 0 },
+            house: { total_com: 0, total_tax: 0, total_total: 0 },
+            promotor: { total_com: 0, total_tax: 0, total_total: 0 },
+        };
 
+        const acumuladoBrokers = {};
+        const acumuladoComisionistas = {};
+
+        const calcularCosto = (porcentaje, importe, tax) => {
+            const costo_com = (porcentaje * importe) / 100;
+            const costo_tax = (costo_com * tax) / 100;
+            const costo_total = costo_com - costo_tax;
+            return { costo_com, costo_tax, costo_total };
+        };
+
+        for (const cliente of clientes) {
+            const { importe, taxpercentage, id, comision_venta } = cliente;
+            const tax = parseFloat(taxpercentage || 0);
+
+            if (!importe || !comision_venta) continue;
+
+            const porcentajeCom = parseFloat(comision_venta.percentage_cost || 0);
+            const porcentajeHouse = parseFloat(comision_venta.percentage_house || 0);
+            const porcentajePromotor = parseFloat(comision_venta.percentage_promotor || 0);
+
+            const comision = calcularCosto(porcentajeCom, importe, tax);
+            const houseCost = calcularCosto(porcentajeHouse, importe, tax);
+            const promotorCost = calcularCosto(porcentajePromotor, importe, tax);
+
+            nuevosCostos.push({
+                clienteId: id || null,
+                comision,
+                house: houseCost,
+                promotor: promotorCost,
+            });
+
+            // Acumular totales
+            const tipos = { comision, house: houseCost, promotor: promotorCost };
+            for (const tipo in tipos) {
+                const costo = tipos[tipo];
+                if (!costo) continue;
+                totales[tipo].total_com += costo.costo_com;
+                totales[tipo].total_tax += costo.costo_tax;
+                totales[tipo].total_total += costo.costo_total;
+            }
+
+            // Procesar brokers
+            if (Array.isArray(comision_venta.comision_brokers)) {
+                for (const broker of comision_venta.comision_brokers) {
+                    const porcentaje = parseFloat(broker.percentage || 0);
+                    if (!broker.id || !porcentaje) continue;
+
+                    const costo = calcularCosto(porcentaje, importe, tax);
+                    if (!acumuladoBrokers[broker.id]) {
+                        acumuladoBrokers[broker.id] = {
+                            nombre: broker.name || 'Sin nombre',
+                            total_com: 0,
+                            total_tax: 0,
+                            total_total: 0,
+                        };
+                    }
+                    acumuladoBrokers[broker.id].total_com += costo.costo_com;
+                    acumuladoBrokers[broker.id].total_tax += costo.costo_tax;
+                    acumuladoBrokers[broker.id].total_total += costo.costo_total;
+                }
+            }
+
+            // Procesar comisionistas
+            if (Array.isArray(comision_venta.comisionistas)) {
+                for (const comisionista of comision_venta.comisionistas) {
+                    const porcentaje = parseFloat(comisionista.percentage || 0);
+                    if (!comisionista.id || !porcentaje) continue;
+
+                    const id = comisionista.id;
+                    const nombre = comisionista.comisionista?.name || 'Sin nombre';
+                    const costo = calcularCosto(porcentaje, importe, tax);
+                    
+                    if (!acumuladoComisionistas[id]) {
+                        acumuladoComisionistas[id] = {
+                            nombre: nombre || 'Sin nombre',
+                            total_com: 0,
+                            total_tax: 0,
+                            total_total: 0,
+                        };
+                    }
+                    acumuladoComisionistas[comisionista.id].total_com += costo.costo_com;
+                    acumuladoComisionistas[comisionista.id].total_tax += costo.costo_tax;
+                    acumuladoComisionistas[comisionista.id].total_total += costo.costo_total;
+                }
+            }
+        }
+
+        setCostosTotales(totales);
+        setCostosClientes(nuevosCostos);
+        setBrokers(acumuladoBrokers);
+        setComisionistas(acumuladoComisionistas);
+
+    }, [clientes]);
+    // <----
+
+    useEffect(() => {
+          setDatosComision({ costosTotales, brokers, comisionistas });
+        }, [totalCostos, comisionistas, brokers]);
 
     clientes.forEach(({ comision_venta, importe, taxpercentage }) => {
       if (!comision_venta || !importe) return;
+
 
         // Costo
         const costo_nombre = "Costo"
