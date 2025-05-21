@@ -2,7 +2,7 @@ import { Link, useNavigate, Outlet,  Routes, Route  } from "react-router-dom"
 import { useEffect, useState } from "react";
 import React, {  useMemo } from 'react';
 import { useTable, useSortBy, usePagination, useFilters, useGlobalFilter } from 'react-table';
-import { getAllSolicitudes } from "../../api/solicitudes.api";
+import { getAllRequests } from "../../api/solicitudes.api";
 import '../CSS/DataTable.css';
 import '../CSS/Layout.css';
 
@@ -30,7 +30,8 @@ export function RequestsList() {
     const fetchData = async () => {
         setLoading(true);
         try {
-        const response = await axios.get('http://192.168.20.75:8000/api/treasury/solicitudes/', {
+        //const response = await axios.get('http://192.168.20.75:8000/api/treasury/solicitudes/', {
+        const response = await getAllRequests({
             params: {
             page: pagination.pageIndex + 1,
             limit: pagination.pageSize,
@@ -67,7 +68,7 @@ export function RequestsList() {
             ),
         },
         {
-            accessorKey: 'status.name',
+            accessorKey: 'status',
             header: 'Status',
             cell: (info) => info.getValue() || '-',
         },
@@ -77,12 +78,12 @@ export function RequestsList() {
             cell: (info) => info.getValue() || '-',
         },
         {
-            accessorKey: 'solicitud_date',
+            accessorKey: 'date',
             header: 'Fecha',
             cell: (info) => info.getValue() || '-',
         },
         {
-            accessorKey: 'tipo_solicitud.name',
+            accessorKey: 'type_request',
             header: 'Tipo',
             cell: (info) => info.getValue() || '-',
         },
@@ -148,13 +149,14 @@ export function RequestsList() {
     };
 
     const handleEditar = (row) => {
-        navigate(`/solicitud/${row.original.id}`);
+        navigate(`solicitud/${row.original.id}`);
     };
     
     // Manejar doble clic
     const handleDoubleClick = (row) => {
-        alert(`Abriendo registro con ID: ${row.original.id}`);
-        // Aquí puedes implementar la lógica para abrir el registro (ej. navegar a otra página)
+        //alert(`Abriendo registro con ID: ${row.original.id}`);
+        console.log(row.original.id)
+        navigate(`solicitud/${row.original.id}`)
     };
 
     return (

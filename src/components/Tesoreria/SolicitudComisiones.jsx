@@ -18,9 +18,15 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
     const [costos, setCostos] = useState(0);
     const [totalCostos, settotalCostos] = useState(0);
     const [house, setHouse] = useState(0);
-        const [costosClientes, setCostosClientes] = useState([]);
+    const [costosClientes, setCostosClientes] = useState([]);
     const [brokers, setBrokers] = useState({});
     const [comisionistas, setComisionistas] = useState({});
+
+    const [totalGeneral, setTotalGeneral] = useState({
+        total_com: 0,
+        total_tax: 0,
+        total_total: 0,
+});
     
 
     console.log("clientes",clientes, "resumen", resumen)
@@ -89,18 +95,19 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
                     const porcentaje = parseFloat(broker.percentage || 0);
                     if (!broker.id || !porcentaje) continue;
 
+                    
                     const costo = calcularCosto(porcentaje, importe, tax);
-                    if (!acumuladoBrokers[broker.id]) {
-                        acumuladoBrokers[broker.id] = {
-                            nombre: broker.name || 'Sin nombre',
+                    if (!acumuladoBrokers[broker.broker.id]) {
+                        acumuladoBrokers[broker.broker.id] = {
+                            nombre: broker.broker.name || 'Sin nombre',
                             total_com: 0,
                             total_tax: 0,
                             total_total: 0,
                         };
                     }
-                    acumuladoBrokers[broker.id].total_com += costo.costo_com;
-                    acumuladoBrokers[broker.id].total_tax += costo.costo_tax;
-                    acumuladoBrokers[broker.id].total_total += costo.costo_total;
+                    acumuladoBrokers[broker.broker.id].total_com += costo.costo_com;
+                    acumuladoBrokers[broker.broker.id].total_tax += costo.costo_tax;
+                    acumuladoBrokers[broker.broker.id].total_total += costo.costo_total;
                 }
             }
 
@@ -110,36 +117,69 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
                     const porcentaje = parseFloat(comisionista.percentage || 0);
                     if (!comisionista.id || !porcentaje) continue;
 
-                    const id = comisionista.id;
+                    const comisionistaId = comisionista.comisionista.id;
                     const nombre = comisionista.comisionista?.name || 'Sin nombre';
                     const costo = calcularCosto(porcentaje, importe, tax);
                     
-                    if (!acumuladoComisionistas[id]) {
-                        acumuladoComisionistas[id] = {
-                            nombre: nombre || 'Sin nombre',
+                    if (!acumuladoComisionistas[comisionistaId]) {
+                        acumuladoComisionistas[comisionistaId] = {
+                            nombre,
                             total_com: 0,
                             total_tax: 0,
                             total_total: 0,
                         };
                     }
-                    acumuladoComisionistas[comisionista.id].total_com += costo.costo_com;
-                    acumuladoComisionistas[comisionista.id].total_tax += costo.costo_tax;
-                    acumuladoComisionistas[comisionista.id].total_total += costo.costo_total;
+                    acumuladoComisionistas[comisionistaId].total_com += costo.costo_com;
+                    acumuladoComisionistas[comisionistaId].total_tax += costo.costo_tax;
+                    acumuladoComisionistas[comisionistaId].total_total += costo.costo_total;
                 }
             }
         }
+
+        // Total general sumando comisiones, house, promotor, brokers y comisionistas
+    const totalGeneral = {
+        total_com: 0,
+        total_tax: 0,
+        total_total: 0,
+    };
+
+    // Sumar comisiones directas (comision, house, promotor)
+    for (const tipo in totales) {
+        totalGeneral.total_com += totales[tipo].total_com;
+        totalGeneral.total_tax += totales[tipo].total_tax;
+        totalGeneral.total_total += totales[tipo].total_total;
+    }
+
+    // Sumar brokers
+    for (const brokerId in acumuladoBrokers) {
+        const broker = acumuladoBrokers[brokerId];
+        totalGeneral.total_com += broker.total_com;
+        totalGeneral.total_tax += broker.total_tax;
+        totalGeneral.total_total += broker.total_total;
+    }
+
+    // Sumar comisionistas
+    for (const comisionistaId in acumuladoComisionistas) {
+        const comisionista = acumuladoComisionistas[comisionistaId];
+        totalGeneral.total_com += comisionista.total_com;
+        totalGeneral.total_tax += comisionista.total_tax;
+        totalGeneral.total_total += comisionista.total_total;
+    }
+
 
         setCostosTotales(totales);
         setCostosClientes(nuevosCostos);
         setBrokers(acumuladoBrokers);
         setComisionistas(acumuladoComisionistas);
+        setTotalGeneral(totalGeneral)
+
 
     }, [clientes]);
     // <----
 
     useEffect(() => {
-          setDatosComision({ costosTotales, brokers, comisionistas });
-        }, [totalCostos, comisionistas, brokers]);
+          setDatosComision({ costosTotales, brokers, comisionistas, totalGeneral });
+        }, [totalCostos, comisionistas, brokers, totalGeneral]);
 
     clientes.forEach(({ comision_venta, importe, taxpercentage }) => {
       if (!comision_venta || !importe) return;
@@ -369,7 +409,7 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
                         <td>total:</td>
                         <td>
                             <input 
-                                value={totalComisiones.toFixed(2)}
+                                value={totalGeneral.total_com.toFixed(2)}
                             />
                         </td>
                         <td>

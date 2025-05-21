@@ -3,11 +3,13 @@
 
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form"
+import { toast } from "react-hot-toast";
 
 import  SolicitudClientes  from './SolicitudClientes';
 
-import { getMonedas, getFormaPago, getTipoOperacion, getTipoSolicitud, getTipoPago } from "../../api/solicitudes.api";
+import { getMonedas, getFormaPago, getTipoOperacion, getTipoSolicitud, getTipoPago, RequestCreate, getRequest } from "../../api/solicitudes.api";
 import { getAllPromoters } from "../../api/catalogos.api";
 
 import LayoutSUP from "./LayoutSup";
@@ -33,12 +35,35 @@ const SolicitudGeneral = () => {
     const [clientesData, setClientesData] = useState([{importe: []}]);
     const [comisionesData, setComisionesData] = useState({mporte: []});
     const [datosComision, setDatosComision] = useState([]);
+    const [request, setRequest] = useState({promoter:''});
+    
+    const navigate = useNavigate();
+    const params = useParams()
+
+    const {
+        register,
+        formState: { errors },
+        setValue // Poner valores en el formulario
+    } = useForm();
+    
+
     // Estado para el formulario
     const [formData, setFormData] = useState({
         solicitud_date: new Date(),
-
     });
-    
+
+    useEffect(() => {
+        async function loadRequest(){
+            if (params.id){
+                const res  = await getRequest(params.id)
+                setRequest(res.data)
+                
+            } 
+        }
+        loadRequest()
+    }, [])
+
+   
     // Obtener los datos de la API
     useEffect(() => {
         const fetchData = async () => {
@@ -73,26 +98,52 @@ const SolicitudGeneral = () => {
         const formattedD = date ? date.toISOString().split("T")[0] : ''; // Formats to YYYY-MM-DD
         setFormData({
             ...formData,
-        solicitud_date: formattedD,
+        date: formattedD
         });
+
+         setRequest(prev => ({ 
+                ...prev,
+                    date: formattedD
+            }));
     };
 
     // Manejar el cambio de promotor
     const handlePromoterChange = (e) => {
+        console.log(e.target.value)
         if (tipoSolicitud.length > 0) {
             // Si hay registros agregados, mostrar advertencia
             setWarningVisible(true);
             setSelectedPromotor(e.target.value);
+            setRequest(prev => ({ 
+                ...prev,
+                    promoter: e.target.value
+            }));
+            
         } else {
             setSelectedPromotor(e.target.value);
+            setRequest(prev => ({ 
+                ...prev,
+                    promoter: e.target.value
+            }));
         }
+    };
+
+    // Manejar el cambio de promotor
+    const handleRequest_Type_Change = (e) => {
+        console.log(e.target.value)
+        setTipoSolicitud(e.target.value);
+        setRequest(prev => ({ 
+            ...prev,
+                type_request: e.target.value
+        }));
+        
     };
 
     // Aceptar el cambio de promotor y limpiar los registros
     const confirmPromoterChange = () => {
         //setRecords([]);
         //setSelectedPromotor('');
-        setTipoSolicitud('')
+        setTipoSolicitud('1')
         setWarningVisible(false);
     };
 
@@ -101,12 +152,53 @@ const SolicitudGeneral = () => {
         setWarningVisible(false);
     };
 
-    const handleSubmit = (e) => {
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setRequest((prev) => ({
+        ...prev,
+        [name]: value,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
         const data = {
-            solicitud_date
+            date : request.date,
+            clientes: clientesData.clientesSeleccionados
+            //solicitud_date: formData.solicitud_date,
+            //currency: request.currency,
+            //importe: request.amount,
+            //payment_method : request.payment_method,
+            //promoter : request.promoter,
+            //type_operation: request.type_operation,
+            //type_request: tipoSolicitud,
+            //type_payment: request.type_payment
+            //request
         }
-        console.log("Save: ", formData, datosComision)
-         alert('Datos guardados');
+        
+
+        if (params.id) {
+                //await updateCustomer(params.id, data)
+                console.log(params.id,"update:", data)
+                toast.success('Cliente updated success', {
+                    position: "bottom-right",
+                    style: {
+                        background: "#101010",
+                        color: "#fff",
+                    },
+                })
+            } else {
+                console.log("create:", data)
+                //await RequestCreate(data);
+                toast.success('Cliente created success', {
+                    position: "bottom-right",
+                    style: {
+                        background: "#101010",
+                        color: "#fff",
+                    },
+                })
+            }
+            //navigate("/dashboard/treasury/movements/solicitudes")
+        //alert('Datos guardados');
 
     }
 
@@ -116,36 +208,33 @@ const SolicitudGeneral = () => {
 
             <div className="headerLayoutSup">
                 <h2 style={{width:'500px'}}>Solicitudes : Editar</h2>
-                <button onClick={handleSubmit}>
-                    Guardar
+                <button type="button" onClick={handleSubmit}>
+                    {params.id ? 'Actualizar Cliente' : 'Crear Cliente'}
                 </button>
             </div>
            
             <div className="formrequest">
             
                 <h1>Datos Generales</h1>
-
+                <form onSubmit={handleSubmit}>
                 <div className="input-select-container">
                     <div>
                         <label>Fecha:</label>
                         <DatePicker
                             id="solicitud_date"
-                            selected={formData.solicitud_date}
+                            selected={request.date}
                             onChange={handleDateChange}
-                            dateFormat="yyyy-MM-dd"
-                            //lassName="bg-zinc-200 p-3 rounded-lg input-field"
+                            dateFormat="dd-MM-yyyy"
                         />
                     </div>
 
                 <div >
                     <label>Moneda:</label>
                     <select
-                        
-                        //id="moneda"
-                        name="moneda"
-                        value={formData.moneda}
+                        name="currency"
                         className="select-field"
-                        required
+                        value={request.currency}
+                        onChange={handleChange}    
                     >
                         <option value="">Selecciona una moneda</option>
                         {monedas.map((moneda) => (
@@ -160,15 +249,18 @@ const SolicitudGeneral = () => {
                         <input
                             //id="importe"
                             type="number"
-                            name="importe"
-                            placeholder="Importe" 
+                            name="amount"
+                            value={request.amount}
+                            onChange={handleChange}
+                            placeholder="Importe"
                         />
                     </div>
                     <div className="campo-formulariocustomer">
                         <label>Forma de Pago:</label>
                         <select
-                            //id="forma_pago"
-                            //name="forma_pago"
+                            name="payment_method"
+                            value={request.payment_method}
+                            onChange={handleChange}
                             className="select-field"
                             required
                         >
@@ -187,9 +279,10 @@ const SolicitudGeneral = () => {
                     <div className="campo-formulariocustomer">
                         <label>Promotor:</label>
                         <select
-                            className="select-field"
-                            //onChange={(e) => setSelectedPromotor(e.target.value)}
+                            name="promoter"
+                            value={request.promoter}
                             onChange={handlePromoterChange}
+                            className="select-field"
                         >
                             <option value="">Seleccione</option>
                                 {promotores_All.map(p => (
@@ -202,8 +295,9 @@ const SolicitudGeneral = () => {
                         <label >Tipos de Operacion:</label>
                         <select
                             //id="tipo_operacion"
-                            //name="tipo_operacion"
-                            value={formData.tipo_operacion}
+                            name="type_operation"
+                            value={request.type_operation}
+                            onChange={handleChange}
                             className="select-field"
                         >
                             <option value="">Seleccione</option>
@@ -218,7 +312,11 @@ const SolicitudGeneral = () => {
                     <div className="campo-formulariocustomer">
                         <label htmlFor="tipo_solicitud">Tipos de Solicitud:</label>
                         <select
-                            onChange={(e) => setTipoSolicitud(e.target.value)}
+                            id="type_request"
+                            name="type_request"
+                            value={request.type_request}
+                            onChange={handleRequest_Type_Change}
+                            //onChange={(e) => setTipoSolicitud(e.target.value)}
                             className="bg-zinc-200 p-3 rounded-lg select-field"
                         >
                             <option value="">Seleccione</option>
@@ -233,9 +331,10 @@ const SolicitudGeneral = () => {
                     <div className="campo-formulariocustomer">
                         <label htmlFor="tipo_pago">Tipo de Pago:</label>
                         <select
-                            id="tipo_pago"
-                            name="tipo_pago"
-                            value={formData.tipo_pago}
+                            id="type_payment"
+                            name="type_payment"
+                            value={request.type_payment}
+                            onChange={handleChange}
                             className="bg-zinc-200 p-3 rounded-lg select-field"
                         >
                             <option value="">Seleccione</option>
@@ -246,7 +345,8 @@ const SolicitudGeneral = () => {
                             ))}
                         </select>
                     </div>
-                </div>  
+                </div>
+                </form>
 
                 {/* Advertencia de cambio de promotor */}
                 {warningVisible && (

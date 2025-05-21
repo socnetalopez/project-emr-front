@@ -28,6 +28,7 @@ export function Movements() {
           <Route path="solicitudes" element={<RequestsList />} />
           <Route path="ingresos" element="" />
           <Route path="solicitudes/solicitud" element={<SolicitudFormPage />} />
+          <Route path="solicitudes/solicitud/:id" element={<SolicitudFormPage />} />
         </Routes>
       </div>
     </div>

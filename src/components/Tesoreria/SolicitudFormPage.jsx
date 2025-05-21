@@ -12,13 +12,20 @@ import { createSolicitud, updateSolicitud, getSolicitud } from "../../api/solici
 
 import  SolicitudGeneral from "./SolicitudGenerales";
 
-
 export function SolicitudFormPage() {
+  const { id } = useParams();
+  console.log("id",id)
+  const hayId = !!id; // convierte a booleano
   return (
     <div className="contenedor">
+      {hayId ? (
+        <p>Se recibió un ID en la URL: {id}</p>
+      ) : (
+        <p>No se recibió ningún ID en la URL.</p>
+      )}
         
       
-      <SolicitudGeneral /> {/* Mostramos el formulario */}
+      <SolicitudGeneral id={id}/> {/* Mostramos el formulario */}
     </div>
     
   );

@@ -54,7 +54,7 @@ URLApi.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.post('http://192.168.20.75:8001/api/users/token/', {
+        const res = await axios.post('http://192.168.20.75:8000/api/users/token/', {
           refreshToken: localStorage.getItem('refreshToken'),
         });
 
@@ -86,6 +86,10 @@ export const getAllSolicitudes = () => URLApi.get('/solicitudes')
 export const getSolicitud = (id) => URLApi.get(`/${id}/`)
 export const updateSolicitud = (id, solicitud) => URLApi.put(`/${id}/update/`, solicitud)
 export const createSolicitud = (solicitud) => URLApi.post('/', solicitud)
+
+export const getAllRequests = () => URLApi.get('/requests/')
+export const getRequest = (id) => URLApi.get(`request/${id}/`)
+export const RequestCreate = (request) => URLApi.post('/requests/', request)
 
 //   Datos Generales  
 export const getMonedas = () => URLApi.get('/monedas/')
