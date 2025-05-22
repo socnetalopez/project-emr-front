@@ -89,7 +89,7 @@ export const createSolicitud = (solicitud) => URLApi.post('/', solicitud)
 
 export const getAllRequests = () => URLApi.get('/requests/')
 export const getRequest = (id) => URLApi.get(`request/${id}/`)
-export const RequestCreate = (request) => URLApi.post('/requests/', request)
+export const RequestCreate = (request) => URLApi.post('/requests-create/', request)
 
 //   Datos Generales  
 export const getMonedas = () => URLApi.get('/monedas/')

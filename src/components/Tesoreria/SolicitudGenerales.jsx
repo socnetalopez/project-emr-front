@@ -35,7 +35,7 @@ const SolicitudGeneral = () => {
     const [clientesData, setClientesData] = useState([{importe: []}]);
     const [comisionesData, setComisionesData] = useState({mporte: []});
     const [datosComision, setDatosComision] = useState([]);
-    const [request, setRequest] = useState({promoter:''});
+    const [request, setRequest] = useState({promoter:'', solicitud_date: new Date()});
     
     const navigate = useNavigate();
     const params = useParams()
@@ -47,21 +47,22 @@ const SolicitudGeneral = () => {
     } = useForm();
     
 
-    // Estado para el formulario
-    const [formData, setFormData] = useState({
-        solicitud_date: new Date(),
-    });
-
     useEffect(() => {
         async function loadRequest(){
             if (params.id){
                 const res  = await getRequest(params.id)
-                setRequest(res.data)
-                
+                const data = res.data
+                setRequest(data);
+                setSelectedPromotor(data.promoter);
+                setTipoSolicitud(data.type_request);
+
             } 
+            console.log("Load: ",params.id, selectedPromotor, tipoSolicitud)
         }
         loadRequest()
     }, [])
+
+
 
    
     // Obtener los datos de la API
@@ -96,10 +97,6 @@ const SolicitudGeneral = () => {
     // Manejo de la fecha
     const handleDateChange = (date) => {
         const formattedD = date ? date.toISOString().split("T")[0] : ''; // Formats to YYYY-MM-DD
-        setFormData({
-            ...formData,
-        date: formattedD
-        });
 
          setRequest(prev => ({ 
                 ...prev,
@@ -143,7 +140,7 @@ const SolicitudGeneral = () => {
     const confirmPromoterChange = () => {
         //setRecords([]);
         //setSelectedPromotor('');
-        setTipoSolicitud('1')
+        setTipoSolicitud('0')
         setWarningVisible(false);
     };
 
@@ -163,22 +160,28 @@ const SolicitudGeneral = () => {
     const handleSubmit = async (e) => {
         const data = {
             date : request.date,
-            clientes: clientesData.clientesSeleccionados
-            //solicitud_date: formData.solicitud_date,
-            //currency: request.currency,
-            //importe: request.amount,
-            //payment_method : request.payment_method,
-            //promoter : request.promoter,
-            //type_operation: request.type_operation,
-            //type_request: tipoSolicitud,
-            //type_payment: request.type_payment
-            //request
+            currency: request.currency,
+            amount: request.amount,
+            payment_method: request.payment_method,
+            promoter: request.promoter,
+            type_operation: request.type_operation,
+            type_payment: request.type_payment,
+            type_request: request.type_request,
+
+            clientes: clientesData.clientesSeleccionados,
+            //comisiones : datosComision
+            commission_agents : datosComision.comisionistas.filter(
+                item => item !== undefined && item !== null && item !== ''),
+            brokers : datosComision.brokers,
+
         }
+
+        console.log(data)
         
 
         if (params.id) {
                 //await updateCustomer(params.id, data)
-                console.log(params.id,"update:", data)
+                console.log(params.id,"updated:", data)
                 toast.success('Cliente updated success', {
                     position: "bottom-right",
                     style: {
@@ -187,8 +190,8 @@ const SolicitudGeneral = () => {
                     },
                 })
             } else {
-                console.log("create:", data)
-                //await RequestCreate(data);
+                console.log("created:", data)
+                await RequestCreate(data);
                 toast.success('Cliente created success', {
                     position: "bottom-right",
                     style: {
@@ -267,7 +270,7 @@ const SolicitudGeneral = () => {
                             <option value="">Selecciona un tipo</option>
                             {formaPagos.map((fp) => (
                                 <option key={fp.id} value={fp.id}>
-                                {fp.name}
+                                    {fp.name}
                                 </option>
                             ))}
                         </select>
@@ -369,7 +372,6 @@ const SolicitudGeneral = () => {
 
                     </div>
                             
-                
                 )}
 
             </div>

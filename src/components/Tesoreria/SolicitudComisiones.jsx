@@ -19,8 +19,8 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
     const [totalCostos, settotalCostos] = useState(0);
     const [house, setHouse] = useState(0);
     const [costosClientes, setCostosClientes] = useState([]);
-    const [brokers, setBrokers] = useState({});
-    const [comisionistas, setComisionistas] = useState({});
+    const [brokers, setBrokers] = useState([]);
+    const [comisionistas, setComisionistas] = useState([]);
 
     const [totalGeneral, setTotalGeneral] = useState({
         total_com: 0,
@@ -49,7 +49,7 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
         };
 
         const acumuladoBrokers = {};
-        const acumuladoComisionistas = {};
+        const acumuladoComisionistas = [];
 
         const calcularCosto = (porcentaje, importe, tax) => {
             const costo_com = (porcentaje * importe) / 100;
@@ -123,6 +123,7 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
                     
                     if (!acumuladoComisionistas[comisionistaId]) {
                         acumuladoComisionistas[comisionistaId] = {
+                            comisionistaId,
                             nombre,
                             total_com: 0,
                             total_tax: 0,
