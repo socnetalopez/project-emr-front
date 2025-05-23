@@ -3,7 +3,7 @@ import React from 'react';
 import { useEffect,  useState } from 'react';
 
 
-export default function SolicitudComisiones({ clientes, setDatosComision,  datosComision}) {
+export default function SolicitudComisiones({ clientes, datosComision, setDatosComision}) {
     const resumen = {
       brokers: {},
       comisionistas: {},
@@ -26,10 +26,10 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
         total_com: 0,
         total_tax: 0,
         total_total: 0,
-});
-    
+    });
 
-    console.log("clientes",clientes, "resumen", resumen)
+
+    //console.log("SolComisiones: clientes",clientes, "resumen", resumen, "datosComision:", datosComision)
         
     // --->
 
@@ -48,7 +48,7 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
             promotor: { total_com: 0, total_tax: 0, total_total: 0 },
         };
 
-        const acumuladoBrokers = {};
+        const acumuladoBrokers = [];
         const acumuladoComisionistas = [];
 
         const calcularCosto = (porcentaje, importe, tax) => {
@@ -95,19 +95,22 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
                     const porcentaje = parseFloat(broker.percentage || 0);
                     if (!broker.id || !porcentaje) continue;
 
-                    
+                    const brokerId = broker.broker.id;
+                    const nombre = broker.broker?.name || 'Sin nombre';
                     const costo = calcularCosto(porcentaje, importe, tax);
-                    if (!acumuladoBrokers[broker.broker.id]) {
-                        acumuladoBrokers[broker.broker.id] = {
-                            nombre: broker.broker.name || 'Sin nombre',
+
+                    if (!acumuladoBrokers[brokerId]) {
+                        acumuladoBrokers[brokerId] = {
+                            brokerId,
+                            nombre,
                             total_com: 0,
                             total_tax: 0,
                             total_total: 0,
                         };
                     }
-                    acumuladoBrokers[broker.broker.id].total_com += costo.costo_com;
-                    acumuladoBrokers[broker.broker.id].total_tax += costo.costo_tax;
-                    acumuladoBrokers[broker.broker.id].total_total += costo.costo_total;
+                    acumuladoBrokers[brokerId].total_com += costo.costo_com;
+                    acumuladoBrokers[brokerId].total_tax += costo.costo_tax;
+                    acumuladoBrokers[brokerId].total_total += costo.costo_total;
                 }
             }
 
@@ -404,6 +407,7 @@ export default function SolicitudComisiones({ clientes, setDatosComision,  datos
                         </td>
                     </tr>
                     ))}
+
 
                     <tr>
                         <td></td>

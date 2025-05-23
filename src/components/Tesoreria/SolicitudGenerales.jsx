@@ -32,10 +32,12 @@ const SolicitudGeneral = () => {
 
     const [warningVisible, setWarningVisible] = useState(false); // Controla la advertencia de cambio de promotor
 
-    const [clientesData, setClientesData] = useState([{importe: []}]);
-    const [comisionesData, setComisionesData] = useState({mporte: []});
+    const [clientesData, setClientesData] = useState([]);
+    const [comisionesData, setComisionesData] = useState([]);
     const [datosComision, setDatosComision] = useState([]);
-    const [request, setRequest] = useState({promoter:'', solicitud_date: new Date()});
+    const [request, setRequest] = useState([]);
+
+    const [isLoaded, setIsLoaded] = useState(false);
     
     const navigate = useNavigate();
     const params = useParams()
@@ -49,20 +51,29 @@ const SolicitudGeneral = () => {
 
     useEffect(() => {
         async function loadRequest(){
+        //const loadRequest = async () => {
             if (params.id){
-                const res  = await getRequest(params.id)
-                const data = res.data
-                setRequest(data);
-                setSelectedPromotor(data.promoter);
-                setTipoSolicitud(data.type_request);
+                try {
+                    const res  = await getRequest(params.id);
+                    const data = res.data
+                    const data1 = String(data.type_request);
+                    setRequest(data);
+                    setSelectedPromotor(data.promoter);
+                    setTipoSolicitud(data1);
+                    setClientesData(data.clients);
+                    
+                    //datosComision.comisionistas = data.commission_agents;
+                    //setDatosComision(datosComision);
+                } catch (error) {
+                    console.error("Error loading request:", error);
+                }    
 
             } 
             console.log("Load: ",params.id, selectedPromotor, tipoSolicitud)
+            console.log("req:",request, "-", clientesData, datosComision)
         }
         loadRequest()
-    }, [])
-
-
+    }, [params.id]);
 
    
     // Obtener los datos de la API
@@ -172,7 +183,9 @@ const SolicitudGeneral = () => {
             //comisiones : datosComision
             commission_agents : datosComision.comisionistas.filter(
                 item => item !== undefined && item !== null && item !== ''),
-            brokers : datosComision.brokers,
+
+            brokers : datosComision.brokers.filter(
+                item => item !== undefined && item !== null && item !== ''),
 
         }
 
@@ -361,14 +374,14 @@ const SolicitudGeneral = () => {
                 )}
 
                 {tipoSolicitud === '1' && selectedPromotor && (            
-                    <SolicitudClientes promotorId={selectedPromotor} setClientesData={setClientesData} setDatosComision={setDatosComision} datosComision={datosComision}/>
+                    <SolicitudClientes promotorId={selectedPromotor} clientesData={clientesData} setClientesData={setClientesData} datosComision={datosComision} setDatosComision={setDatosComision} />
                 )}
 
                 {tipoSolicitud === '2' && selectedPromotor && (
                     <div>
                         <h2>Aplicacion Anticipo de Clientes</h2>
                         <label>Tipo de Ingreso: </label>
-                        <SolicitudClientes promotorId={selectedPromotor} setClientesData={setClientesData} setDatosComision={setDatosComision} datosComision={datosComision} />
+                        <SolicitudClientes promotorId={selectedPromotor} clientesData={clientesData} setClientesData={setClientesData} datosComision={datosComision} setDatosComision={setDatosComision} />
 
                     </div>
                             

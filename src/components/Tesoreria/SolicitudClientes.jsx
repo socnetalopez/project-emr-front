@@ -8,33 +8,38 @@ import "../CSS/DataTable.css"
 import '../CSS/TreasuryMovements.css'
 
 
-const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, datosComision }) => {
+const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosComision, setDatosComision }) => {
   
 
     const [clientesDisponibles, setClientesDisponibles] = useState([]);
     const [clientesSeleccionados, setClientesSeleccionados] = useState([]);
     const [importeComision, setImporteComision] = useState([]);
     const [percentageTax, setPercentageTax] = useState([]);
-    //const [totalmporte, setTotalImporte] = useState([]);
 
-    //const [datosComision, setDatosComision] = useState(false);
     
+    console.log("Sol_clientes: clientesData", clientesData)
 
+     const convertirClientes = (jsonClients) => {
+		return jsonClients.map(client => ({
+			cliente: client.customer.id,
+			tipo_calculo: client.customer.tipo_calculo,
+			comprobante: client.customer.comprobante,
+			tipo_pago: client.customer.tipo_pago,
+			importe: client.amount,
+			totalimportecomision: client.commission,
+			taxes: client.tax,
+			calculoretorno: client.retorno,
+			desglose: client.breakdown
+			
+			}));
+		};
 
-    //useEffect(() => {
-    //  console.log(" Promotor",promotorId)
-        // Cargar clientes al iniciar o cambiar promotor
-    //    if (promotorId) {
-    //      axios.get(`http://localhost:8000/api/customers/promotor/${promotorId}/`).then((res) => {
-    //        setClientesDisponibles(res.data);
-    //      });
-    //    }
         
-    //}, [promotorId]);
 
     useEffect(() => {
       setClientesData({ clientesSeleccionados });
     }, [clientesSeleccionados]);
+
 
     useEffect(() => {
         const fetchClientsAvailable = async () => {
@@ -53,6 +58,7 @@ const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, dat
         }
     }, [promotorId]);
       
+    //setClientesSeleccionados(clientesData)
     
     const agregarCliente = () => {
     setClientesSeleccionados([
@@ -87,9 +93,9 @@ const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, dat
 
         nuevos[index].importe = parseFloat(importe);
 
-        nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagecomsion/100).toFixed(2));
+        nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagecomsion/100));
         nuevos[index].taxes = parseFloat((nuevos[index].totalimportecomision) * (percentageTax/100));
-        nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)).toFixed(2));
+        nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)));
         console.log("actualizar",nuevos)
         setClientesSeleccionados(nuevos);
     };
@@ -100,10 +106,18 @@ const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, dat
     };
       
     const totalImporte = clientesSeleccionados.reduce((total, clientesSeleccionados) => total + clientesSeleccionados.importe, 0);
-    const totalPComision = clientesSeleccionados.reduce((total, clientesSeleccionados) => total += clientesSeleccionados.totalimportecomision, 0).toFixed(2);
-    const totalIVA = clientesSeleccionados.reduce((total, clientesSeleccionados) => total += clientesSeleccionados.taxes, 0).toFixed(2);
-    const totalRetorno = clientesSeleccionados.reduce((total, clientesSeleccionados) => total += clientesSeleccionados.calculoretorno, 0).toFixed(2);
+    const totalPComision = clientesSeleccionados.reduce((total, clientesSeleccionados) => total += clientesSeleccionados.totalimportecomision, 0);
+    const totalIVA = clientesSeleccionados.reduce((total, clientesSeleccionados) => total += clientesSeleccionados.taxes, 0);
+    const totalRetorno = clientesSeleccionados.reduce((total, clientesSeleccionados) => total += clientesSeleccionados.calculoretorno, 0);
 
+	useEffect(() => {
+      if (clientesData?.length) {
+        const clientesConvertidos = convertirClientes(clientesData);
+        setClientesSeleccionados(clientesConvertidos);
+        console.log("dos",clientesData, clientesSeleccionados)
+      }
+    }, [clientesData]);
+    
       return (
         <div className="">
           <h3>Clientes y Retornos - - 
@@ -129,7 +143,8 @@ const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, dat
 
           <tbody>
           
-          {clientesSeleccionados.map((item, index) => (
+          { clientesSeleccionados.length > 0 ? (
+            clientesSeleccionados.map((item, index) => (
             <tr key={index} style={{ marginBottom: '1rem' }}>
               <td>
                 <select
@@ -185,6 +200,7 @@ const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, dat
               <td>
                 <input
                     type="number"
+					//efaultValue={item.taxEdit}
                     value = {item.taxes}
                     className="input-field"
                     style={{ width: '100px', }}
@@ -193,6 +209,7 @@ const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, dat
               <td>
                 <input
                     type="number"
+					//defaultValue={item.calculoretornoEdit}
                     value = {item.calculoretorno}
                     className="input-field"
                     style={{ width: '100px', }}
@@ -201,6 +218,7 @@ const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, dat
               <td>
                 <input
                     type="number"
+					value={item.desglose}
                     className="input-field"
                     style={{ width: '100px', }}
                 />
@@ -214,8 +232,9 @@ const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, dat
                 </button>
               </td>
             </tr>
-            
-          ))}
+                
+          )) ):( 
+        
           <tr>
             <td></td>
             <td></td>
@@ -255,11 +274,11 @@ const SolicitudClientes = ({ promotorId, setClientesData,  setDatosComision, dat
                     className="input-field"
                     style={{ width: '100px', }} />
             </td>
-          </tr>
+          </tr> )}
         </tbody>
         </table>
-          
-          <SolicitudComisiones clientes={clientesSeleccionados} setDatosComision={setDatosComision} datosComision={datosComision} />
+            
+          <SolicitudComisiones clientes={clientesSeleccionados} datosComision={datosComision} setDatosComision={setDatosComision} />
         </div>
       );
 

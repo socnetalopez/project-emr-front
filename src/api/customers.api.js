@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const URLApi = axios.create({
-    baseURL: 'http://192.168.20.75:8000/api/customers'
+    baseURL: 'http://192.168.20.30:8000/api/customers'
 });
 
 URLApi.interceptors.request.use((config) => {
@@ -54,7 +54,7 @@ URLApi.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.post('http://192.168.20.75:8001/api/users/token/', {
+        const res = await axios.post('http://192.168.20.30:8000/api/users/token/', {
           refreshToken: localStorage.getItem('refreshToken'),
         });
 
