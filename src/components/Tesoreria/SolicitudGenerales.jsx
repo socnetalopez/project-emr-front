@@ -62,8 +62,9 @@ const SolicitudGeneral = () => {
                     setTipoSolicitud(data1);
                     setClientesData(data.clients);
                     
-                    //datosComision.comisionistas = data.commission_agents;
-                    //setDatosComision(datosComision);
+                    datosComision.comisionistas = data.commission_agents;
+                    datosComision.brokers = data.brokers;
+                    setDatosComision(datosComision);
                 } catch (error) {
                     console.error("Error loading request:", error);
                 }    
@@ -180,7 +181,6 @@ const SolicitudGeneral = () => {
             type_request: request.type_request,
 
             clientes: clientesData.clientesSeleccionados,
-            //comisiones : datosComision
             commission_agents : datosComision.comisionistas.filter(
                 item => item !== undefined && item !== null && item !== ''),
 
@@ -188,9 +188,6 @@ const SolicitudGeneral = () => {
                 item => item !== undefined && item !== null && item !== ''),
 
         }
-
-        console.log(data)
-        
 
         if (params.id) {
                 //await updateCustomer(params.id, data)

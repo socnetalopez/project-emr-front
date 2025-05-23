@@ -33,8 +33,8 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 			
 			}));
 		};
-
-        
+  
+    
 
     useEffect(() => {
       setClientesData({ clientesSeleccionados });
@@ -47,7 +47,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 
               const { data }  = await getCustomersPromotorId(promotorId)
               setClientesDisponibles(data);
-              console.log("promotorId", promotorId, "clientes", clientesDisponibles)
+              //console.log("promotorId", promotorId, "clientes", clientesDisponibles)
             }catch(error) {
                 console.error("Error al cargar los datos", error);
 
@@ -83,7 +83,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         setImporteComision(data.comision_venta.percentage_sales)
         setPercentageTax(data.tax.percentage)
 
-        console.log("clientez", nuevos)
+        //console.log("clientez", nuevos)
         setClientesSeleccionados(nuevos);
         };
 
@@ -110,13 +110,15 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
     const totalIVA = clientesSeleccionados.reduce((total, clientesSeleccionados) => total += clientesSeleccionados.taxes, 0);
     const totalRetorno = clientesSeleccionados.reduce((total, clientesSeleccionados) => total += clientesSeleccionados.calculoretorno, 0);
 
+
 	useEffect(() => {
-      if (clientesData?.length) {
-        const clientesConvertidos = convertirClientes(clientesData);
-        setClientesSeleccionados(clientesConvertidos);
-        console.log("dos",clientesData, clientesSeleccionados)
-      }
+		if (clientesData?.length) {
+			const clientesConvertidos = convertirClientes(clientesData);
+			setClientesSeleccionados(clientesConvertidos);
+			//console.log("dos",clientesData, clientesSeleccionados)
+		}
     }, [clientesData]);
+
     
       return (
         <div className="">
@@ -200,7 +202,6 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
               <td>
                 <input
                     type="number"
-					//efaultValue={item.taxEdit}
                     value = {item.taxes}
                     className="input-field"
                     style={{ width: '100px', }}
@@ -209,7 +210,6 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
               <td>
                 <input
                     type="number"
-					//defaultValue={item.calculoretornoEdit}
                     value = {item.calculoretorno}
                     className="input-field"
                     style={{ width: '100px', }}
