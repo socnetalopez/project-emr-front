@@ -181,14 +181,10 @@ const SolicitudGeneral = () => {
             type_request: request.type_request,
 
             clientes: clientesData.clientesSeleccionados,
-            commission_agents : datosComision.comisionistas.filter(
-                item => item !== undefined && item !== null && item !== ''),
-
-            brokers : datosComision.brokers.filter(
-                item => item !== undefined && item !== null && item !== ''),
-
+            commission_agents : datosComision.comisionistas, //.filter( item => item !== undefined && item !== null && item !== ''),
+            brokers : datosComision.brokers //.filter(item => item !== undefined && item !== null && item !== ''),
         }
-
+        console.log(datosComision)
         if (params.id) {
                 //await updateCustomer(params.id, data)
                 console.log(params.id,"updated:", data)
@@ -201,7 +197,7 @@ const SolicitudGeneral = () => {
                 })
             } else {
                 console.log("created:", data)
-                await RequestCreate(data);
+                //await RequestCreate(data);
                 toast.success('Cliente created success', {
                     position: "bottom-right",
                     style: {

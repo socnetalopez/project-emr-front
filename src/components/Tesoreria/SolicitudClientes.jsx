@@ -17,7 +17,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
     const [percentageTax, setPercentageTax] = useState([]);
 
     
-    console.log("Sol_clientes: clientesData", clientesData)
+    //console.log("Sol_clientes: clientesData", clientesData)
 
      const convertirClientes = (jsonClients) => {
 		return jsonClients.map(client => ({
