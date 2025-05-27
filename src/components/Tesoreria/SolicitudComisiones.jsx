@@ -74,7 +74,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
             const costo_total = costo_com - costo_tax;
             return { costo_com, costo_tax, costo_total };
         };
-
+        console.log("clientes", clientes)
         for (const cliente of clientes) {
             const { importe, taxpercentage, id, comision_venta } = cliente;
             const tax = parseFloat(taxpercentage || 0);
@@ -113,14 +113,14 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
             
             
             // Procesar brokers
-            if (Array.isArray(comision_venta.comision_brokers)) {
-                for (const broker of comision_venta.comision_brokers) {
+            if (Array.isArray(cliente.comision_venta.comision_brokers)) {
+                for (const broker of cliente.comision_venta.comision_brokers) {
                     const porcentaje = parseFloat(broker.percentage || 0);
                     if (!broker.id || !porcentaje) continue;
 
-                    const brokerId = broker.broker.id;
-                    const nombre = broker.broker?.name || 'Sin nombre';
-                    const fullname = `${nombre} ${broker.broker.paternal_surname} ${broker.broker.maternal_surname}`;
+                    const brokerId = broker.broker?.id || broker?.bid;
+                    const nombre = broker.broker?.name || broker?.name || 'Sin nombre';
+                    const fullname = `${nombre} ${broker.broker?.paternal_surname || broker?.paternal_surname} ${broker.broker?.maternal_surname || broker?.maternal_surname}`;
                     const costo = calcularCosto(porcentaje, importe, tax);
 
                     if (!acumuladoBrokers[brokerId]) {
@@ -140,14 +140,17 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
             // -----
 
             // Procesar comisionistas
-            if (Array.isArray(comision_venta.comisionistas)) {
-                for (const comisionista of comision_venta.comisionistas) {
+            //console.log("cliente comvta comisionista", cliente.comision_venta.comisionistas)
+            if (Array.isArray(cliente.comision_venta.comisionistas)) {
+                for (const comisionista of cliente.comision_venta.comisionistas) {
                     const porcentaje = parseFloat(comisionista.percentage || 0);
+                    
                     if (!comisionista.id || !porcentaje) continue;
 
-                    const comisionistaId = comisionista.comisionista.id;
-                    const nombre = comisionista.comisionista?.name || 'Sin nombre';
-                    const fullname = `${nombre} ${comisionista.comisionista.paternal_surname} ${comisionista.comisionista.maternal_surname}`;
+                    const comisionistaId = comisionista.comisionista?.id || comisionista?.cid;
+                    console.log("comisionista", comisionistaId)
+                    const nombre = comisionista.comisionista?.name || comisionista?.name || 'Sin nombre';
+                    const fullname = `${nombre} ${comisionista.comisionista?.paternal_surname || comisionista?.paternal_surname} ${comisionista.comisionista?.maternal_surname || comisionista?.maternal_surname}`;
                     const costo = calcularCosto(porcentaje, importe, tax);
                     
                     if (!acumuladoComisionistas[comisionistaId]) {
@@ -196,7 +199,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
             totalGeneral.retorno += comisionista.retorno;
         }
 
-        console.log("entro al ciclo",datosComision)
+        //console.log("entro al ciclo",datosComision)
         setCostosTotales(totales);
         setCostosClientes(nuevosCostos);
         //setBrokers(acumuladoBrokers);
@@ -209,6 +212,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         datosComision.cost_commission = totales.comision.total_com;
         datosComision.cost_tax = totales.comision.total_tax;
         datosComision.cost_retorno = totales.comision.total_total;
+        //console.log("Datos Comision Costo",datosComision.cost_commission)
 
         // Se asignan los valores de las comision de casa
         datosComision.house_commission = totales.house.total_com;
@@ -220,6 +224,8 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         datosComision.promoter_tax = totales.promotor.total_tax;
         datosComision.promoter_retorno = totales.promotor.total_total;
         
+        console.log("acumulados brokers", acumuladoBrokers)
+        console.log("acumulados comisionistas", acumuladoComisionistas)
         datosComision.brokers = acumuladoBrokers;
         datosComision.comisionistas = acumuladoComisionistas;
         //console.log("dc brokers",datosComision.brokers)

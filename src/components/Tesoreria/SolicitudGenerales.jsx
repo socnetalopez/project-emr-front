@@ -58,7 +58,7 @@ const SolicitudGeneral = () => {
                     const data = res.data
                     const data1 = String(data.type_request);
                     setRequest(data);
-                    setSelectedPromotor(data.promoter.id);
+                    setSelectedPromotor(data.promoter);
                     setTipoSolicitud(data1);
                     setClientesData(data.clients);
                     
@@ -91,9 +91,9 @@ const SolicitudGeneral = () => {
         loadRequest()
     }, [params.id]);
     //request.promoter = request.promoter.id
-    console.log("Load initial",request)
+    //console.log("Load initial",request)
     //console.log("selected promoter",selectedPromotor)
-   //console.log("clientsDataCom", request.commission_agents)
+   //console.log("General customer", clientesData)
    
     // Obtener los datos de la API
     useEffect(() => {
@@ -229,7 +229,7 @@ const SolicitudGeneral = () => {
 
     }
     //console.log("al final general", request)
-    console.log("al final",clientesData );
+    //console.log("al final",clientesData );
 
     return (
        

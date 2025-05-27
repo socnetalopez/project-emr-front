@@ -36,21 +36,24 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 			}));
 		};
   
-    console.log("Initial clientes",clientesData)
-    //console.log("datos com", datosComision) 
+    //console.log("Initial clientes",clientesData)
+    //console.log("datos com", datosComision)
+    //console.log("prmotorID",promotorId.id)
 
     useEffect(() => {
       setClientesData({ clientesSeleccionados });
     }, [clientesSeleccionados]);
 
+    
 
     useEffect(() => {
         const fetchClientsAvailable = async () => {
             try {
-
-              const { data }  = await getCustomersPromotorId(promotorId)
+              //console.log("promotorId", promotorId.id)
+              const { data }  = await getCustomersPromotorId(promotorId.id)
               setClientesDisponibles(data);
-              //console.log("promotorId", promotorId, "clientes", clientesDisponibles)
+              //console.log("clientes Disponibles", clientesDisponibles)
+              
             }catch(error) {
                 console.error("Error al cargar los datos", error);
 
