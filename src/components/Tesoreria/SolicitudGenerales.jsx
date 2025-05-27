@@ -58,24 +58,42 @@ const SolicitudGeneral = () => {
                     const data = res.data
                     const data1 = String(data.type_request);
                     setRequest(data);
-                    setSelectedPromotor(data.promoter);
+                    setSelectedPromotor(data.promoter.id);
                     setTipoSolicitud(data1);
                     setClientesData(data.clients);
                     
-                    datosComision.comisionistas = data.commission_agents;
-                    datosComision.brokers = data.brokers;
-                    setDatosComision(datosComision);
+                    datosComision.promoter_fullname = data.promoter.fullname;
+                    datosComision.promoter_commission = data.promoter_commission;
+                    datosComision.promoter_tax = data.promoter_tax;
+                    datosComision.promoter_retorno = data.promoter_retorno;
+                    datosComision.house_commission = data.house_commission;
+                    datosComision.house_tax = data.house_tax;
+                    datosComision.house_retorno = data.house_retorno;
+                    datosComision.cost_commission = data.house_commission;
+                    datosComision.cost_tax = data.house_tax;
+                    datosComision.cost_retorno = data.house_retorno;
+                    
+                    //datosComision.comisionistas = data.commission_agents;
+                    //datosComision.brokers = data.brokers;
+                    
+                    
+                    // Investigar funcionaumiento
+                    //setDatosComision(data.commission_agents);
                 } catch (error) {
                     console.error("Error loading request:", error);
                 }    
 
             } 
-            console.log("Load: ",params.id, selectedPromotor, tipoSolicitud)
-            console.log("req:",request, "-", clientesData, datosComision)
+            //console.log("Load: ",params.id, selectedPromotor, tipoSolicitud)
+            //console.log("req:",request, "-", clientesData, datosComision)
+            
         }
         loadRequest()
     }, [params.id]);
-
+    //request.promoter = request.promoter.id
+    console.log("Load initial",request)
+    //console.log("selected promoter",selectedPromotor)
+   //console.log("clientsDataCom", request.commission_agents)
    
     // Obtener los datos de la API
     useEffect(() => {
@@ -104,7 +122,7 @@ const SolicitudGeneral = () => {
     
         fetchData();
     }, []);
-    
+
 
     // Manejo de la fecha
     const handleDateChange = (date) => {
@@ -122,14 +140,14 @@ const SolicitudGeneral = () => {
         if (tipoSolicitud.length > 0) {
             // Si hay registros agregados, mostrar advertencia
             setWarningVisible(true);
-            setSelectedPromotor(e.target.value);
+            setSelectedPromotor({id : e.target.value});
             setRequest(prev => ({ 
                 ...prev,
                     promoter: e.target.value
             }));
             
         } else {
-            setSelectedPromotor(e.target.value);
+            setSelectedPromotor({id : e.target.value});
             setRequest(prev => ({ 
                 ...prev,
                     promoter: e.target.value
@@ -179,12 +197,12 @@ const SolicitudGeneral = () => {
             type_operation: request.type_operation,
             type_payment: request.type_payment,
             type_request: request.type_request,
-
             clientes: clientesData.clientesSeleccionados,
-            commission_agents : datosComision.comisionistas, //.filter( item => item !== undefined && item !== null && item !== ''),
-            brokers : datosComision.brokers //.filter(item => item !== undefined && item !== null && item !== ''),
+            commission_agents : datosComision.comisionistas.filter( item => item !== undefined && item !== null && item !== ''),
+            brokers : datosComision.brokers.filter(item => item !== undefined && item !== null && item !== ''),
         }
-        console.log(datosComision)
+    
+       
         if (params.id) {
                 //await updateCustomer(params.id, data)
                 console.log(params.id,"updated:", data)
@@ -210,6 +228,8 @@ const SolicitudGeneral = () => {
         //alert('Datos guardados');
 
     }
+    //console.log("al final general", request)
+    console.log("al final",clientesData );
 
     return (
        
@@ -289,13 +309,13 @@ const SolicitudGeneral = () => {
                         <label>Promotor:</label>
                         <select
                             name="promoter"
-                            value={request.promoter}
+                            value={request.promoter?.id}
                             onChange={handlePromoterChange}
                             className="select-field"
                         >
                             <option value="">Seleccione</option>
                                 {promotores_All.map(p => (
-                            <option key={p.id} value={p.id}>{p.name}</option>
+                            <option key={p.id} value={p.id}>{`${p.name} ${p.paternal_surname} ${p.maternal_surname}`}</option>
                             ))}
                         </select>
                     </div>
@@ -303,7 +323,6 @@ const SolicitudGeneral = () => {
                     <div className="campo-formulariocustomer">
                         <label >Tipos de Operacion:</label>
                         <select
-                            //id="tipo_operacion"
                             name="type_operation"
                             value={request.type_operation}
                             onChange={handleChange}
@@ -325,7 +344,6 @@ const SolicitudGeneral = () => {
                             name="type_request"
                             value={request.type_request}
                             onChange={handleRequest_Type_Change}
-                            //onChange={(e) => setTipoSolicitud(e.target.value)}
                             className="bg-zinc-200 p-3 rounded-lg select-field"
                         >
                             <option value="">Seleccione</option>

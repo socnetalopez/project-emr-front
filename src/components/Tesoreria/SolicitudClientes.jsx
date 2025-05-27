@@ -18,10 +18,11 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 
     
     //console.log("Sol_clientes: clientesData", clientesData)
-
      const convertirClientes = (jsonClients) => {
 		return jsonClients.map(client => ({
 			cliente: client.customer.id,
+      comision: client.commission,
+      comision_venta: client.customer.comision_venta,
 			tipo_calculo: client.customer.tipo_calculo,
 			comprobante: client.customer.comprobante,
 			tipo_pago: client.customer.tipo_pago,
@@ -29,12 +30,14 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 			totalimportecomision: client.commission,
 			taxes: client.tax,
 			calculoretorno: client.retorno,
-			desglose: client.breakdown
+			desglose: client.breakdown,
+      comisionistas: client.commission_agents
 			
 			}));
 		};
   
-    
+    console.log("Initial clientes",clientesData)
+    //console.log("datos com", datosComision) 
 
     useEffect(() => {
       setClientesData({ clientesSeleccionados });
@@ -83,20 +86,35 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         setImporteComision(data.comision_venta.percentage_sales)
         setPercentageTax(data.tax.percentage)
 
-        //console.log("clientez", nuevos)
+        // Reset valores de brokers y comisionistas
+        datosComision.brokers = '';
+        datosComision.comisionistas='';
+        nuevos[index].importe = 0;
+        nuevos[index].taxes = 0;
+        nuevos[index].calculoretorno = 0;
+        nuevos[index].totalimportecomision = 0;
+
+
+        console.log("Actualizar cliente", nuevos)
         setClientesSeleccionados(nuevos);
         };
 
     const actualizarImporte = (index, importe) => {
+      
         const nuevos = [...clientesSeleccionados];
-        const percentagecomsion = importeComision;
+
+        const percentagecomsion = nuevos[index].comision;
+        console.log("percentajecomisisio",percentagecomsion)
 
         nuevos[index].importe = parseFloat(importe);
+        console.log(importe,"index", index)
+        console.log("nuevos", nuevos[index])
 
         nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagecomsion/100));
+        //nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  nuevos[index].comsion/100));
         nuevos[index].taxes = parseFloat((nuevos[index].totalimportecomision) * (percentageTax/100));
         nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)));
-        console.log("actualizar",nuevos)
+        console.log("actualizar Importe",nuevos)
         setClientesSeleccionados(nuevos);
     };
     
@@ -115,10 +133,12 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 		if (clientesData?.length) {
 			const clientesConvertidos = convertirClientes(clientesData);
 			setClientesSeleccionados(clientesConvertidos);
-			//console.log("dos",clientesData, clientesSeleccionados)
+			console.log("clientes cobertidos",clientesData, clientesConvertidos, clientesSeleccionados)
 		}
     }, [clientesData]);
 
+    
+    //console.log("al final clientes", datosComision)
     
       return (
         <div className="">

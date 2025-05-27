@@ -19,8 +19,10 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
     const [totalCostos, settotalCostos] = useState(0);
     const [house, setHouse] = useState(0);
     const [costosClientes, setCostosClientes] = useState([]);
-    const [brokers, setBrokers] = useState({});
+    const [brokers, setBrokers] = useState([]);
     const [comisionistas, setComisionistas] = useState([]);
+    const [valPromoter, setValPromoter] = useState({nombre : '', promotorCost: '' });
+
 
     const [totalGeneral, setTotalGeneral] = useState({
         total_com: 0,
@@ -28,21 +30,23 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         total_total: 0,
     });
     
-    useEffect(() => {
-        if (datosComision) {
+    //useEffect(() => {
+    //    if (datosComision) {
             //console.log("datos comision broker", datosComision);
-            setBrokers(datosComision.brokers);
-            setComisionistas(datosComision.comisionistas)
-        }
-        else{
+    //        setBrokers(datosComision.brokers);
+    //        setComisionistas(datosComision.comisionistas)
+    //    }
+    //    else{
 
-            console.log("new register")
-        }
-    }, [datosComision]);
+    //        console.log("new register")
+    //    }
+    //}, [datosComision]);
 
     //resumen.comisionistas === datosComision.comisionistas;
-    console.log("SolComisiones: clientes",clientes, "resumen", resumen, "datosComision:", datosComision)
-    //console.log("brokers", brokers)    
+    
+    //console.log("SolComisiones: clientes",clientes, "resumen", resumen, "datosComision:", datosComision)
+    //console.log("initial datosComision",datosComision)
+    //console.log("Initial clientes",clientes)
     // --->
 
     const [costosTotales, setCostosTotales] = useState({
@@ -74,8 +78,9 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         for (const cliente of clientes) {
             const { importe, taxpercentage, id, comision_venta } = cliente;
             const tax = parseFloat(taxpercentage || 0);
-
+            console.log("importe | com venta", importe, comision_venta)
             if (!importe || !comision_venta) continue;
+                
 
             const porcentajeCom = parseFloat(comision_venta.percentage_cost || 0);
             const porcentajeHouse = parseFloat(comision_venta.percentage_house || 0);
@@ -84,13 +89,17 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
             const comision = calcularCosto(porcentajeCom, importe, tax);
             const houseCost = calcularCosto(porcentajeHouse, importe, tax);
             const promotorCost = calcularCosto(porcentajePromotor, importe, tax);
+            
+            //console.log("comisioncosto",comision)
+            
 
             nuevosCostos.push({
                 clienteId: id || null,
                 comision,
                 house: houseCost,
-                promotor: promotorCost,
+                promotor: {promotorCost},
             });
+            
             
             // Acumular totales
             const tipos = { comision, house: houseCost, promotor: promotorCost };
@@ -101,7 +110,8 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                 totales[tipo].total_tax += costo.costo_tax;
                 totales[tipo].total_total += costo.costo_total;
             }
-
+            
+            
             // Procesar brokers
             if (Array.isArray(comision_venta.comision_brokers)) {
                 for (const broker of comision_venta.comision_brokers) {
@@ -127,6 +137,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                     acumuladoBrokers[brokerId].retorno += costo.costo_total;
                 }
             }
+            // -----
 
             // Procesar comisionistas
             if (Array.isArray(comision_venta.comisionistas)) {
@@ -156,147 +167,168 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         }
 
         // Total general sumando comisiones, house, promotor, brokers y comisionistas
-    const totalGeneral = {
-        total_com: 0,
-        total_tax: 0,
-        total_total: 0,
-    };
+        const totalGeneral = {
+            total_com: 0,
+            total_tax: 0,
+            total_total: 0,
+        };
 
-    // Sumar comisiones directas (comision, house, promotor)
-    for (const tipo in totales) {
-        totalGeneral.total_com += totales[tipo].total_com;
-        totalGeneral.total_tax += totales[tipo].total_tax;
-        totalGeneral.total_total += totales[tipo].total_total;
-    }
+        // Sumar comisiones directas (comision, house, promotor)
+        for (const tipo in totales) {
+            totalGeneral.total_com += totales[tipo].total_com;
+            totalGeneral.total_tax += totales[tipo].total_tax;
+            totalGeneral.total_total += totales[tipo].total_total;
+        }
 
-    // Sumar brokers
-    for (const brokerId in acumuladoBrokers) {
-        const broker = acumuladoBrokers[brokerId];
-        totalGeneral.commission += broker.commission;
-        totalGeneral.tax += broker.tax;
-        totalGeneral.retorno += broker.retorno;
-    }
+        // Sumar brokers
+        for (const brokerId in acumuladoBrokers) {
+            const broker = acumuladoBrokers[brokerId];
+            totalGeneral.commission += broker.commission;
+            totalGeneral.tax += broker.tax;
+            totalGeneral.retorno += broker.retorno;
+        }
 
-    // Sumar comisionistas
-    for (const comisionistaId in acumuladoComisionistas) {
-        const comisionista = acumuladoComisionistas[comisionistaId];
-        totalGeneral.commission += comisionista.commission;
-        totalGeneral.tax += comisionista.tax;
-        totalGeneral.retorno += comisionista.retorno;
-    }
+        // Sumar comisionistas
+        for (const comisionistaId in acumuladoComisionistas) {
+            const comisionista = acumuladoComisionistas[comisionistaId];
+            totalGeneral.commission += comisionista.commission;
+            totalGeneral.tax += comisionista.tax;
+            totalGeneral.retorno += comisionista.retorno;
+        }
 
-
+        console.log("entro al ciclo",datosComision)
         setCostosTotales(totales);
         setCostosClientes(nuevosCostos);
         //setBrokers(acumuladoBrokers);
         //setComisionistas(acumuladoComisionistas);
         setTotalGeneral(totalGeneral)
 
-        setDatosComision({brokers : acumuladoBrokers, comisionistas : acumuladoComisionistas })
+        //console.log("acumulado brokers: ", totalGeneral)
+
+        // Se asignan los valores de las comision de costo
+        datosComision.cost_commission = totales.comision.total_com;
+        datosComision.cost_tax = totales.comision.total_tax;
+        datosComision.cost_retorno = totales.comision.total_total;
+
+        // Se asignan los valores de las comision de casa
+        datosComision.house_commission = totales.house.total_com;
+        datosComision.house_tax = totales.house.total_tax;
+        datosComision.house_retorno = totales.house.total_total;
+
+        // Se asignan los valores de las comision de promotor
+        datosComision.promoter_commission = totales.promotor.total_com;
+        datosComision.promoter_tax = totales.promotor.total_tax;
+        datosComision.promoter_retorno = totales.promotor.total_total;
+        
+        datosComision.brokers = acumuladoBrokers;
+        datosComision.comisionistas = acumuladoComisionistas;
+        //console.log("dc brokers",datosComision.brokers)
+
+        //if (
+        //    (datosComision.brokers && datosComision.brokers.length > 0) ||
+        //    (datosComision.comisionistas && datosComision.comisionistas.length > 0)
+        //    ) {
+            // Hay datos en al menos uno de los dos
+        //    console.log("Hay datos en brokers o comisionistas");
+        //    console.log(acumuladoBrokers)
+        //    } else {
+            // Ambos están vacíos o no existen
+        //    console.log("No hay datos en brokers ni en comisionistas");
+        //    datosComision.brokers = acumuladoBrokers;
+        //    datosComision.comisionistas = acumuladoComisionistas;
+       // }
+
     
     }, [clientes]);
     // <----
-         
+    
 
     clientes.forEach(({ comision_venta, importe, taxpercentage }) => {
       if (!comision_venta || !importe) return;
 
 
         // Costo
-        const costo_nombre = "Costo"
-        const costo_porcentaje = parseFloat(comision_venta.percentage_cost);
-        const costo_com = (costo_porcentaje * importe)/100;
-        const costo_tax = (costo_com * taxpercentage)/100;
-        const costo_total = costo_com - costo_tax;
+        //const costo_nombre = "Costo"
+        //const costo_porcentaje = parseFloat(comision_venta.percentage_cost);
+        //const costo_com = (costo_porcentaje * importe)/100;
+        //const costo_tax = (costo_com * taxpercentage)/100;
+        //const costo_total = costo_com - costo_tax;
        
 
-        if (!resumen.costo[costo_nombre]) resumen.costo[costo_nombre] = { costo_com:0 , costo_tax:0, costo_total:0};
-        resumen.costo[costo_nombre].costo_com += costo_com;
-        resumen.costo[costo_nombre].costo_tax += costo_tax;
-        resumen.costo[costo_nombre].costo_total += costo_total;
+        //if (!resumen.costo[costo_nombre]) resumen.costo[costo_nombre] = { costo_com:0 , costo_tax:0, costo_total:0};
+        //resumen.costo[costo_nombre].costo_com += costo_com;
+        //resumen.costo[costo_nombre].costo_tax += costo_tax;
+        //resumen.costo[costo_nombre].costo_total += costo_total;
 
         
         // Casa
-        const casa_nombre = "Casa"
-        const casa_porcentaje = parseFloat(comision_venta.percentage_house);
-        const casa_com = (casa_porcentaje * importe)/100;
-        const casa_tax = (casa_com * taxpercentage)/100;
-        const casa_total = casa_com - casa_tax;
+        //const casa_nombre = "Casa"
+        //const casa_porcentaje = parseFloat(comision_venta.percentage_house);
+        //const casa_com = (casa_porcentaje * importe)/100;
+        //const casa_tax = (casa_com * taxpercentage)/100;
+        //const casa_total = casa_com - casa_tax;
        
 
-        if (!resumen.casa[casa_nombre]) resumen.casa[casa_nombre] = { casa_com:0 , casa_tax:0, casa_total:0} ;
-        resumen.casa[casa_nombre].casa_com += casa_com;
-        resumen.casa[casa_nombre].casa_tax += casa_tax;
-        resumen.casa[casa_nombre].casa_total += casa_total;
+        //if (!resumen.casa[casa_nombre]) resumen.casa[casa_nombre] = { casa_com:0 , casa_tax:0, casa_total:0} ;
+       // resumen.casa[casa_nombre].casa_com += casa_com;
+        //resumen.casa[casa_nombre].casa_tax += casa_tax;
+        //resumen.casa[casa_nombre].casa_total += casa_total;
 
 
         // Promotores
-        const nombre = comision_venta.promotor.nombre
-        const porcentaje = parseFloat(comision_venta.percentage_promotor);
-        const com = (porcentaje * importe)/100;
-        const tax = (com * taxpercentage)/100;
-        const total = com - tax;
+        //const nombre = comision_venta.promotor.nombre
+        //const porcentaje = parseFloat(comision_venta.percentage_promotor);
+        //const com = (porcentaje * importe)/100;
+        //const tax = (com * taxpercentage)/100;
+        //const total = com - tax;
 
-        if (!resumen.promotores[nombre]) resumen.promotores[nombre] = { com:0 , tax:0, total:0};
-        resumen.promotores[nombre].com += com;
-        resumen.promotores[nombre].tax += tax;
-        resumen.promotores[nombre].total += total;
+        //if (!resumen.promotores[nombre]) resumen.promotores[nombre] = { com:0 , tax:0, total:0};
+        //resumen.promotores[nombre].com += com;
+        //resumen.promotores[nombre].tax += tax;
+        //resumen.promotores[nombre].total += total;
             
 
   
       // Comisionistas
-      comision_venta.comisionistas.forEach((c) => {
-        const nombre = c.comisionista.name;
-        const porcentaje = parseFloat(c.percentage);
-        const com = (porcentaje * importe)/100;
-        const tax = (com * taxpercentage)/100;
-        const total = com - tax;
+      //comision_venta.comisionistas.forEach((c) => {
+    //    const nombre = c.comisionista.name;
+    //    const porcentaje = parseFloat(c.percentage);
+    //    const com = (porcentaje * importe)/100;
+    //    const tax = (com * taxpercentage)/100;
+    //    const total = com - tax;
   
-        if (!resumen.comisionistas[nombre]) resumen.comisionistas[nombre] = { com:0 , tax:0, total:0} ;
-        resumen.comisionistas[nombre].com += com;
-        resumen.comisionistas[nombre].tax += tax;
-        resumen.comisionistas[nombre].total += total;
-      });
+    //    if (!resumen.comisionistas[nombre]) resumen.comisionistas[nombre] = { com:0 , tax:0, total:0} ;
+    //    resumen.comisionistas[nombre].com += com;
+    //    resumen.comisionistas[nombre].tax += tax;
+    //    resumen.comisionistas[nombre].total += total;
+    //  });
+
     });
   
     const totalComisiones = 
         Object.values(resumen.costo).reduce((a, b) => a + b.costo_com, 0) +
         Object.values(resumen.casa).reduce((a, b) => a + b.casa_com, 0) +
         Object.values(resumen.promotores).reduce((a, b) => a + b.com, 0) +
-        Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.com, 0) +
+        //Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.com, 0) +
         Object.values(resumen.comisionistas).reduce((a, b) => a + b.com, 0);
     
     const totalTax = 
         Object.values(resumen.costo).reduce((a, b) => a + b.costo_tax, 0) +
         Object.values(resumen.casa).reduce((a, b) => a + b.casa_tax, 0) +
         Object.values(resumen.promotores).reduce((a, b) => a + b.tax, 0) +
-        Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.tax, 0) +
+        //Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.tax, 0) +
         Object.values(resumen.comisionistas).reduce((a, b) => a + b.tax, 0);
 
     const sumTotal = 
         Object.values(resumen.costo).reduce((a, b) => a + b.costo_total, 0) +
         Object.values(resumen.casa).reduce((a, b) => a + b.casa_total, 0) +
         Object.values(resumen.promotores).reduce((a, b) => a + b.total, 0) +
-        Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.total, 0) +
+        //Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.total, 0) +
         Object.values(resumen.comisionistas).reduce((a, b) => a + b.total, 0);
 
     
+    //console.log("resumen promotores", valPromoter)
     
-    
-    
-    //useEffect(() => {
-    // if (datosComision.brokers){
-    ///        console.log("OK:brokers:3:",datosComision.brokers)
-    // }else{
-    //        console.log("NOT:brokers:3:",brokers)
-    //        datosComision.brokers = brokers;
-           // setBrokers(brokers)
-            //const newBrokers datosComision.brokers;
-            //setDatosComision({ newBrokers});
-    // }  
-    //},[datosComision.brokers]);
-    console.log("al final datosComision-Brokers:",datosComision.brokers, "Brokers:", brokers)
-    //
 
     return (
         <div style={{ marginTop: '2rem' }}>
@@ -315,75 +347,74 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                 <tbody>
 
                     {/* Costo */}
-                    { Object.entries(resumen.costo).map(([id, val]) => (
-                    <tr key={id}> 
-                        <td style={{ textAlign: 'center' }}>  </td>
-                        <td style={{ textAlign: 'left' }}> {id} </td>
+                    
+                    <tr> 
+                        <td style={{ textAlign: 'center' }}> Costo  </td>
+                        <td style={{ textAlign: 'left' }}>  </td>
                         <td> 
                             <input
-                                value={val.costo_com.toFixed(2)}
+                                value={datosComision.cost_commission}
                             />
                         </td>
                         <td> 
                             <input
-                                value={val.costo_tax}
+                                value={datosComision.cost_tax}
                             />
                         </td>
                         <td> 
                             <input
-                            value={val.costo_total.toFixed(2)} />
+                            value={datosComision.cost_retorno} />
                         </td>
                     </tr>
-                    ))}
 
                     
  
 
                     {/* Casa */}
-                    {Object.entries(resumen.casa).map(([id, val]) => (
-                    <tr  key={id}> 
-                        <td style={{ textAlign: 'center' }}>  </td>
-                        <td style={{ textAlign: 'left' }}> {id} </td>
+                    
+                    <tr> 
+                        <td style={{ textAlign: 'center' }}> Casa  </td>
+                        <td style={{ textAlign: 'left' }}> </td>
                         <td> 
                             <input
-                                value={val.casa_com.toFixed(2)} 
+                                value={datosComision.house_commission} 
                             />
                         </td>
                         <td> 
                             <input
-                                value={val.casa_tax.toFixed(2)} />
+                                value={datosComision.house_tax} />
                         </td>
                         <td> 
                             <input
-                            value={val.casa_total.toFixed(2)} />
+                            value={datosComision.house_retorno} />
                         </td>
                     </tr>
-                    ))}
+                  
                     
                     {/* Promotores */}
-                    { 
-                    Object.entries(resumen.promotores).map(([id, val]) => (
-                    <tr  key={id}> 
+                    
+                    
+                    <tr> 
                         <td style={{ textAlign: 'center' }}> Promotor</td>
-                        <td style={{ textAlign: 'left' }}> {id} </td>
+                        <td style={{ textAlign: 'left' }}> {datosComision.promoter_fullname} </td>
                         <td> 
                             <input
-                                value={val.com.toFixed(2)} />
+                                value={ datosComision.promoter_commission} />
                         </td>
                         <td> 
                             <input
-                                value={val.tax.toFixed(2)} />
+                                value={datosComision.promoter_tax} />
                         </td>
                         <td> 
                             <input
-                            readonly="readonly"
-                            value={val.total.toFixed(2)} />
+                            //readonly="readonly"
+                            value={datosComision.promoter_retorno} />
                         </td>
                     </tr>
-                    ))}
+                    
 
                     {/* Brokers */}
-                    { (datosComision?.brokers ) &&
+                    { (datosComision?.brokers) &&
                     Object.entries(datosComision?.brokers).map(([id, val]) => (    
                     <tr key={id}> 
                         <td style={{ textAlign: 'center' }}> Broker </td>

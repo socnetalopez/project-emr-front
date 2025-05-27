@@ -87,7 +87,7 @@ export const createCustomer = (p) => URLApi.post('/create/', p)
 export const updateCustomer =(id, p) => URLApi.put(`/${id}/update/`, p)
 
 export const getCustomersPromotorId = (id) => URLApi.get(`/promotor/${id}/`)
-export const getCustomerIdRequest = (id) => URLApi.get(`/${id}/?tipo=solicitud`)
+export const getCustomerIdRequest = (id) => URLApi.get(`/${id}/?tipo=solicitud`) //obtiene la comision de venta
 
 export const getRegimenTipo = () => URLApi.get('/regimentipo/')
 export const getCountry = () => URLApi.get('/country/')
