@@ -18,12 +18,14 @@ export function SolicitudFormPage() {
   const hayId = !!id; // convierte a booleano
   return (
     <div className="contenedor">
-      {hayId ? (
+    {/*
+      }  {hayId ? (
         <p>Se recibió un ID en la URL: {id}</p>
       ) : (
         <p>No se recibió ningún ID en la URL.</p>
       )}
-        
+
+    */}    
       
       <SolicitudGeneral id={id}/> {/* Mostramos el formulario */}
     </div>

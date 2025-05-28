@@ -116,6 +116,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
             if (Array.isArray(cliente.comision_venta.comision_brokers)) {
                 for (const broker of cliente.comision_venta.comision_brokers) {
                     const porcentaje = parseFloat(broker.percentage || 0);
+
                     if (!broker.id || !porcentaje) continue;
 
                     const brokerId = broker.broker?.id || broker?.bid;
@@ -135,6 +136,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                     acumuladoBrokers[brokerId].commission += costo.costo_com;
                     acumuladoBrokers[brokerId].tax += costo.costo_tax;
                     acumuladoBrokers[brokerId].retorno += costo.costo_total;
+
                 }
             }
             // -----
@@ -148,7 +150,6 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                     if (!comisionista.id || !porcentaje) continue;
 
                     const comisionistaId = comisionista.comisionista?.id || comisionista?.cid;
-                    console.log("comisionista", comisionistaId)
                     const nombre = comisionista.comisionista?.name || comisionista?.name || 'Sin nombre';
                     const fullname = `${nombre} ${comisionista.comisionista?.paternal_surname || comisionista?.paternal_surname} ${comisionista.comisionista?.maternal_surname || comisionista?.maternal_surname}`;
                     const costo = calcularCosto(porcentaje, importe, tax);
@@ -206,7 +207,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         //setComisionistas(acumuladoComisionistas);
         setTotalGeneral(totalGeneral)
 
-        //console.log("acumulado brokers: ", totalGeneral)
+        console.log("total general: ", totalGeneral)
 
         // Se asignan los valores de las comision de costo
         datosComision.cost_commission = totales.comision.total_com;
@@ -224,10 +225,14 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         datosComision.promoter_tax = totales.promotor.total_tax;
         datosComision.promoter_retorno = totales.promotor.total_total;
         
-        console.log("acumulados brokers", acumuladoBrokers)
-        console.log("acumulados comisionistas", acumuladoComisionistas)
+        //console.log("acumulados brokers", acumuladoBrokers)
+        //console.log("acumulados comisionistas", acumuladoComisionistas)
         datosComision.brokers = acumuladoBrokers;
         datosComision.comisionistas = acumuladoComisionistas;
+
+        datosComision.total_com = totalGeneral.total_com
+        datosComision.total_tax = totalGeneral.total_tax
+        datosComision.total_retorno = totalGeneral.total_total
         //console.log("dc brokers",datosComision.brokers)
 
         //if (
@@ -311,26 +316,26 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
 
     });
   
-    const totalComisiones = 
-        Object.values(resumen.costo).reduce((a, b) => a + b.costo_com, 0) +
-        Object.values(resumen.casa).reduce((a, b) => a + b.casa_com, 0) +
-        Object.values(resumen.promotores).reduce((a, b) => a + b.com, 0) +
+    //const totalComisiones = 
+    //    Object.values(resumen.costo).reduce((a, b) => a + b.costo_com, 0) +
+    //    Object.values(resumen.casa).reduce((a, b) => a + b.casa_com, 0) +
+    //    Object.values(resumen.promotores).reduce((a, b) => a + b.com, 0) +
         //Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.com, 0) +
-        Object.values(resumen.comisionistas).reduce((a, b) => a + b.com, 0);
+    //    Object.values(resumen.comisionistas).reduce((a, b) => a + b.com, 0);
     
-    const totalTax = 
-        Object.values(resumen.costo).reduce((a, b) => a + b.costo_tax, 0) +
-        Object.values(resumen.casa).reduce((a, b) => a + b.casa_tax, 0) +
-        Object.values(resumen.promotores).reduce((a, b) => a + b.tax, 0) +
-        //Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.tax, 0) +
-        Object.values(resumen.comisionistas).reduce((a, b) => a + b.tax, 0);
+    //const totalTax = 
+    //    Object.values(resumen.costo).reduce((a, b) => a + b.costo_tax, 0) +
+    //    Object.values(resumen.casa).reduce((a, b) => a + b.casa_tax, 0) +
+    //    Object.values(resumen.promotores).reduce((a, b) => a + b.tax, 0) +
+    //    //Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.tax, 0) +
+    //    Object.values(resumen.comisionistas).reduce((a, b) => a + b.tax, 0);
 
-    const sumTotal = 
-        Object.values(resumen.costo).reduce((a, b) => a + b.costo_total, 0) +
-        Object.values(resumen.casa).reduce((a, b) => a + b.casa_total, 0) +
-        Object.values(resumen.promotores).reduce((a, b) => a + b.total, 0) +
+    //const sumTotal = 
+    //    Object.values(resumen.costo).reduce((a, b) => a + b.costo_total, 0) +
+    //    Object.values(resumen.casa).reduce((a, b) => a + b.casa_total, 0) +
+    //    Object.values(resumen.promotores).reduce((a, b) => a + b.total, 0) +
         //Object.values(resumen.brokers).reduce((acc, broker) => acc + broker.total, 0) +
-        Object.values(resumen.comisionistas).reduce((a, b) => a + b.total, 0);
+    //    Object.values(resumen.comisionistas).reduce((a, b) => a + b.total, 0);
 
     
     //console.log("resumen promotores", valPromoter)
@@ -405,16 +410,16 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         <td style={{ textAlign: 'left' }}> {datosComision.promoter_fullname} </td>
                         <td> 
                             <input
-                                value={ datosComision.promoter_commission} />
+                                value={ Number(datosComision.promoter_commission || 0 ).toFixed(2)} />
                         </td>
                         <td> 
                             <input
-                                value={datosComision.promoter_tax} />
+                                value={ Number(datosComision.promoter_tax || 0 ).toFixed(2)} />
                         </td>
                         <td> 
                             <input
                             //readonly="readonly"
-                            value={datosComision.promoter_retorno} />
+                            value={ Number(datosComision.promoter_retorno || 0 ).toFixed(2)} />
                         </td>
                     </tr>
                     
@@ -431,11 +436,11 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         </td>
                         <td> 
                             <input
-                                value={val.tax || ''} />
+                                value={val.tax} />
                         </td>
                         <td> 
                             <input
-                            value={val.retorno || ''} />
+                            value={val.retorno} />
                         </td>
                     </tr>
                     ))}
@@ -449,7 +454,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         <td style={{ textAlign: 'left' }}>{val.fullname}</td>
                         <td>
                             <input
-                                value={val.commission || ''} />
+                                value={val.commission.toFixed(2)} />
                         </td>
                         <td> 
                             <input
@@ -468,17 +473,17 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         <td>total:</td>
                         <td>
                             <input 
-                                value={totalGeneral.total_com.toFixed(2)}
+                                value={ Number(datosComision.total_com || 0 ).toFixed(2)}
                             />
                         </td>
                         <td>
                             <input 
-                                value={totalTax.toFixed(2)}
+                                value={ Number(datosComision.total_tax || 0 ).toFixed(2)}
                             />
                         </td>
                         <td>
                             <input 
-                                value={sumTotal.toFixed(2)}
+                                value={ Number(datosComision.total_retorno || 0 ).toFixed(2)}
                             />
                         </td>
                     </tr>

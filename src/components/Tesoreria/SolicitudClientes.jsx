@@ -107,11 +107,10 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         const nuevos = [...clientesSeleccionados];
 
         const percentagecomsion = nuevos[index].comision;
-        console.log("percentajecomisisio",percentagecomsion)
 
         nuevos[index].importe = parseFloat(importe);
-        console.log(importe,"index", index)
-        console.log("nuevos", nuevos[index])
+        //console.log(importe,"index", index)
+        //console.log("nuevos", nuevos[index])
 
         nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagecomsion/100));
         //nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  nuevos[index].comsion/100));
@@ -141,7 +140,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
     }, [clientesData]);
 
     
-    //console.log("al final clientes", datosComision)
+    console.log("al final clientesData", clientesData)
     
       return (
         <div className="">

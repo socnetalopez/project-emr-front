@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 
 import  SolicitudClientes  from './SolicitudClientes';
 
-import { getMonedas, getFormaPago, getTipoOperacion, getTipoSolicitud, getTipoPago, RequestCreate, getRequest } from "../../api/solicitudes.api";
+import { getMonedas, getFormaPago, getTipoOperacion, getTipoSolicitud, getTipoPago, RequestCreate, getRequest, Requestupdate } from "../../api/solicitudes.api";
 import { getAllPromoters } from "../../api/catalogos.api";
 
 import LayoutSUP from "./LayoutSup";
@@ -200,11 +200,21 @@ const SolicitudGeneral = () => {
             clientes: clientesData.clientesSeleccionados,
             commission_agents : datosComision.comisionistas.filter( item => item !== undefined && item !== null && item !== ''),
             brokers : datosComision.brokers.filter(item => item !== undefined && item !== null && item !== ''),
+            cost_commission: datosComision.cost_commission,
+            cost_tax: datosComision.cost_tax,
+            cost_retorno: datosComision.cost_retorno,
+            house_commission: datosComision.house_commission,
+            house_tax: datosComision.house_tax,
+            house_retorno: datosComision.house_retorno,
+            promoter_commission: datosComision.promoter_commission,
+            promoter_tax: datosComision.promoter_tax,
+            promoter_retorno: datosComision.promoter_retorno,
+            //datosComision: datosComision
         }
     
        
         if (params.id) {
-                //await updateCustomer(params.id, data)
+                await Requestupdate(params.id, data)
                 console.log(params.id,"updated:", data)
                 toast.success('Cliente updated success', {
                     position: "bottom-right",
@@ -215,7 +225,7 @@ const SolicitudGeneral = () => {
                 })
             } else {
                 console.log("created:", data)
-                //await RequestCreate(data);
+                await RequestCreate(data);
                 toast.success('Cliente created success', {
                     position: "bottom-right",
                     style: {
@@ -224,7 +234,7 @@ const SolicitudGeneral = () => {
                     },
                 })
             }
-            //navigate("/dashboard/treasury/movements/solicitudes")
+            navigate("/dashboard/treasury/movements/solicitudes")
         //alert('Datos guardados');
 
     }
@@ -236,7 +246,7 @@ const SolicitudGeneral = () => {
         <div>
 
             <div className="headerLayoutSup">
-                <h2 style={{width:'500px'}}>Solicitudes : Editar</h2>
+                <h2 style={{width:'500px'}}>Solicitudes : {params.id ? 'Editar' : 'Nuevo'}</h2>
                 <button type="button" onClick={handleSubmit}>
                     {params.id ? 'Actualizar Cliente' : 'Crear Cliente'}
                 </button>
