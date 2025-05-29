@@ -14,7 +14,6 @@ import  SolicitudGeneral from "./SolicitudGenerales";
 
 export function SolicitudFormPage() {
   const { id } = useParams();
-  console.log("id",id)
   const hayId = !!id; // convierte a booleano
   return (
     <div className="contenedor">

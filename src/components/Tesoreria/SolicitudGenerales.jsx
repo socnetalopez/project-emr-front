@@ -91,8 +91,8 @@ const SolicitudGeneral = () => {
         loadRequest()
     }, [params.id]);
     //request.promoter = request.promoter.id
-    //console.log("Load initial",request)
-    //console.log("selected promoter",selectedPromotor)
+    console.log("Load initial",request)
+    console.log("selected promoter",selectedPromotor)
    //console.log("General customer", clientesData)
    
     // Obtener los datos de la API
@@ -193,7 +193,8 @@ const SolicitudGeneral = () => {
             currency: request.currency,
             amount: request.amount,
             payment_method: request.payment_method,
-            promoter: request.promoter,
+            //promoter: request.promoter,
+            promoter: selectedPromotor.id,
             type_operation: request.type_operation,
             type_payment: request.type_payment,
             type_request: request.type_request,

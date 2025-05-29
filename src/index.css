@@ -160,3 +160,13 @@ button:disabled {
   width: 100px;        /* Ajusta el tamaño del select */
 }
 
+/* Estilo para el input de búsqueda global */
+.search-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px 12px;
+  margin: 16px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}

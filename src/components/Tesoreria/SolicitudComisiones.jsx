@@ -221,9 +221,9 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         datosComision.house_retorno = totales.house.total_total;
 
         // Se asignan los valores de las comision de promotor
-        datosComision.promoter_commission = totales.promotor.total_com;
-        datosComision.promoter_tax = totales.promotor.total_tax;
-        datosComision.promoter_retorno = totales.promotor.total_total;
+        datosComision.promoter_commission = totales.promotor.total_com.toFixed(2);
+        datosComision.promoter_tax = totales.promotor.total_tax.toFixed(2);
+        datosComision.promoter_retorno = totales.promotor.total_total.toFixed(2);
         
         //console.log("acumulados brokers", acumuladoBrokers)
         //console.log("acumulados comisionistas", acumuladoComisionistas)
@@ -419,7 +419,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         <td> 
                             <input
                             //readonly="readonly"
-                            value={ Number(datosComision.promoter_retorno || 0 ).toFixed(2)} />
+                            value={ datosComision.promoter_retorno || 0} />
                         </td>
                     </tr>
                     

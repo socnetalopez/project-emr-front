@@ -135,12 +135,12 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 		if (clientesData?.length) {
 			const clientesConvertidos = convertirClientes(clientesData);
 			setClientesSeleccionados(clientesConvertidos);
-			console.log("clientes cobertidos",clientesData, clientesConvertidos, clientesSeleccionados)
+			//console.log("clientes cobertidos",clientesData, clientesConvertidos, clientesSeleccionados)
 		}
     }, [clientesData]);
 
     
-    console.log("al final clientesData", clientesData)
+    //console.log("al final clientesData", clientesData)
     
       return (
         <div className="">
