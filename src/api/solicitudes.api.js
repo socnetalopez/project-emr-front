@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const URLApi = axios.create({
-    baseURL: 'http://192.168.20.30:8000/api/treasury'
+    //baseURL: 'http://192.168.20.30:8000/api/treasury'
+    baseURL: 'http://192.168.100.226:8000/api/treasury'
 });
 
 URLApi.interceptors.request.use((config) => {

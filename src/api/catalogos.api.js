@@ -3,7 +3,8 @@ import axios from 'axios'
 //const token = localStorage.getItem('token');
 
 const URLApi = axios.create({
-    baseURL: 'http://192.168.20.30:8000/api/'
+    //baseURL: 'http://192.168.20.30:8000/api/'
+    baseURL: 'http://192.168.100.226:8000/api/'
 });
 
 URLApi.interceptors.request.use((config) => {
