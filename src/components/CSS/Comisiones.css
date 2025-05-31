@@ -32,9 +32,10 @@
   /* CAJA DEL FORMULARIO MODAL */
   .modal {
     background-color: white;
-    padding: 25px 30px;
+    margin-left: 10%;
+    padding: 25px 50px;
     border-radius: 8px;
-    width: 1100px;
+    width: 1000px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     animation: aparecer 0.3s ease-out;
   }
@@ -88,8 +89,48 @@
     gap: 10px;
   }
 
+.boton-eliminar {
+  width: 22px;
+  height: 22px;
+  padding: 2px;
+  font-size: 14px;
+
+  cursor: pointer;
+  line-height: 1;
+  text-align: center;
+}
+  /* Contenedor principal del formulario */
+.form-container {
+  margin: 20px;
+}
+
+/* Contenedor que usa Flexbox para organizar el input y el select horizontalmente */
+.input-select-container {
+  display: flex;
+  align-items: center; /* Alinea verticalmente al centro */
+  gap: 1rem;           /* Espacio entre el input y el select */
+  width: 100%;
+}
   
-  .formulario select {
+.formulario select {
     padding: 4px;
-    width: 100px;        /* Ajusta el tamaño del select */
+    font-size: 10px;
+  /*  width: 100%;         Ajusta el tamaño del select */
   }
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  table-layout: fixed; /* necesario si defines width en columnas */
+  width: 100%;
+  
+}
+
+.column-filter {
+  width: 100%; /* Ajusta este valor según lo que necesites */
+  padding: 4px;
+  font-size: 9.5px;
+}

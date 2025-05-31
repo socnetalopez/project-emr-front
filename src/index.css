@@ -127,17 +127,7 @@ button:disabled {
 }
 
 
-/* Contenedor principal del formulario */
-.form-container {
-  margin: 20px;
-}
 
-/* Contenedor que usa Flexbox para organizar el input y el select horizontalmente */
-.input-select-container {
-  display: flex;
-  align-items: center; /* Alinea verticalmente al centro */
-  gap: 1rem;           /* Espacio entre el input y el select */
-}
 
 /* Estilo para el input */
 .input-field {
@@ -161,3 +151,26 @@ button:disabled {
   border-radius: 4px;
   font-size: 14px;
 }
+
+/* status en las tablas de listados*/
+.status-label {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+  min-width: 80px;
+}
+
+.status-activo {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-inactivo {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+/*
+
+< -- end   */

@@ -304,58 +304,58 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
   return (
     //<div className="formulario-overlay">
     <div className="modal-overlay">
-      <div className="modal">
-      <form className="formulario" onSubmit={handleSubmit}>
-        <h3> Comisión Venta </h3>
-        <div className="input-select-container">
-        <label>Codigo:</label>
-        <input
-          type="text"
-          value={code}
-          style={{ width: '90px' }}
-          className="bg-zinc-200 p-3 rounded-lg block input-field"
-          onChange={(e) => setCode(e.target.value)}
-          required
-        />
+    	<div className="modal">
+		<form className="formulario" onSubmit={handleSubmit}>
+			<h3> Comisión Venta </h3>
+			<div className="input-select-container">
+				<label>Codigo:</label>
+				<input
+					type="text"
+					value={code}
+					style={{ width: '90px' }}
+					className="bg-zinc-200 p-3 rounded-lg block input-field"
+					onChange={(e) => setCode(e.target.value)}
+					required
+				/>
 
-        <label>Nombre:</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ width: '300px' }}
-          className="bg-zinc-200 p-3 rounded-lg block input-field"
-          required
-        />
+				<label>Nombre:</label>
+				<input
+				type="text"
+				value={name}
+				onChange={(e) => setName(e.target.value)}
+				style={{ width: '300px' }}
+				className="bg-zinc-200 p-3 rounded-lg block input-field"
+				required
+				/>
         
-        <label className=" p-3 rounded-lg block">Tipo:</label>
-        <select
-          className="bg-zinc-200 rounded-lg select-field"
-          value={tipo}
-          onChange={(e) => setTipo(e.target.value)}
-        >
-          <option value="">Selecciona el Tipo</option>
-              {tipos.map((tipo) => (
-          <option key={tipo.id} value={tipo.id}>
-              {tipo.name}
-          </option>
-              ))}
-        </select>
+				<label className=" p-3 rounded-lg block">Tipo:</label>
+				<select
+					className="bg-zinc-200 rounded-lg select-field"
+					value={tipo}
+					onChange={(e) => setTipo(e.target.value)}
+				>
+				<option value="">Selecciona el Tipo</option>
+					{tipos.map((tipo) => (
+				<option key={tipo.id} value={tipo.id}>
+					{tipo.name}
+				</option>
+					))}
+				</select>
         
-        <label className=" p-2 block">Base:</label>
-        <select
-          className="bg-zinc-200 rounded-lg select-field"
-          value={base}
-          onChange={(e) => setBase(e.target.value)}     
-        >
-          <option value="">Selecciona el Tipo</option>
-              {bases.map((base) => (
-          <option key={base.id} value={base.id}>
-              {base.name}
-          </option>
-              ))}
-        </select>
-        </div>
+				<label className=" p-2 block">Base:</label>
+				<select
+					className="bg-zinc-200 rounded-lg select-field"
+					value={base}
+					onChange={(e) => setBase(e.target.value)}     
+				>
+				<option value="">Selecciona el Tipo</option>
+					{bases.map((base) => (
+				<option key={base.id} value={base.id}>
+					{base.name}
+				</option>
+					))}
+				</select>
+        	</div>
 
         <div className="input-select-container">
         <label>%Venta:</label>
@@ -434,6 +434,11 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
 
           <div style={{ marginBottom: '10px' }}>
             <hr />
+
+			<div style={{ display: 'flex', gap: '40px' }}>
+				<div style={{ flex: 1 }}>
+
+				
             <label>Seleccionar Broker:</label>
             <select onChange={e => {
               const selected = brokersApi.find(b => b.id === Number(e.target.value));
@@ -468,12 +473,14 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
                     onChange={e => cambiarPorcentaje('broker', b.id, e.target.value)}
                     style={{ width: '60px', marginLeft: '10px' }}
                   />%
-                  <button onClick={() => eliminarItem('broker', b.id)}>❌</button>
+                  <button onClick={() => eliminarItem('broker', b.id) } className="boton-eliminar">❌</button>
                 </li>
               ))}
             </ul>
-            <hr />
+			</div>
+            
             {/* Comisionistas */}
+			<div style={{ flex: 1 }}>
             <div>
               <label>Seleccionar Comisionista:</label>
               <select onChange={e => {
@@ -506,14 +513,14 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
                       onChange={e => cambiarPorcentaje('comisionista', c.id, e.target.value)}
                       style={{ width: '60px',  }}
                     />%
-                    <button onClick={() => eliminarItem('comisionista', c.id)}>❌</button>
+                    <button onClick={() => eliminarItem('comisionista', c.id)} className="boton-eliminar">❌</button>
                   </li>
                 ))}
               </ul>
             </div>
-
-            <hr />
-            <strong>% Promotor:</strong> {promotorPorcentaje.toFixed(2)}%
+			</div>
+		</div>
+            
 
     
           </div>

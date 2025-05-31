@@ -58,6 +58,8 @@ export function BrokerFormPage() {
                 setValue('name', name)
                 setValue('paternal_surname', paternal_surname)
                 setValue('maternal_surname', maternal_surname)
+                setValue('phone', phone)
+                setValue('email', email)
                 setValue('notes', notes)
             }   
         }
@@ -66,93 +68,107 @@ export function BrokerFormPage() {
 
     return(
         
-        
-            <div class="contenedorc" >
-             <div className="form-container">
-            <form 
-                onSubmit={onSubmit} 
-            >
-                   
-        
-                    <h1>{params.id ? 'Modificar Broker' : 'Nuevo Broker'}</h1>
-                <div className="">
-                    <button
-                        className="bg-red-500  rounded-lg w-48 mt-3"
-                    >
-                        Save
-                    </button>
-                </div>
-                
-                <div className="formulario">
-                <label className="block text-gray-700 font-medium mb-2">Codigo</label>
-                <input 
-                    type="text" 
-                    placeholder="code" 
-                    {...register("code", {required: true})}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 "
-                    autoFocus
-                />
-                {errors.code && <span>this field is required</span>}
-                </div>
+       
+            <div className="form-container">
 
-                <div className="form-row row-3">
-                     <div className="form-group">
-                        <label>Nombre</label>
-                        <input 
-                            type="text" 
-                            placeholder="Nombre"
-                            {...register("name", {required: true})} 
-                        />
+                <form onSubmit={onSubmit} >
 
-                        {errors.code && <span>this field is required</span>}
-
+                <div className="formulario">     
+                    <div className="title-button-wrapper"> 
+                        <h1>
+                            {params.id ? 'Editar Broker' : 'Nuevo Broker'} 
+                        </h1>
+                        
+                        <button type="submit"> 
+                            {params.id ? 'Actualizar' : 'Guardar'} 
+                        </button> 
                     </div>
-                    <div className="form-group">
-                        <label>Apellido Paterno</label>
+                
+                    <div className="form-row row-3 ">
+                        <div className="form-group-inline">
+                            <label>Codigo:</label>
+                            <input 
+                                type="text" 
+                                placeholder="code" 
+                                {...register("code", {required: true})}
+                                disabled
+                                //className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 "
+                                autoFocus
+                                
+                            />
+                            {errors.code && <span>this field is required</span>}
+                        </div>
+                    </div>
+
+                    <div className="form-row row-3">
+                        <div className="form-group">
+                            <label>Nombre</label>
+                            <input 
+                                type="text" 
+                                placeholder="Nombre"
+                                {...register("name", {required: true})} 
+                                style={{width : '200px'}}
+                            />
+
+                            {errors.code && <span>this field is required</span>}
+
+                        </div>
+                        <div className="form-group">
+                            <label>Apellido Paterno</label>
                             <input 
                                 type="text" 
                                 placeholder="Apellido Paterno" 
                                 {...register("paternal_surname", {required: false})}
+                                style={{width : '200px'}}
                             />
                             {errors.paternal && <span>this field is required</span>}
+                        </div>
+                        <div className="form-group">
+                            <label>Apellido Materno</label>
+                            <input 
+                                type="text" 
+                                placeholder="Apellido Materno" 
+                                {...register("maternal_surname", {required: false})}
+                                style={{width : '200px'}}
+                            />
+                            {errors.maternal && <span>this field is required</span>}
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label>Apellido Materno</label>
-                        <input 
-                            type="text" 
-                            placeholder="Apellido Materno" 
-                            {...register("maternal_surname", {required: false})}
-                            
-                        />
-                        {errors.maternal && <span>this field is required</span>}
+
+                    <div className="form-row row-3">
+                        <div className="form-group">
+                            <label>Email</label>
+                            <input 
+                                type="text" 
+                                placeholder="Email" 
+                                {...register("email", {required: false})}
+                                style={{width : '200px'}}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Telefono</label>
+                            <input 
+                                type="text" 
+                                placeholder="Telefono" 
+                                {...register("phone", {required: false})}
+                                style={{width : '200px'}}
+                            />
+                        </div>
+                    </div>
+                    
+                    
+                        <div className="form-group textarea-full">
+                            <label>Observaciones</label>
+                            <textarea 
+                                rows="3" 
+                                placeholder="Observaciones"
+                                {...register("notes", {required: false})}
+                            ></textarea>
+                        
                         </div>
                 </div>
-                <label>Email</label>
-                <input 
-                    type="text" 
-                    placeholder="Email" 
-                    {...register("email", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-
-                <label>Telefono</label>
-                <input 
-                    type="text" 
-                    placeholder="Telefono" 
-                    {...register("phone", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-
-                <textarea 
-                    rows="3" 
-                    placeholder="Observaciones"
-                    {...register("notes", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                ></textarea>
-                
             
-            </form>
-        </div>
+                </form>
         </div>
         
 

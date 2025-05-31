@@ -48,12 +48,14 @@ export function ComisionistaFormPage() {
             if (params.id){
 
                 const {
-                    data: { code, name, paternal_surname, maternal_surname, notes}
+                    data: { code, name, paternal_surname, maternal_surname, phone, email, notes}
                 } = await getComisionista(params.id)
                 setValue('code', code)
                 setValue('name', name)
                 setValue('paternal_surname', paternal_surname)
                 setValue('maternal_surname', maternal_surname)
+                setValue('phone', phone)
+                setValue('email', email)
                 setValue('notes', notes)
             }   
         }
@@ -62,57 +64,101 @@ export function ComisionistaFormPage() {
 
     return(
         
-        <div className="max-w-xl max-auto">
-            <h1> Comisionista</h1>
+        <div className="form-container">
             <form onSubmit={onSubmit}>
 
-                <input 
-                    type="text" 
-                    placeholder="code" 
-                    {...register("code", {required: true})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-                {errors.code && <span>this field is required</span>}
+            <div className="formulario">
+                <div className="title-button-wrapper"> 
+                    <h1>
+                        {params.id ? 'Editar ' : 'Nuevo'} Comisionista 
+                    </h1>
 
-                <input 
-                    type="text" 
-                    placeholder="Nombre"
-                    {...register("name", {required: true})} 
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
+                    <button> Save </button>
+                </div>
 
-                {errors.code && <span>this field is required</span>}
+                <div className="form-row row-3 ">
+                    <div className="form-group-inline">
+                        <label>Codigo</label>
+                        <input 
+                            type="text" 
+                            placeholder="code" 
+                            {...register("code", {required: true})}
+                            
+                        />
+                        {errors.code && <span>this field is required</span>}
 
-                <input 
-                    type="text" 
-                    placeholder="Apellido Paterno" 
-                    {...register("paternal_surname", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-                {errors.paternal && <span>this field is required</span>}
+                    </div>
+                </div>
 
-                <input 
-                    type="text" 
-                    placeholder="Apellido Materno" 
-                    {...register("maternal_surname", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-                {errors.maternal && <span>this field is required</span>}
+                <div className="form-row row-3">
+                    <div className="form-group">
+                        <label>Nombre</label>
+                        <input 
+                            type="text" 
+                            placeholder="Nombre"
+                            {...register("name", {required: true})}
+                            style={{width : '200px'}}
+                            
+                        />
 
-                <textarea 
-                    rows="3"
-                    placeholder="Observaciones"
-                    {...register("notes", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                ></textarea>
-                {errors.notes && <span>this field is required</span>}
-                
-                
-                <button
-                    className="bg-indigo-200 p-3 rounded-lg block w-full mt-3"
-                >
-                    Save
-                </button>
+                        {errors.name && <span style={{ color: 'red', fontSize: '12px' }}>Este campo es requerido</span>}
+                    </div>
+                    
+                     <div className="form-group">
+                        <label>Apellido Paterno</label>
+                        <input 
+                            type="text" 
+                            placeholder="Apellido Paterno" 
+                            {...register("paternal_surname", {required: true})}
+                            style={{width : '200px'}}
+                        />
+                        {errors.paternal_surname && <span style={{ color: 'red', fontSize: '12px' }}>Este campo es requerido</span>}
+                    </div>
+                    
+                     <div className="form-group">
+                        <label>Apellido Materno</label>
+                        <input 
+                            type="text" 
+                            placeholder="Apellido Materno" 
+                            {...register("maternal_surname", {required: true})}
+                        />
+                        {errors.maternal_surname && <span style={{ color: 'red', fontSize: '12px' }}>Este campo es requerido</span>}
+                    </div>
+                </div>
+
+                <div className="form-row row-3">
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input 
+                            type="text" 
+                            placeholder="Email" 
+                            {...register("email", {required: false})}
+                            style={{width : '200px'}}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Telefono</label>
+                        <input 
+                            type="text" 
+                            placeholder="Telefono" 
+                            {...register("phone", {required: false})}
+                            style={{width : '200px'}}
+                        />
+                    </div>
+                </div>
+
+                <div className="form-group textarea-full">
+                    <label>Observaciones</label>
+                    <textarea 
+                        rows="3"
+                        placeholder="Observaciones"
+                        {...register("notes", {required: false})}
+                        
+                    ></textarea>
+                    {errors.notes && <span>this field is required</span>}
+                </div>
+
+            </div> 
             </form>
         </div>
     )

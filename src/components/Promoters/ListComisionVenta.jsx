@@ -9,7 +9,7 @@ import { useTable, useSortBy, usePagination, useFilters, useGlobalFilter } from 
 import { getAllPromoters, getComisionVenta, updateComisionVenta } from "../../api/catalogos.api";
 import FormularioComision from "./FormComisionVenta";
 
-//import '../CSS/DataTable.css'; // Estilos que definiremos después
+import '../CSS/Comisiones.css'; // Estilos que definiremos después
 
 const ComisionVentaLists = ({ promotorId }) => {
     const [data, setData] = useState([]);
@@ -46,15 +46,15 @@ const ComisionVentaLists = ({ promotorId }) => {
     
         // Definir columnas
         const columns = useMemo(() => [
-            { Header: 'ID', accessor: 'id', Filter: DefaultColumnFilter, width:50 },
-            { Header: 'Codigo', accessor: 'code', Filter: DefaultColumnFilter },
+            { Header: 'ID', accessor: 'id', Filter: DefaultColumnFilter, width: '50px' },
+            { Header: 'Codigo', accessor: 'code', Filter: DefaultColumnFilter, width: '60px' },
             { Header: 'Nombre', accessor: 'name', Filter: DefaultColumnFilter },
-            { Header: 'Tipo', accessor: 'tipo.name', Filter: DefaultColumnFilter },
-            { Header: 'Base', accessor: 'base.name', Filter: DefaultColumnFilter },
-            { Header: 'Venta', accessor: 'percentage_sales', Filter: DefaultColumnFilter },
-            { Header: 'Costo', accessor: 'percentage_cost', Filter: DefaultColumnFilter },
-            { Header: 'Casa', accessor: 'percentage_house', Filter: DefaultColumnFilter },
-            { Header: 'Comision', accessor: 'percentage_commission', Filter: DefaultColumnFilter },
+            { Header: 'Tipo', accessor: 'tipo.name', Filter: DefaultColumnFilter, width: '60px' },
+            { Header: 'Base', accessor: 'base.name', Filter: DefaultColumnFilter, width: '60px' },
+            { Header: 'Venta', accessor: 'percentage_sales', Filter: DefaultColumnFilter, width: '60px' },
+            { Header: 'Costo', accessor: 'percentage_cost', Filter: DefaultColumnFilter, width: '60px' },
+            { Header: 'Casa', accessor: 'percentage_house', Filter: DefaultColumnFilter, width: '60px' },
+            { Header: 'Comision', accessor: 'percentage_commission', Filter: DefaultColumnFilter, width: '60px' },
     
         ], []);
     
@@ -79,7 +79,7 @@ const ComisionVentaLists = ({ promotorId }) => {
             {
                 columns,
                 data,
-                initialState: { pageIndex: 0, pageSize: 5 },
+                initialState: { pageIndex: 0, pageSize: 10 },
             },
             useFilters,
             useGlobalFilter,
@@ -159,15 +159,16 @@ const ComisionVentaLists = ({ promotorId }) => {
 
     return(
         <div className="container">
-            <h2> Comisiones </h2>
             { /*<GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} /> */}
-
+          
           <table {...getTableProps()} className="data-table">
             <thead>
               {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())}
+                     style={{width: column.width, maxWidth: column.width, minWidth: column.width }}
+                    >
                       {column.render('Header')}
                       <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
                       <div>{column.canFilter ? column.render('Filter') : null}</div>
@@ -176,6 +177,7 @@ const ComisionVentaLists = ({ promotorId }) => {
                 </tr>
               ))}
             </thead>
+
             <tbody {...getTableBodyProps()}>
               {page.map(row => {
                 prepareRow(row);
@@ -186,13 +188,17 @@ const ComisionVentaLists = ({ promotorId }) => {
                     className="table-row"
                   >
                     {row.cells.map(cell => (
-                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      <td {...cell.getCellProps()} 
+                          style={{ width: cell.column.width, maxWidth: cell.column.width, minWidth: cell.column.width }} >
+                        {cell.render('Cell')}
+                      </td>
                     ))}
                   </tr>
                 );
               })}
             </tbody>
           </table>
+   
 
           {/* Controles de paginación */}
       <div className="pagination">

@@ -30,6 +30,9 @@ export function PromotorFormPage() {
                 },
             })
         } else {
+            if (!data.code || data.code.trim() === "") {
+                data.code = "c000";
+                }
             await createPromoter(data);
             toast.success('Promotor created success', {
                 position: "bottom-right",
@@ -66,68 +69,102 @@ export function PromotorFormPage() {
 
     return(
         
-        <div className="max-w-xl max-auto">
+        <div className="form-container">
             <form onSubmit={onSubmit}>
 
-                <input 
-                    type="text" 
-                    placeholder="Code"
-                    {...register("code", {required: true})} 
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-
-                {errors.code && <span>this field is required</span>}
-
-                <input 
-                    type="text" 
-                    placeholder="Nombre"
-                    {...register("name", {required: true})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-
-                {errors.name && <span>this field is required</span>}
-
-
-                <input 
-                    type="text" 
-                    placeholder="Apellido Paterno"
-                    {...register("paternal_surname", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-
-                <input 
-                    type="text" 
-                    placeholder="Apellido Materno"
-                    {...register("maternal_surname", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-
-                <input 
-                    type="text" 
-                    placeholder="Email"
-                    {...register("email", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-
-                <input 
-                    type="text" 
-                    placeholder="Telefono"
-                    {...register("phone", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                />
-
-                <textarea 
-                    rows="3" 
-                    placeholder="Observaciones"
-                    {...register("notes", {required: false})}
-                    className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                ></textarea>
+                <div className="formulario">     
+                    <div className="title-button-wrapper"> 
+                        <h1>
+                            {params.id ? 'Editar ' : 'Nuevo '} Promotor 
+                        </h1>
+                        
+                        <button type="submit"> 
+                            {params.id ? 'Actualizar' : 'Guardar'} 
+                        </button> 
+                    </div>
                 
-                <button
-                    className="bg-indigo-200 p-3 rounded-lg block w-full mt-3"
-                >
-                    Save
-                </button>
+                {params.id && (
+                <div className="form-row row-3 ">
+                    <div className="form-group-inline">
+                        <input 
+                            type="text" 
+                            placeholder="Code"
+                            {...register("code", {required: true})} 
+                            disabled
+                        />
+
+                    </div>
+                </div>
+                )}
+
+                <div className="form-row row-3">
+                    <div className="form-group">
+                        <label>Nombre(s)</label>
+                        <input 
+                            type="text" 
+                            placeholder="Nombre"
+                            {...register("name", {required: true})}
+                            style={{width : '200px'}}
+                        />
+                        {errors.name && <span style={{ color: 'red', fontSize: '12px' }}>Este campo es requerido</span>}
+                    </div>
+                        
+                    <div className="form-group">
+                        <label>Apellido Paterno</label>
+                        <input 
+                            type="text" 
+                            placeholder="Apellido Paterno"
+                            {...register("paternal_surname", {required: true})}
+                            style={{width : '200px'}}
+                        />
+                        {errors.paternal_surname && <span style={{ color: 'red', fontSize: '12px' }}>Este campo es requerido</span>}
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Apellido Materno</label>
+                        <input 
+                            type="text" 
+                            placeholder="Apellido Materno"
+                            {...register("maternal_surname", {required: true})}
+                            style={{width : '200px'}}
+                        />
+                        {errors.maternal_surname && <span style={{ color: 'red', fontSize: '12px' }}>Este campo es requerido</span>}
+                    </div>
+                </div>
+                
+                <div className="form-row row-3">
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input 
+                            type="text" 
+                            placeholder="Email"
+                            {...register("email", {required: false})}
+                            style={{width : '200px'}}
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Telefono</label>
+                        <input 
+                            type="text" 
+                            placeholder="Telefono"
+                            {...register("phone", {required: false})}
+                            style={{width : '200px'}}
+                        />
+                    </div>
+                </div>
+
+                <div className="form-group textarea-full">
+                    <label>Observaciones</label>
+                    <textarea 
+                        rows="3" 
+                        placeholder="Observaciones"
+                        {...register("notes", {required: false})}
+                    ></textarea>
+                </div>
+                
+            </div>
+
             </form>
         </div>
     )

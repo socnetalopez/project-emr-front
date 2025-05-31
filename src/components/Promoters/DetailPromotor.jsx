@@ -66,7 +66,6 @@ export function PromotorDetail() {
         console.log("Nueva:", nueva)
 
         try {
-            //await axios.post('http://localhost:8000/api/structure/comisiones/', nueva.descripcion);
             await createComisionVenta(nueva.descripcion)
             
             alert('Datos guardados correctamente');
@@ -84,10 +83,11 @@ export function PromotorDetail() {
             <label>Codigo: {Promoter.code} </label> <p/>
             <label>Promotor: </label>
             < label> {Promoter.name } {Promoter.paternal_surname } {Promoter.maternal_surname}</label> 
-            <div >
-            <button onClick={() => setMostrarFormulario(true)}> Nueva Comision
-               {/* {mostrarFormulario ? 'Cancelar' : 'Nueva Comisión'} */}
-            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <h1>Comision de venta </h1>
+                <button onClick={() => setMostrarFormulario(true)}> Nueva Comision
+                </button>
             </div>
 
             {mostrarFormulario && (

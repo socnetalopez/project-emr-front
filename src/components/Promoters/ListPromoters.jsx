@@ -38,6 +38,27 @@ const PromoterLists = () => {
         // Definir columnas
         const columns = useMemo(() => [
             { Header: 'ID', accessor: 'id', Filter: DefaultColumnFilter, width:10 },
+            { Header: 'Status', 
+            	accessor: 'status', 
+				      Filter: DefaultColumnFilter,
+				      Cell: ({ value }) => {
+                if (value === 1) {
+                  return (
+                    <span className="status-label status-activo">
+                      Activo
+                    </span>
+                  );
+                } else if (value === 2) {
+                  return (
+                    <span className="status-label status-inactivo">
+                      Inactivo
+                    </span>
+                  );
+                } else {
+                  return value;
+                }
+              }
+            },
             { Header: 'Codigo', accessor: 'code', Filter: DefaultColumnFilter },
             { Header: 'Nombre', accessor: 'name', Filter: DefaultColumnFilter },
             { Header: 'Apellido Paterno', accessor: 'paternal_surname', Filter: DefaultColumnFilter },
