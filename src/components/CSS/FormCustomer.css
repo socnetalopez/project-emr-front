@@ -2,7 +2,7 @@
     position: fixed;
     top: 0;
     left: 220px;
-    width: 90%;
+    width: 95%;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.11); /* fondo oscurecido */
     display: flex;

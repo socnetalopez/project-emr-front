@@ -11,6 +11,8 @@ import { getRegimenTipo, getCountry, getStates, getMunicpio, getTipoCalculo,
 
 import {getAllPromoters, getComisionVenta } from "../../api/catalogos.api";
 
+import { getSaleCommissionDetail } from "../../api/commissions.api";
+
 //import axios from 'axios';
 import '../CSS/FormCustomer.css';
 
@@ -66,7 +68,7 @@ export function CustomerFormPage() {
     const [promotorSeleccionado, setPromotorSeleccionado] = useState('');
     const [comisionSeleccionado, setComisionSeleccionado] = useState('');
 
-    const [detalle, setDetalle] = useState(null);
+    const [detalle, setDetalle] = useState();
 
 
     // Obtener los datos de la API
@@ -169,6 +171,20 @@ export function CustomerFormPage() {
     }, [promotorSeleccionado]);
     // <---
 
+
+    // --> Cargar detalle de comisión seleccionada
+    useEffect(() => {
+        const fetch_SaleCom = async () => {
+            console.log("cargar detalle", comision_venta)
+            const { data } = await getSaleCommissionDetail(comision_venta)
+            setDetalle(data)
+        
+        }
+        if (comision_venta) {
+            fetch_SaleCom()
+        }
+    }, [comision_venta]);
+    // <---
 
     // Combinar nombre completo
     const getNombreCompleto = (persona) =>
@@ -548,9 +564,11 @@ export function CustomerFormPage() {
                 </div>
 
                 <hr />
-                <h3> <strong> Comisiones </strong> </h3>
-                <div className="input-select-container">
+                <h3> <strong> Promotor y Comisiones </strong> </h3>
+                <div className="input-select-container-customer">
                     <div style={{ display: 'flex', flexDirection: 'column',  }}>
+
+                        <div className="campo-formulariocustomer">
                         <label style={{ width: '100px' }} >Promotor </label>
                         <select
                             value={promotorSeleccionado}
@@ -566,10 +584,12 @@ export function CustomerFormPage() {
                                 ))}
                         </select>
                     </div>
+                    </div>
 
                     {comisiones.length > 0 && (
                     <>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <div className="campo-formulariocustomer">
                         <label style={{ marginTop: '20px' }}>Comisiones</label>
                         <select
                             value={comision_venta} 
@@ -582,6 +602,7 @@ export function CustomerFormPage() {
                             <option key={c.id} value={c.id}>{c.name}</option>
                             ))}
                         </select>
+                        </div>
                     </div>
                     </>
                     )}
