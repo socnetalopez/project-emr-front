@@ -1,14 +1,8 @@
 .contenedor-comisiones {
     position: relative;
-    padding: 20px; 
+    padding: 10px; 
   }
   
-  button {
-    margin: 10px 0;
-    padding: 8px 12px;
-    font-size: 14px;
-    cursor: pointer;
-  }
   
   ul {
     margin-top: 20px;
@@ -35,7 +29,7 @@
     margin-left: 10%;
     padding: 25px 50px;
     border-radius: 8px;
-    width: 1000px;
+    width: 1200px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     animation: aparecer 0.3s ease-out;
   }
@@ -59,6 +53,8 @@
     box-sizing: border-box;
   }
   
+ 
+
   .formulario-overlay {
     position: absolute;
     top: 20%;
@@ -79,25 +75,58 @@
   
   .formulario input {
     padding: 4px;
-    width: 80px;
-    font-size: 12px;
+    width: 90px;
+    font-size: 13px;
     border-radius: 5px;
+    background-color: #eaeded;
   }
-  
+
+.encabezado-con-botones {
+  display: flex;
+  margin-top: -30px;
+  margin-bottom: 50px;
+  align-items: center; /* Alinea verticalmente h3 y botones */
+  justify-content: space-between; /* Opcional: espacio entre h3 y botones */
+}
+
   .botones {
     display: flex;
     gap: 10px;
   }
 
+  .btn-guardar {
+  background-color: #4CAF50; /* Verde */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-cancelar {
+  background-color: #abb2b9; /* Rojo */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-guardar:hover,
+.btn-cancelar:hover {
+  opacity: 2.9;
+}
+
 .boton-eliminar {
   width: 22px;
   height: 22px;
   padding: 2px;
-  font-size: 14px;
-
+  font-size: 16px;
   cursor: pointer;
   line-height: 1;
   text-align: center;
+  color:red;
+  background: none;
 }
   /* Contenedor principal del formulario */
 .form-container {
@@ -108,13 +137,15 @@
 .input-select-container {
   display: flex;
   align-items: center; /* Alinea verticalmente al centro */
-  gap: 1rem;           /* Espacio entre el input y el select */
+  gap: 3rem;           /* Espacio entre el input y el select */
   width: 100%;
 }
   
 .formulario select {
     padding: 4px;
-    font-size: 10px;
+    height: 35px;
+    font-size: 12px;
+    background-color: #eaeded;
   /*  width: 100%;         Ajusta el tamaño del select */
   }
 
@@ -133,4 +164,29 @@
   width: 100%; /* Ajusta este valor según lo que necesites */
   padding: 4px;
   font-size: 9.5px;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+}
+
+
+.form-group label {
+	margin: 0 !important;
+	font-size: 12px !important;
+	line-height: 1 !important;
+  color: #34495e !important;
+}
+
+.form-group input {
+	margin-top: 0 !important;
+	margin-bottom: 4px; /* O 0 si no quieres nada */
+	padding: 4px;
+}
+
+.form-group select {
+  margin-top: 0;
+  margin-left: 0;
+  width: 150px !important;
 }

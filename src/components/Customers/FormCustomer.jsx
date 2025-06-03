@@ -11,8 +11,8 @@ import { getRegimenTipo, getCountry, getStates, getMunicpio, getTipoCalculo,
 
 import {getAllPromoters, getComisionVenta } from "../../api/catalogos.api";
 
-import axios from 'axios';
-import '../CSS/FormularioCentrado.css';
+//import axios from 'axios';
+import '../CSS/FormCustomer.css';
 
 
 export function CustomerFormPage() {
@@ -230,12 +230,27 @@ export function CustomerFormPage() {
             navigate("/dashboard/customers")
         })
 
+        const handleBack = () => {
+        navigate(-1); // Esto regresa una página en el historial
+    };
+
     return(
         <div className="contenedorc">
             <form onSubmit={onSubmit} class="formulariocustomer">
-            {/*<form  onSubmit={handleonSubmit}> */}
+
+                <div className="headerLayoutSup-Customers">
+                    <h2>Clientes : {params.id ? 'Editar' : 'Nuevo'}</h2>
+                    <button>
+                        {params.id ? 'Actualizar' : 'Guardar'}
+                    </button>
+                    <button onClick={handleBack} className="btn-cancelar">
+                        Regresar
+                    </button>
+                </div>
+
                 <h2>Datos Generales</h2>
-                <div className="input-select-container">
+
+                <div className="input-select-container-customer">
                     <div className="campo-formulariocustomer">
                         <label htmlFor="archivo">Codigo</label>
                         <input 
@@ -243,243 +258,265 @@ export function CustomerFormPage() {
                             value={code}
                             onChange={(e) => setCode(e.target.value)}
                             placeholder="Codigo"
-                            className="bg-zinc-00"
                         />
                     </div>
 
-                <div className="campo-formulariocustomer">
-                <label>Regimen Tipo</label>
-                    <select
-                        id="regimen_tipo"
-                        name="regimen_tipo"
-                        value={regimen_tipo}
-                        onChange={(e) => setregimen_tipo(e.target.value)}
-                        className="select-field"
-                        required
-                    >
-                        <option value="">Selecciona el Tipo</option>
-                            {regimenTipoAll.map((rt) => (
-                        <option key={rt.id} value={rt.id}>
-                            {rt.name}
-                        </option>
-                            ))}
-                    </select>
+                    <div className="campo-formulariocustomer">
+                        <label>Regimen Tipo</label>
+                        <select
+                            //id="regimen_tipo"
+                            //name="regimen_tipo"
+                            value={regimen_tipo}
+                            onChange={(e) => setregimen_tipo(e.target.value)}
+                            required
+                        >
+                            <option value="">Selecciona el Tipo</option>
+                                {regimenTipoAll.map((rt) => (
+                            <option key={rt.id} value={rt.id}>
+                                {rt.name}
+                            </option>
+                                ))}
+                        </select>
                     </div>
                     
                     <div className="campo-formulariocustomer">
-                    <label>Nombre Comercial</label>
-                    <input 
-                        type="text" 
-                        value={trade_name}
-                        placeholder="Nombre Comercial"
-                        onChange={(e) => settradename(e.target.value)}
-                        
-                    />
+                        <label>Nombre Comercial</label>
+                        <input 
+                            type="text" 
+                            value={trade_name}
+                            placeholder="Nombre Comercial"
+                            onChange={(e) => settradename(e.target.value)}
+                            
+                        />
                     </div>
 
-                    <input 
-                        type="text"
-                        value={legal_name}
-                        onChange={(e) => setlegalname(e.target.value)}
-                        placeholder="Nombre o Razon Social"
-                        className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                    />
+                    <div className="campo-formulariocustomer">
+                        <label>Razon Social</label>
+                        <input 
+                            type="text"
+                            value={legal_name}
+                            onChange={(e) => setlegalname(e.target.value)}
+                            placeholder="Nombre o Razon Social"
+                        />
+                    </div>
 
-                    <input 
-                        type="text" 
-                        value={rfc}
-                        placeholder="RFC"
-                        onChange={(e) => setrfc(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                    />
-
+                    <div className="campo-formulariocustomer">
+                        <label>RFC</label>
+                        <input 
+                            type="text" 
+                            value={rfc}
+                            placeholder="RFC"
+                            onChange={(e) => setrfc(e.target.value)}
+                        />
+                    </div>
                 </div>
 
-                <div className="input-select-container">
-                    <input 
-                        type="text"
-                        value={address} 
-                        onChange={(e) => setaddress(e.target.value)}
-                        placeholder="Calle"
-                        className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                    />
 
-                    <input 
-                        type="text"
-                        value={ext_number}
-                        onChange={(e) => setext_number(e.target.value)}
-                        placeholder="Numero Exterior"
-                        className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                    />
+                <div className="input-select-container-customer">
+                    <div className="campo-formulariocustomer">
+                        <label>Calle</label>
+                        <input 
+                            type="text"
+                            value={address} 
+                            onChange={(e) => setaddress(e.target.value)}
+                            placeholder="Calle"
+                        />
+                    </div>
 
-                    <input 
-                        type="text"
-                        value={int_number}
-                        placeholder="Numero Interior"
-                        onChange={(e) => setint_number(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                    />
+                    <div className="campo-formulariocustomer">
+                        <label>Num. Exterior</label>
+                        <input 
+                            type="text"
+                            value={ext_number}
+                            onChange={(e) => setext_number(e.target.value)}
+                            placeholder="Numero Exterior"
+                        />
+                    </div>
 
-                    <input 
-                        type="text" 
-                        value={district}
-                        placeholder="Colonia"
-                        onChange={(e) => setdistrict(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                    />
+                    <div className="campo-formulariocustomer">
+                        <label>Num. Interior</label>
+                        <input 
+                            type="text"
+                            value={int_number}
+                            placeholder="Numero Interior"
+                            onChange={(e) => setint_number(e.target.value)}
+                        />
+                    </div>
 
-                    <input 
-                        type="text" 
-                        value={localidad}
-                        placeholder="Localidad"
-                        onChange={(e) => setlocalidad(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
-                    />
+                    <div className="campo-formulariocustomer">
+                        <label>Colonia</label>
+                        <input 
+                            type="text" 
+                            value={district}
+                            placeholder="Colonia"
+                            onChange={(e) => setdistrict(e.target.value)}
+                        />
+                    </div>
 
+                    <div className="campo-formulariocustomer">
+                        <label>Localidad</label>
+                        <input 
+                            type="text" 
+                            value={localidad}
+                            placeholder="Localidad"
+                            onChange={(e) => setlocalidad(e.target.value)}
+                        />
+                    </div>
                 </div>
 
-                <div className="input-select-container">
-                    <select
-                        //id="country"
-                        //name="country"
-                        value={country}
-                        onChange={(e) => setCountry(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg select-field"
-                        required
-                    >
-                        <option value="">Selecciona el Pais</option>
-                            {Country_All.map((c) => (
-                        <option key={c.id} value={c.id}>
-                            {c.name}
-                        </option>
-                            ))}
-                    </select>
+                <div className="input-select-container-customer">
+                    <div className="campo-formulariocustomer">
+                        <label>Pais</label>
+                        <select
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
+                            required
+                        >
+                            <option value="">Selecciona el Pais</option>
+                                {Country_All.map((c) => (
+                            <option key={c.id} value={c.id}>
+                                {c.name}
+                            </option>
+                                ))}
+                        </select>
+                    </div>
 
-                    <select
-                        //id="state"
-                        //name="state"
-                        value={state}
-                        onChange={(e) => setState(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg select-field"
-                        required
-                    >
-                        <option value="">Selecciona el Estado</option>
-                            {states_All.map((s) => (
-                        <option key={s.id} value={s.id}>
-                            {s.name}
-                        </option>
-                            ))}
-                    </select>
+                    <div className="campo-formulariocustomer">
+                        <label>Estado</label>
+                        <select
+                            //id="state"
+                            //name="state"
+                            value={state}
+                            onChange={(e) => setState(e.target.value)}
+                            required
+                        >
+                            <option value="">Selecciona el Estado</option>
+                                {states_All.map((s) => (
+                            <option key={s.id} value={s.id}>
+                                {s.name}
+                            </option>
+                                ))}
+                        </select>
+                    </div>
 
-                    <select
-                        //id="municipio"
-                        //name="municipio"
-                        value={municipio}
-                        onChange={(e) => setMunicipio(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg select-field"
-                        required
-                    >
-                        <option value="">Municipio</option>
-                            {municipios_All.map((m) => (
-                        <option key={m.id} value={m.id}>
-                            {m.name}
-                        </option>
-                            ))}
-                    </select>
+                    <div className="campo-formulariocustomer">
+                        <label>Municipio</label>
+                        <select
+                            //id="municipio"
+                            //name="municipio"
+                            value={municipio}
+                            onChange={(e) => setMunicipio(e.target.value)}
+                            required
+                        >
+                            <option value="">Municipio</option>
+                                {municipios_All.map((m) => (
+                            <option key={m.id} value={m.id}>
+                                {m.name}
+                            </option>
+                                ))}
+                        </select>
+                    </div>
 
+                    <div className="campo-formulariocustomer">
+                        <label>Codigo Postal</label>
                     <input 
                         type="text" 
                         value={zip}
                         onChange={(e) => setzip(e.target.value)}
                         placeholder="Codigo Postal"
-                        className="bg-zinc-200 p-3 rounded-lg block w-full mb-3"
                     />
+                    </div>
                 </div>
 
 
+
                 <hr />
-                <h1>Datos para Solicitud</h1>
-                <div className="input-select-container">
-                    <p>Tipo de calculo <br/> </p>
-                    <select
-                        //id="tipo_calculo"
-                        //name="tipo_calculo"
-                        value={tipo_calculo}
-                        onChange={(e) => setTipoCalculo(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg select-field"
-                        required
-                    >
-                        <option value="">Selecciona</option>
-                            {tipoCalculo_All.map((tc) => (
-                        <option key={tc.id} value={tc.id}>
-                            {tc.name}
-                        </option>
-                            ))}
-                    </select>
+                <h2>Datos para Solicitud</h2>
+                <div className="input-select-container-customer">
+                    <div className="campo-formulariocustomer">
+                        <label>Tipo de calculo</label>
+                        <select
+                            //id="tipo_calculo"
+                            //name="tipo_calculo"
+                            value={tipo_calculo}
+                            onChange={(e) => setTipoCalculo(e.target.value)}
+                            required
+                        >
+                            <option value="">Selecciona</option>
+                                {tipoCalculo_All.map((tc) => (
+                            <option key={tc.id} value={tc.id}>
+                                {tc.name}
+                            </option>
+                                ))}
+                        </select>
+                    </div>
 
-                    <p>Comprobante </p>
-                    <select
-                        //id="comprobante"
-                        //name="comprobante"
-                        value={comprobante}
-                        onChange={(e) => setComprobante(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg select-field"
-                        required
-                    >
-                        <option value="">Selecciona</option>
-                            {comprobante_all.map((co) => (
-                        <option key={co.id} value={co.id}>
-                            {co.name}
-                        </option>
-                            ))}
-                    </select>
+                    <div className="campo-formulariocustomer">
+                    <label>Comprobante </label>
+                        <select
+                            //id="comprobante"
+                            //name="comprobante"
+                            value={comprobante}
+                            onChange={(e) => setComprobante(e.target.value)}
+                            required
+                        >
+                            <option value="">Selecciona</option>
+                                {comprobante_all.map((co) => (
+                            <option key={co.id} value={co.id}>
+                                {co.name}
+                            </option>
+                                ))}
+                        </select>
+                    </div>
 
-                    <p>Tasa de IVA </p>
-                    <select
-                        //id="tax"
-                        //name="tax"
-                        value={tax}
-                        onChange={(e) => setTax(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg select-field"
-                        required
-                    >
-                        <option value="">Selecciona</option>
-                            {tax_All.map((t) => (
-                        <option key={t.id} value={t.id}>
-                            {t.name}
-                        </option>
-                            ))}
-                    </select>
+                    <div className="campo-formulariocustomer">
+                        <label>Tasa de IVA </label>
+                        <select
+                            //id="tax"
+                            //name="tax"
+                            value={tax}
+                            onChange={(e) => setTax(e.target.value)}
+                            required
+                        >
+                            <option value="">Selecciona</option>
+                                {tax_All.map((t) => (
+                            <option key={t.id} value={t.id}>
+                                {t.name}
+                            </option>
+                                ))}
+                        </select>
+                    </div>
 
-                    <p>Tipo de Pago </p>
-                    <select
-                        //id="tipo_pago"
-                        //name="tipo_pago"
-                        value={tipo_pago}
-                        onChange={(e) => setTipoPago(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg select-field"
-                        required
-                    >
-                        <option value="">Selecciona</option>
-                            {tipoPago_All.map((tp) => (
-                        <option key={tp.id} value={tp.id}>
-                            {tp.name}
-                        </option>
-                            ))}
-                    </select>
+                    <div className="campo-formulariocustomer">
+                        <label>Tipo de Pago </label>
+                        <select
+                            //id="tipo_pago"
+                            //name="tipo_pago"
+                            value={tipo_pago}
+                            onChange={(e) => setTipoPago(e.target.value)}
+                            required
+                        >
+                            <option value="">Selecciona</option>
+                                {tipoPago_All.map((tp) => (
+                            <option key={tp.id} value={tp.id}>
+                                {tp.name}
+                            </option>
+                                ))}
+                        </select>
+                    </div>
 
                 </div>
 
                 <hr />
-                <h1>Regimen y Uso de la Factura </h1>
-                <div className="input-select-container">
-                    <p> Regimen Fiscal </p>
+                <h2>Regimen y Uso de la Factura </h2>
+                <div className="input-select-container-customer">
+                    <div className="campo-formulariocustomer">
+                        <label>Regimen Fiscal</label>
                     <select
                         //id="fiscal_tipo"
                         //name="fiscal_tipo"
                         value={regimen_fiscal}
                         onChange={(e) => setRegimenFiscal(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg select-field"
                         required
                     >
                         <option value="">Selecciona</option>
@@ -489,24 +526,27 @@ export function CustomerFormPage() {
                         </option>
                             ))}
                     </select>
+                    </div>
 
-                    <p> Uso de la Factura </p>
-                    <select
-                        //id="uso_factura"
-                        //name="uso_factura"
-                        value={uso_factura}
-                        onChange={(e) => setuso_factura(e.target.value)}
-                        className="bg-zinc-200 p-3 rounded-lg select-field"
-                        required
-                    >
-                        <option value="">Selecciona</option>
-                            {usoFactura_All.map((uf) => (
-                        <option key={uf.id} value={uf.id}>
-                            {uf.name}
-                        </option>
-                            ))}
-                    </select>
+                    <div className="campo-formulariocustomer">
+                        <label> Uso de la Factura </label>                    
+                        <select
+                            //id="uso_factura"
+                            //name="uso_factura"
+                            value={uso_factura}
+                            onChange={(e) => setuso_factura(e.target.value)}
+                            required
+                        >
+                            <option value="">Selecciona</option>
+                                {usoFactura_All.map((uf) => (
+                            <option key={uf.id} value={uf.id}>
+                                {uf.name}
+                            </option>
+                                ))}
+                        </select>
+                    </div>
                 </div>
+
                 <hr />
                 <h3> <strong> Comisiones </strong> </h3>
                 <div className="input-select-container">
@@ -614,13 +654,6 @@ export function CustomerFormPage() {
                     )}
 
                 </div>
-
-                <button
-                    style={{ marginTop: '20px' }}
-                    
-                > Save
-                </button>
-
                 
             </form>
         </div>

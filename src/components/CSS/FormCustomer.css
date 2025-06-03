@@ -1,0 +1,155 @@
+.contenedorc {
+    position: fixed;
+    top: 0;
+    left: 220px;
+    width: 90%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.11); /* fondo oscurecido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow: auto;
+    box-sizing: border-box;
+
+  }
+  
+/*  
+  .formularioc {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    top: 20%;
+    left: 20%;
+    right: 20%;
+  }
+  */
+
+  .formulariocustomer {
+    position: absolute;
+    background-color: #fffafa;
+    padding: 2rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    top: 5%;
+    right: 10%;
+    left:2%;
+  }
+
+  .input-select-container-customer {
+    display: flex;
+  /*  align-items: center;  Alinea verticalmente al centro */
+  gap: 2.5rem;         /*  Espacio entre el input y el select */
+   width:0px;
+  }
+
+  .campo-formulariocustomer label {
+    margin-left: 4px;
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  .formulariocustomer input {
+    margin-bottom: 1rem;
+    background-color: #e2dede;
+    width: 200px;
+    height: 30px
+  }
+
+  .campo-formulariocustomer select {
+    width: 200px;
+    height: 30px ;
+    background-color: #e2dede;
+    font-size: 12px;
+    border-radius: 5px;
+  }
+
+  
+.headerLayoutSup-Customers {
+  position: relative;
+  top: 0px;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  background-color:white;
+  padding: 10px 10px;
+  justify-content: flex-start;
+  border-bottom: 2px solid #ddd;
+  height: 70px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.headerLayoutSup-Customers h2 {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px; /* Espacio entre botones */
+}
+.headerLayoutSup-Customers button {
+  cursor: pointer; 
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  margin-left: 10px;
+  height: 40px;
+}
+
+
+  /*
+  .formulariocustomer input {
+    padding: 2px;
+    width: 150px !important;
+    height: 28px;
+    background-color: #e2dede;
+    font-size: 12px;
+    border-radius: 5px;
+  }
+
+
+  .campo-formulariocustomer label,
+  .campo-formulariocustomer select {
+  margin-top: 1px;
+  margin-bottom: 1rem;
+}
+
+*/
+  
+
+
+  /*
+  .formrequest {
+
+    background-color: rgba(243, 241, 241, 0.667);
+    align-items: center;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+    .campo-formrequest label {
+    padding: 2px;
+    margin-left: 4px; 
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+    .formrequest input {
+    height: 28px;
+    background-color: #e2dede;
+    font-size: 12px;
+    border-radius: 5px;
+  }
+
+  */

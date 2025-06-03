@@ -106,3 +106,4 @@ export const updateComisionista =(id, b) => URLApi.put(`promoters/comisionista/$
 
 export const getAllTipo = () => URLApi.get('/commissions/tipo/')
 export const getAllBase = () => URLApi.get('/commissions/base/')
+export const getAllTaxes = () => URLApi.get('/commissions/taxes/')

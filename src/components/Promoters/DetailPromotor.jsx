@@ -80,9 +80,10 @@ export function PromotorDetail() {
 
     return(
         <div>
-            <label>Codigo: {Promoter.code} </label> <p/>
-            <label>Promotor: </label>
-            < label> {Promoter.name } {Promoter.paternal_surname } {Promoter.maternal_surname}</label> 
+            
+            <label style={{fontSize:'20px'}}>
+                Promotor: {Promoter.code} :  
+                 {Promoter.name } {Promoter.paternal_surname } {Promoter.maternal_surname}</label> 
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <h1>Comision de venta </h1>
