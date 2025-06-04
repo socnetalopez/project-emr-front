@@ -191,6 +191,11 @@ export function CustomerFormPage() {
     `${persona.name} ${persona.paternal_surname || ''} ${persona.maternal_surname || ''}`.trim();
 
     
+        const handleClickContacts = (e) => {
+            // No hace nada
+        };
+  
+    
 
     const onSubmit = handleSubmit( async (e) => {
         
@@ -254,16 +259,22 @@ export function CustomerFormPage() {
         <div className="contenedorc">
             <form onSubmit={onSubmit} class="formulariocustomer">
 
-                <div className="headerLayoutSup-Customers">
-                    <h2>Clientes : {params.id ? 'Editar' : 'Nuevo'}</h2>
+                <div className="formulario-rectangulo-flotante">
+                    <label>Clientes : {params.id ? 'Editar' : 'Nuevo'}</label>
                     <button>
                         {params.id ? 'Actualizar' : 'Guardar'}
                     </button>
-                    <button onClick={handleBack} className="btn-cancelar">
+
+                    <button 
+                        onClick={handleBack} 
+                        className="btn-cancelar"
+                        style={{padding:'6px', margin:'4px'}}    
+                    >
                         Regresar
                     </button>
                 </div>
 
+                <div className="formulario-rectangulo">
                 <h2>Datos Generales</h2>
 
                 <div className="input-select-container-customer">
@@ -444,9 +455,11 @@ export function CustomerFormPage() {
                     </div>
                 </div>
 
+                </div>
 
 
-                <hr />
+                
+                <div className="formulario-rectangulo">
                 <h2>Datos para Solicitud</h2>
                 <div className="input-select-container-customer">
                     <div className="campo-formulariocustomer">
@@ -520,10 +533,12 @@ export function CustomerFormPage() {
                                 ))}
                         </select>
                     </div>
-
+                
                 </div>
+                </div>
+            
 
-                <hr />
+                <div className="formulario-rectangulo">
                 <h2>Regimen y Uso de la Factura </h2>
                 <div className="input-select-container-customer">
                     <div className="campo-formulariocustomer">
@@ -561,57 +576,65 @@ export function CustomerFormPage() {
                                 ))}
                         </select>
                     </div>
+                
+
+                </div>
                 </div>
 
-                <hr />
-                <h3> <strong> Promotor y Comisiones </strong> </h3>
-                <div className="input-select-container-customer">
-                    <div style={{ display: 'flex', flexDirection: 'column',  }}>
+
+                <div className="formulario-rectangulo">
+                    <h2> <strong> Promotor y Comisiones </strong> </h2>
+
+                    <div className="input-select-container-customer">
 
                         <div className="campo-formulariocustomer">
-                        <label style={{ width: '100px' }} >Promotor </label>
-                        <select
-                            value={promotorSeleccionado}
-                            onChange={(e) => setPromotorSeleccionado(e.target.value)}
-                            className="bg-zinc-200 rounded-lg select-field"
-                            required
-                        >
-                            <option value="">Selecciona</option>
-                                {promotores.map((p) => (
-                            <option key={p.id} value={p.id}>
-                                {p.name}
-                            </option>
-                                ))}
-                        </select>
-                    </div>
-                    </div>
+                            <label >Promotor </label>
+                            <select
+                                value={promotorSeleccionado}
+                                onChange={(e) => setPromotorSeleccionado(e.target.value)}
+                                className="bg-zinc-200 rounded-lg select-field"
+                                required
+                            >
+                                <option value="">Selecciona</option>
+                                    {promotores.map((p) => (
+                                <option key={p.id} value={p.id}>
+                                    {p.name}
+                                </option>
+                                    ))}
+                            </select>
+                        </div>
+                    
 
                     {comisiones.length > 0 && (
                     <>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    
                         <div className="campo-formulariocustomer">
-                        <label style={{ marginTop: '20px' }}>Comisiones</label>
-                        <select
-                            value={comision_venta} 
-                            onChange={(e) => setcomision_venta(e.target.value)}
-                            className="bg-zinc-200 rounded-lg select-field"
-                            required
-                        >
-                            <option value="">Selecciona</option>
-                            {comisiones.map(c => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
-                            ))}
-                        </select>
+                            <label>Comisiones</label>
+                            <select
+                                value={comision_venta} 
+                                onChange={(e) => setcomision_venta(e.target.value)}
+                                className="bg-zinc-200 rounded-lg select-field"
+                                required
+                            >
+                                <option value="">Selecciona</option>
+                                {comisiones.map(c => (
+                                <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                            </select>
                         </div>
-                    </div>
+                    
                     </>
                     )}
-                    
+                    </div>
+               
                     {/* Detalle de Comisión */}
                     {detalle && (
-                        <div style={{ display: 'flex', gap: '40px', marginTop: '30px', fontSize:'14px', flexDirection: 'column' }}>
-                            {/* Tabla porcentajes */}
-                            <table border="1" cellPadding="10">
+                    
+                    <div style={{ display: 'flex', gap: '40px', marginTop: '30px', fontSize:'14px' }}>
+                        
+                        {/* Tabla porcentajes */}
+                        <div style={{ flex: '0 0 430px' }}>
+                            <table border="1" cellPadding="30" style={{ width: '100%'}}>
                                 <thead>
                                     <tr>
                                     <th>% Venta</th>
@@ -631,49 +654,88 @@ export function CustomerFormPage() {
                                     </tr>
                                 </tbody>
                             </table>
-
-                            {/* Lista brokers y comisionistas */}
-                            <div>
-                                <h4>Comisiones</h4>
-                                < hr />
-                                <table border="1" cellPadding="8" style={{ width: '100%', fontSize:'12px' }}>
-                                    <thead>
-                                        <tr>
-                                        <th>Tipo</th>
-                                        <th>Nombre</th>
-                                        <th>Comisión (%)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {/* Brokers */}
-                                        {detalle.comision_brokers.map(b => (
-                                        <tr key={`broker-${b.id}`}>
-                                            <td>Broker</td>
-                                            <td style={{width:'500px'}}>{getNombreCompleto(b.broker)}</td>
-                                            <td>{b.percentage}%</td>
-                                        </tr>
-                                        ))}
-
-                                        {/* Comisionistas */}
-                                        {detalle.comisionistas.map(c => (
-                                        <tr key={`comisionista-${c.id}`}>
-                                            <td>Comisionista</td>
-                                            <td>{getNombreCompleto(c.comisionista)}</td>
-                                            <td>{c.percentage}%</td>
-                                        </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                {/*<ul>
-                                {detalle.comision_brokers.map((co, i) => 
-                                    <li key={co.id} style={{ width: 400}}>     broker | {co.broker.name} {co.broker.paternal_surname} | {co.percentage}</li>)}
-                                
-                                {detalle.comisionistas.map((co, i) => <li key={co.id} style={{ width: 400}}>comisionista | {co.comisionista.name} {co.comisionista.paternal_surname} | {co.percentage}</li>)}
-                                </ul> */}
-                            </div>
                         </div>
-                    )}
 
+                        {/* Lista brokers y comisionistas */}
+                        
+                        <div style={{ flex: '1 1 auto' }}>
+                            <table border="1" cellPadding="8" style={{ width: '100%', fontSize:'12px' }}>
+                                <thead>
+                                    <tr>
+                                    <th>Tipo</th>
+                                    <th>Nombre</th>
+                                    <th>Comisión (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* Brokers */}
+                                    {detalle.comision_brokers.map(b => (
+                                    <tr key={`broker-${b.id}`}>
+                                        <td>Broker</td>
+                                        <td style={{width:'500px'}}>{getNombreCompleto(b.broker)}</td>
+                                        <td>{b.percentage}%</td>
+                                    </tr>
+                                    ))}
+
+                                    {/* Comisionistas */}
+                                    {detalle.comisionistas.map(c => (
+                                    <tr key={`comisionista-${c.id}`}>
+                                        <td>Comisionista</td>
+                                        <td>{getNombreCompleto(c.comisionista)}</td>
+                                        <td>{c.percentage}%</td>
+                                    </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                            
+                    </div>
+                    
+                    )}
+                </div>
+
+                <div className="formulario-rectangulo">
+                    <label>Beneficiarios</label>
+                    <button type="button" onClick={handleClickContacts}> + </button>
+                    <table border="1" cellPadding="30" style={{ width: '100%'}}>
+                        <thead>
+                            <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Celular</th>
+                            <th>Banco</th>
+                            <th>Tipo Cuenta</th>
+                            <th>No. Cuenta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="formulario-rectangulo">
+                    <label>Contactos</label>
+
+                    <button type="button" onClick={handleClickContacts}> + </button>
+                    
+                    <table border="1" cellPadding="30" style={{ width: '100%'}}>
+                        <thead>
+                            <tr>
+                            <th>Puesto</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Celular</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 
             </form>

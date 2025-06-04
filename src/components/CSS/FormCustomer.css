@@ -1,19 +1,19 @@
 .contenedorc {
     position: fixed;
-    top: 0;
-    left: 220px;
-    width: 95%;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.11); /* fondo oscurecido */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    overflow: auto;
-    box-sizing: border-box;
-
-  }
-  
+  top: 0;
+  left: 220px;
+  width: calc(100% - 220px);
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+  /* aqui se general el penultimo ca,mbio */
 /*  
   .formularioc {
     background-color: #fff;
@@ -31,30 +31,79 @@
   */
 
   .formulariocustomer {
-    position: absolute;
-    background-color: #fffafa;
+   background-color: #fffafa;
     padding: 2rem;
-    border-radius: 4px;
+    border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    top: 5%;
-    right: 10%;
-    left:2%;
+    width: 100%;
+    box-sizing: border-box;
   }
 
+  .formulario-rectangulo {
+    width: 100%;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.formulario-rectangulo-flotante {
+    position: sticky;
+    top: 0; /* se pega arriba dentro de .contenedorc */
+    background-color:  #efefef;
+    padding: 6px;
+    border-radius: 8px;
+    box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001; /* ligeramente mayor que .contenedorc */
+    width: 40%;
+    margin-bottom: 30px;
+}
+
+.formulario-rectangulo-flotante label {
+    font-size: 16px;
+    padding: 5px;
+}
+
+/*
   .input-select-container-customer {
     display: flex;
-  /*  align-items: center;  Alinea verticalmente al centro */
-  gap: 2.5rem;         /*  Espacio entre el input y el select */
-   width:0px;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 20px;
+  width: 100%;
   }
+  */
+  .input-select-container-customer {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 columnas iguales */
+  gap: 1rem;
+}
+
+  .campo-formulariocustomer {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+}
 
   .campo-formulariocustomer label {
     margin-left: 4px;
     font-weight: bold;
     font-size: 12px;
   }
+
+  .campo-formulariocustomer input,
+  .campo-formulariocustomer select {
+  background-color: #e2dede;
+  height: 30px;
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 200px;
+}
 
   .formulariocustomer input {
     margin-bottom: 1rem;
@@ -71,6 +120,7 @@
     border-radius: 5px;
   }
 
+  
   
 .headerLayoutSup-Customers {
   position: relative;

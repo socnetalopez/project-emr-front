@@ -8,7 +8,7 @@ function DashboardLayout() {
   return (
     <div className="dashboard">
       <Sidebar setSection={setSection}/>
-      <main className="content">
+      <main className="main-content">
         <Outlet />
       </main>
     </div>

@@ -1,4 +1,111 @@
-/* App.css */
+/* movements.css */
+
+
+.movements-layout {
+  display: flex;
+  height: 100%;
+}
+
+
+.sidebar-movements {
+  width: 120px;
+  height: 95vh;
+  background: #f5f5f5;               /* 🎨 Color de fondo personalizado */
+  padding: 10px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+  border-right: 2px solid #ccc;      /* 🔲 Borde derecho */
+  border-top-right-radius: 8px;      /* 🔵 Bordes redondeados arriba */
+  border-bottom-right-radius: 8px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05); /* 🌫 Sombra lateral */
+}
+
+.movements-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.sidebar-movements h4 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.sidebar-movements ul {
+  list-style: none;
+}
+
+.sidebar-movements li {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.sidebar-movements a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* <<<<< Formulario  Requests >>>> */
+
+.containerRequest {
+  position: fixed;
+  top: 0;
+  left: 220px;
+  width: calc(100% - 220px);
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.formRequest {
+   background-color: #fffafa;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.formulario-rectangulo-movements {
+    width: 100%;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.formulario-rectangulo--movements-flotante {
+    position: sticky;
+    top: 0; /* se pega arriba dentro de .contenedorc */
+    background-color:  #efefef;
+    padding: 6px;
+    border-radius: 8px;
+    box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001; /* ligeramente mayor que .contenedorc */
+    width: 40%;
+    margin-bottom: 30px;
+}
+
+.formulario-rectangulo--movementsflotante label {
+    font-size: 16px;
+    padding: 5px;
+}
+
+/* < ----- */
+
+
+
+/* App.css 
 .contenedor {
   display: flex;
   height: 100vh;
@@ -34,3 +141,5 @@
   padding: 30px;
   background-color: #fff;
 }
+
+*/

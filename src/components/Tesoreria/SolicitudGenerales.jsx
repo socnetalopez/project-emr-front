@@ -15,8 +15,9 @@ import { getAllPromoters } from "../../api/catalogos.api";
 import LayoutSUP from "./LayoutSup";
 
 import "react-datepicker/dist/react-datepicker.css";
-import '../CSS/FormularioCentrado.css';
-import '../CSS/Layout.css';
+import "../CSS/TreasuryMovements.css"
+//import '../CSS/FormularioCentrado.css';
+//import '../CSS/Layout.css';
 
 const SolicitudGeneral = () => {
     const [promotores_All, setPromotores_All] = useState([]);
@@ -246,27 +247,33 @@ const SolicitudGeneral = () => {
        
         <div>
 
-            <div className="headerLayoutSup">
-                <h2 style={{width:'500px'}}>Solicitudes : {params.id ? 'Editar' : 'Nuevo'}</h2>
-                <button type="button" onClick={handleSubmit}>
-                    {params.id ? 'Actualizar Cliente' : 'Crear Cliente'}
-                </button>
-            </div>
-           
-            <div className="formrequest">
             
-                <h1>Datos Generales</h1>
-                <form onSubmit={handleSubmit}>
-                <div className="input-select-container">
-                    <div>
-                        <label>Fecha:</label>
-                        <DatePicker
-                            id="solicitud_date"
-                            selected={request.date}
-                            onChange={handleDateChange}
-                            dateFormat="dd-MM-yyyy"
-                        />
+           
+            <div className="containerRequest">
+                <div className="formRequest">
+
+                     <div className="formulario-rectangulo">
+                        <h2>Solicitudes : {params.id ? 'Editar' : 'Nuevo'}</h2>
+                        <button type="button" onClick={handleSubmit}>
+                            {params.id ? 'Actualizar Cliente' : 'Crear Cliente'}
+                        </button>
                     </div>
+                    
+
+                
+                    <form onSubmit={handleSubmit}>
+                        <div className="formulario-rectangulo">
+                        <h1>Datos Generales</h1>
+                    <div className="input-select-container">
+                        <div>
+                            <label>Fecha:</label>
+                            <DatePicker
+                                id="solicitud_date"
+                                selected={request.date}
+                                onChange={handleDateChange}
+                                dateFormat="dd-MM-yyyy"
+                            />
+                        </div>
 
                 <div >
                     <label>Moneda:</label>
@@ -383,6 +390,8 @@ const SolicitudGeneral = () => {
                             ))}
                         </select>
                     </div>
+                    </div>
+                    
                 </div>
                 </form>
 
@@ -410,6 +419,7 @@ const SolicitudGeneral = () => {
                 )}
 
             </div>
+        </div>
         </div>
     );
 };
