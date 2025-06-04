@@ -112,10 +112,10 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         //console.log(importe,"index", index)
         //console.log("nuevos", nuevos[index])
 
-        nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagecomsion/100));
+        nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagecomsion/100).toFixed(2));
         //nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  nuevos[index].comsion/100));
         nuevos[index].taxes = parseFloat((nuevos[index].totalimportecomision) * (percentageTax/100));
-        nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)));
+        nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)).toFixed(2));
         console.log("actualizar Importe",nuevos)
         setClientesSeleccionados(nuevos);
     };
@@ -143,83 +143,82 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
     //console.log("al final clientesData", clientesData)
     
       return (
-        <div className="">
-          <h3>Clientes y Retornos - - 
+		<div>
+        <div className="formulario-rectangulo-movements">
+        	<h3>Clientes y Retornos 
             <button onClick={agregarCliente}>Agregar</button>
-          </h3>
-          <hr />
-          <table className="table-sin-borde">
-          <thead>
-            <tr>
-              <th>Cliente</th>
-              <th>Tipo de Calculo</th>
-              <th>Comprobante</th>
-              <th>Tasa de IVA</th>
-              <th>Tipo de Pago</th>
-              <th>Importe Nominal</th>
-              <th>% Comision</th>
-              <th>% IVA</th>
-              <th>Retorno</th>
-              <th>Desglose</th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
+          	</h3>
           
-          { clientesSeleccionados.length > 0 ? (
-            clientesSeleccionados.map((item, index) => (
-            <tr key={index} style={{ marginBottom: '1rem' }}>
-              <td>
-                <select
-                    value={item.cliente || ''}
-                    onChange={(e) => actualizarCliente(index, e.target.value)}
-                    className=" select-field"
-                >
-                    <option value="">Seleccione Cliente</option>
-                        {clientesDisponibles.map((cliente) => (
-                    <option key={cliente.id} value={cliente.id}>
-                        {cliente.trade_name}
-                    </option>
-                        ))}
-                </select>
-              </td>
+			<table className="table-sin-borde">
+			<thead>
+				<tr>
+				<th>Cliente</th>
+				<th>Tipo de Calculo</th>
+				<th>Comprobante</th>
+				<th>Tasa de IVA</th>
+				<th>Tipo de Pago</th>
+				<th>Importe Nominal</th>
+				<th>% Comision</th>
+				<th>% IVA</th>
+				<th>Retorno</th>
+				<th>Desglose</th>
+				<th></th>
+				</tr>
+			</thead>
 
-              <td>
-                <label> {item.tipo_calculo || ''} </label>
-              </td>
-              <td>
-                  <label> {item.comprobante || ''} </label>
-              </td>
-              <td>
-                  <label> {item.tax || ''} </label>
-              </td>
-              <td>
-                  <label> {item.tipo_pago || ''} </label>
-              </td>
-              <td>  
-                <input
-                    type="number"
-                    placeholder="Importe"
-                    min="0" pattern="^[0-9]+"
-                    value={item.importe}
-                    onChange={(e) => actualizarImporte(index, e.target.value)}
-                    className="input-field"
-                    style={{ width: '100px', }}
-                />
-              </td>
+          	<tbody>
+          
+			{ clientesSeleccionados.length > 0 ? (
+				clientesSeleccionados.map((item, index) => (
+				<tr key={index} style={{ marginBottom: '1rem' }}>
+				<td>
+					<select
+						value={item.cliente || ''}
+						onChange={(e) => actualizarCliente(index, e.target.value)}
+					>
+						<option value="">Seleccione Cliente</option>
+							{clientesDisponibles.map((cliente) => (
+						<option key={cliente.id} value={cliente.id}>
+							{cliente.trade_name}
+						</option>
+							))}
+					</select>
+				</td>
+
+				<td>
+					<label> {item.tipo_calculo || ''} </label>
+				</td>
+				<td>
+					<label> {item.comprobante || ''} </label>
+				</td>
+				<td>
+					<label> {item.tax || ''} </label>
+				</td>
+				<td>
+					<label> {item.tipo_pago || ''} </label>
+				</td>
+				<td>  
+					<input
+						type="number"
+						placeholder="Importe"
+						min="0" pattern="^[0-9]+"
+						value={item.importe}
+						onChange={(e) => actualizarImporte(index, e.target.value)}
+						className="input-field"
+						style={{ width: '100px', }}
+					/>
+				</td>
               
-              <td>
-                <input
-                    type="number"
-                    className="input-field"
-                    value = {item.totalimportecomision}
-                    //onChange={(e) => actualizarImporte(index, e.target.value)}
-                    style={{ width: '100px', }}
-                />
-                <label style={{ fontSize: '9px', fontWeight: 'bold' }} >{item.comision}%</label>
-
-              </td>
+				<td>
+					<input
+						type="number"
+						className="input-field"
+						value = {item.totalimportecomision}
+						//onChange={(e) => actualizarImporte(index, e.target.value)}
+						style={{ width: '100px', }}
+					/>
+					<label style={{ fontSize: '9px', fontWeight: 'bold' }} >{item.comision}%</label>
+				</td>
 
               <td>
                 <input
@@ -299,6 +298,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
           </tr> )}
         </tbody>
         </table>
+		</div>
             
           <SolicitudComisiones clientes={clientesSeleccionados} datosComision={datosComision} setDatosComision={setDatosComision} />
         </div>

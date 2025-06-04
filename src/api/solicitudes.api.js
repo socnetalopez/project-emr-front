@@ -89,6 +89,7 @@ export const updateSolicitud = (id, solicitud) => URLApi.put(`/${id}/update/`, s
 export const createSolicitud = (solicitud) => URLApi.post('/', solicitud)
 
 export const getAllRequests = () => URLApi.get('/requests/')
+export const getRequestsMain = () => URLApi.get('/requestsmain/')
 export const getRequest = (id) => URLApi.get(`request/${id}/`)
 export const RequestCreate = (request) => URLApi.post('/requests-create/', request)
 export const Requestupdate = (id, solicitud) => URLApi.put(`request/${id}/update/`, solicitud)

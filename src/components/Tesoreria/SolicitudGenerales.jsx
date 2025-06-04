@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form"
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 
 import  SolicitudClientes  from './SolicitudClientes';
 
@@ -36,7 +36,7 @@ const SolicitudGeneral = () => {
     const [clientesData, setClientesData] = useState([]);
     const [comisionesData, setComisionesData] = useState([]);
     const [datosComision, setDatosComision] = useState([]);
-    const [request, setRequest] = useState([]);
+    const [request, setRequest] = useState({ date: new Date(),});
 
     const [isLoaded, setIsLoaded] = useState(false);
     
@@ -95,6 +95,8 @@ const SolicitudGeneral = () => {
     console.log("Load initial",request)
     console.log("selected promoter",selectedPromotor)
    //console.log("General customer", clientesData)
+       
+
    
     // Obtener los datos de la API
     useEffect(() => {
@@ -226,6 +228,7 @@ const SolicitudGeneral = () => {
                     },
                 })
             } else {
+                data.status = 1;
                 console.log("created:", data)
                 await RequestCreate(data);
                 toast.success('Cliente created success', {
@@ -236,36 +239,72 @@ const SolicitudGeneral = () => {
                     },
                 })
             }
-            navigate("/dashboard/treasury/movements/solicitudes")
+
+            setTimeout(() => {
+                navigate("/dashboard/treasury/movements/solicitudes");
+            }, 1000); // Espera 1.5 segundos
+            //navigate("/dashboard/treasury/movements/solicitudes")
         //alert('Datos guardados');
 
     }
+
+    const handleBack = () => {
+        navigate(-1); // Esto regresa una página en el historial
+    };
     //console.log("al final general", request)
     //console.log("al final",clientesData );
 
     return (
-       
-        <div>
 
-            
-           
-            <div className="containerRequest">
-                <div className="formRequest">
+    <div>   
+        <Toaster /> {/* ¡Sin esto, no se ve el toast! */} 
 
-                     <div className="formulario-rectangulo">
-                        <h2>Solicitudes : {params.id ? 'Editar' : 'Nuevo'}</h2>
-                        <button type="button" onClick={handleSubmit}>
-                            {params.id ? 'Actualizar Cliente' : 'Crear Cliente'}
-                        </button>
-                    </div>
+        <div className="containerRequest">
+
+            <div className="formRequest">
+
+                <div className="formulario-rectangulo--movements-flotante">
                     
+                    <h2>Solicitudes : {params.id ? 'Editar  ' : 'Nuevo  '}
+                    <span className={`status-label ${
+                        request.status === 1 ? 'orange' :
+                        request.status === 2 ? 'blue' :
+                        request.status === 3 ? 'green' : 
+                        request.status === 4 ? 'green' : 'gray'
+                        }`}
+                    >
+                        {request.status === 1 ? 'Pendiente' :
+                        request.status === 2 ? 'Ingreso' :
+                        request.status === 3 ? 'Egreso Parcial' :
+                        request.status === 4 ? 'Egreso Total' : '-'}
+                    </span>
 
-                
-                    <form onSubmit={handleSubmit}>
-                        <div className="formulario-rectangulo">
-                        <h1>Datos Generales</h1>
+                    </h2>
+
+                    <button type="button" onClick={handleSubmit}>
+                        {params.id ? 'Actualizar ' : 'Guardar'}
+                    </button>
+
+                    <button 
+                        onClick={handleBack} 
+                        className="btn-cancelar"
+                        style={{padding:'6px', margin:'4px'}}    
+                    >
+                        Regresar
+                    </button>
+
+                    
+                </div>
+
+                <form onSubmit={handleSubmit}>    
+                    
+                    <div className="formulario-rectangulo">               
+
+                    <h1>Datos Generales</h1>
+                    
                     <div className="input-select-container">
-                        <div>
+                    
+                        <div className="campo-formulariocustomer">
                             <label>Fecha:</label>
                             <DatePicker
                                 id="solicitud_date"
@@ -275,152 +314,165 @@ const SolicitudGeneral = () => {
                             />
                         </div>
 
-                <div >
-                    <label>Moneda:</label>
-                    <select
-                        name="currency"
-                        className="select-field"
-                        value={request.currency}
-                        onChange={handleChange}    
-                    >
-                        <option value="">Selecciona una moneda</option>
-                        {monedas.map((moneda) => (
-                        <option key={moneda.id} value={moneda.id}>
-                            {moneda.name} 
-                        </option>
-                        ))}
-                    </select>
-                </div>
-                    <div>
-                        <label>Importe</label>
-                        <input
-                            //id="importe"
-                            type="number"
-                            name="amount"
-                            value={request.amount}
-                            onChange={handleChange}
-                            placeholder="Importe"
-                        />
-                    </div>
-                    <div className="campo-formulariocustomer">
-                        <label>Forma de Pago:</label>
-                        <select
-                            name="payment_method"
-                            value={request.payment_method}
-                            onChange={handleChange}
-                            className="select-field"
-                            required
-                        >
-                            <option value="">Selecciona un tipo</option>
-                            {formaPagos.map((fp) => (
-                                <option key={fp.id} value={fp.id}>
-                                    {fp.name}
+                        <div className="campo-formulariocustomer">
+                            <label>Moneda:</label>
+                            <select
+                                name="currency"
+                                className="select-field"
+                                value={request.currency}
+                                onChange={handleChange}    
+                            >
+                                <option value="">Selecciona una moneda</option>
+                                {monedas.map((moneda) => (
+                                <option key={moneda.id} value={moneda.id}>
+                                    {moneda.name} 
                                 </option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-        
-
-                <div className="input-select-container">
-                    <div className="campo-formulariocustomer">
-                        <label>Promotor:</label>
-                        <select
-                            name="promoter"
-                            value={request.promoter?.id}
-                            onChange={handlePromoterChange}
-                            className="select-field"
-                        >
-                            <option value="">Seleccione</option>
-                                {promotores_All.map(p => (
-                            <option key={p.id} value={p.id}>{`${p.name} ${p.paternal_surname} ${p.maternal_surname}`}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="campo-formulariocustomer">
-                        <label >Tipos de Operacion:</label>
-                        <select
-                            name="type_operation"
-                            value={request.type_operation}
-                            onChange={handleChange}
-                            className="select-field"
-                        >
-                            <option value="">Seleccione</option>
-                            {tipoOperaciones.map((o) => (
-                            <option key={o.id} value={o.id}>
-                                {o.name}
-                            </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="campo-formulariocustomer">
-                        <label htmlFor="tipo_solicitud">Tipos de Solicitud:</label>
-                        <select
-                            id="type_request"
-                            name="type_request"
-                            value={request.type_request}
-                            onChange={handleRequest_Type_Change}
-                            className="bg-zinc-200 p-3 rounded-lg select-field"
-                        >
-                            <option value="">Seleccione</option>
-                                {tipoSolicitudes.map((ts) => (
-                            <option key={ts.id} value={ts.id}>
-                                {ts.name}
-                            </option>
                                 ))}
-                        </select>
+                            </select>
+                        </div>
+
+                        <div className="campo-formulariocustomer">
+                            <label>Importe</label>
+                            <input
+                                //id="importe"
+                                type="number"
+                                name="amount"
+                                value={request.amount}
+                                onChange={handleChange}
+                                placeholder="Importe"
+                            />
+                        </div>
+
+                        <div className="campo-formulariocustomer">
+                            <label>Forma de Pago:</label>
+                            <select
+                                name="payment_method"
+                                value={request.payment_method}
+                                onChange={handleChange}
+                                className="select-field"
+                                required
+                            >
+                                <option value="">Selecciona un tipo</option>
+                                { formaPagos.map((fp) => (
+                                    <option key={fp.id} value={fp.id}>
+                                        {fp.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="campo-formulariocustomer">
-                        <label htmlFor="tipo_pago">Tipo de Pago:</label>
-                        <select
-                            id="type_payment"
-                            name="type_payment"
-                            value={request.type_payment}
-                            onChange={handleChange}
-                            className="bg-zinc-200 p-3 rounded-lg select-field"
-                        >
-                            <option value="">Seleccione</option>
-                            {tipoPagos.map((tp) => (
-                            <option key={tp.id} value={tp.id}>
-                                {tp.name}
-                            </option>
-                            ))}
-                        </select>
-                    </div>
+                    <div className="input-select-container">
+
+                        <div className="campo-formulariocustomer">
+                            <label>Promotor:</label>
+                            <select
+                                name="promoter"
+                                value={request.promoter?.id}
+                                onChange={handlePromoterChange}
+                                className="select-field"
+                            >
+                                <option value="">Seleccione</option>
+                                    {promotores_All.map(p => (
+                                <option key={p.id} value={p.id}>{`${p.name} ${p.paternal_surname} ${p.maternal_surname}`}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="campo-formulariocustomer">
+                            <label >Tipos de Operacion:</label>
+                            <select
+                                name="type_operation"
+                                value={request.type_operation}
+                                onChange={handleChange}
+                                className="select-field"
+                            >
+                                <option value="">Seleccione</option>
+                                {tipoOperaciones.map((o) => (
+                                <option key={o.id} value={o.id}>
+                                    {o.name}
+                                </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="campo-formulariocustomer">
+                            <label htmlFor="tipo_solicitud">Tipos de Solicitud:</label>
+                            <select
+                                id="type_request"
+                                name="type_request"
+                                value={request.type_request}
+                                onChange={handleRequest_Type_Change}
+                                className="bg-zinc-200 p-3 rounded-lg select-field"
+                            >
+                                <option value="">Seleccione</option>
+                                    {tipoSolicitudes.map((ts) => (
+                                <option key={ts.id} value={ts.id}>
+                                    {ts.name}
+                                </option>
+                                    ))}
+                            </select>
+                        </div>
+
+                        <div className="campo-formulariocustomer">
+                            <label htmlFor="tipo_pago">Tipo de Pago:</label>
+                            <select
+                                id="type_payment"
+                                name="type_payment"
+                                value={request.type_payment}
+                                onChange={handleChange}
+                                className="bg-zinc-200 p-3 rounded-lg select-field"
+                            >
+                                <option value="">Seleccione</option>
+                                {tipoPagos.map((tp) => (
+                                <option key={tp.id} value={tp.id}>
+                                    {tp.name}
+                                </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                     
                 </div>
                 </form>
-
+                
+                 
                 {/* Advertencia de cambio de promotor */}
                 {warningVisible && (
-                    <div>
-                    <p>¿Estás seguro de cambiar el promotor? Todos los registros de clientes se eliminarán.</p>
-                    <button onClick={confirmPromoterChange}>Aceptar</button>
-                    <button onClick={cancelPromoterChange}>Cancelar</button>
+                    <div style={{ border: '1px solid gray', padding: '16px', borderRadius: '8px', backgroundColor: '#f8f8f8', marginBottom: '16px' }}>
+                        <p>¿Estás seguro de cambiar el promotor? Todos los registros de clientes se eliminarán.</p>
+                        <button onClick={confirmPromoterChange}>Aceptar</button>
+                        <button onClick={cancelPromoterChange}>Cancelar</button>
                     </div>
                 )}
 
                 {tipoSolicitud === '1' && selectedPromotor && (            
-                    <SolicitudClientes promotorId={selectedPromotor} clientesData={clientesData} setClientesData={setClientesData} datosComision={datosComision} setDatosComision={setDatosComision} />
+                    <SolicitudClientes 
+                            promotorId={selectedPromotor} 
+                            clientesData={clientesData} setClientesData={setClientesData} 
+                            datosComision={datosComision} setDatosComision={setDatosComision} 
+                    />
                 )}
 
                 {tipoSolicitud === '2' && selectedPromotor && (
                     <div>
                         <h2>Aplicacion Anticipo de Clientes</h2>
                         <label>Tipo de Ingreso: </label>
-                        <SolicitudClientes promotorId={selectedPromotor} clientesData={clientesData} setClientesData={setClientesData} datosComision={datosComision} setDatosComision={setDatosComision} />
-
+                        <SolicitudClientes 
+                            promotorId={selectedPromotor} 
+                            clientesData={clientesData} setClientesData={setClientesData} 
+                            datosComision={datosComision} setDatosComision={setDatosComision} 
+                        />
                     </div>
                             
                 )}
+            
+                </div>
 
             </div>
         </div>
-        </div>
+        
+       
     );
 };
 

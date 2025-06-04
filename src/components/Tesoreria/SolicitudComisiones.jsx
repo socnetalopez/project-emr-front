@@ -187,17 +187,17 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         // Sumar brokers
         for (const brokerId in acumuladoBrokers) {
             const broker = acumuladoBrokers[brokerId];
-            totalGeneral.commission += broker.commission;
-            totalGeneral.tax += broker.tax;
-            totalGeneral.retorno += broker.retorno;
+            totalGeneral.commission += broker.commission.toFixed(2);
+            totalGeneral.tax += broker.tax.toFixed(2);
+            totalGeneral.retorno += broker.retorno.toFixed(2);
         }
 
         // Sumar comisionistas
         for (const comisionistaId in acumuladoComisionistas) {
             const comisionista = acumuladoComisionistas[comisionistaId];
-            totalGeneral.commission += comisionista.commission;
-            totalGeneral.tax += comisionista.tax;
-            totalGeneral.retorno += comisionista.retorno;
+            totalGeneral.commission += comisionista.commission.toFixed(2);
+            totalGeneral.tax += comisionista.tax.toFixed(2);
+            totalGeneral.retorno += comisionista.retorno.toFixed(2);
         }
 
         //console.log("entro al ciclo",datosComision)
@@ -210,15 +210,15 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         console.log("total general: ", totalGeneral)
 
         // Se asignan los valores de las comision de costo
-        datosComision.cost_commission = totales.comision.total_com;
-        datosComision.cost_tax = totales.comision.total_tax;
-        datosComision.cost_retorno = totales.comision.total_total;
+        datosComision.cost_commission = totales.comision.total_com.toFixed(2);
+        datosComision.cost_tax = totales.comision.total_tax.toFixed(2);
+        datosComision.cost_retorno = totales.comision.total_total.toFixed(2);
         //console.log("Datos Comision Costo",datosComision.cost_commission)
 
         // Se asignan los valores de las comision de casa
-        datosComision.house_commission = totales.house.total_com;
-        datosComision.house_tax = totales.house.total_tax;
-        datosComision.house_retorno = totales.house.total_total;
+        datosComision.house_commission = totales.house.total_com.toFixed(2);
+        datosComision.house_tax = totales.house.total_tax.toFixed(2);
+        datosComision.house_retorno = totales.house.total_total.toFixed(2);
 
         // Se asignan los valores de las comision de promotor
         datosComision.promoter_commission = totales.promotor.total_com.toFixed(2);
@@ -230,9 +230,9 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         datosComision.brokers = acumuladoBrokers;
         datosComision.comisionistas = acumuladoComisionistas;
 
-        datosComision.total_com = totalGeneral.total_com
-        datosComision.total_tax = totalGeneral.total_tax
-        datosComision.total_retorno = totalGeneral.total_total
+        datosComision.total_com = totalGeneral.total_com.toFixed(2);
+        datosComision.total_tax = totalGeneral.total_tax.toFixed(2);
+        datosComision.total_retorno = totalGeneral.total_total.toFixed(2);
         //console.log("dc brokers",datosComision.brokers)
 
         //if (
@@ -342,10 +342,11 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
     
 
     return (
-        <div style={{ marginTop: '2rem' }}>
+        <div className="formulario-rectangulo-movements">
+        
             <h3>Costo, Casa y Comisiones</h3>
-            <hr />
-            <table className="table-sin-borde">
+           
+            <table>
                 <thead>
                     <tr>
                         <th>Tipo</th>
@@ -432,15 +433,15 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         <td style={{ textAlign: 'left' }}> {val.fullname} </td>
                         <td> 
                             <input
-                                value={val.commission || ''} />
+                                value={val.commission.toFixed(2) || ''} />
                         </td>
                         <td> 
                             <input
-                                value={val.tax} />
+                                value={val.tax.toFixed(2)} />
                         </td>
                         <td> 
                             <input
-                            value={val.retorno} />
+                            value={val.retorno.toFixed(2)} />
                         </td>
                     </tr>
                     ))}
@@ -458,11 +459,11 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         </td>
                         <td> 
                             <input
-                                value={val.tax} />
+                                value={val.tax.toFixed(2)} />
                         </td>
                         <td> 
                             <input
-                            value={val.retorno} />
+                            value={val.retorno.toFixed(2)} />
                         </td>
                     </tr>
                     ))}
@@ -492,6 +493,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
             </table>
     
       </div>
+     
     );
     
   }

@@ -2,9 +2,10 @@ import { Link, useNavigate, Outlet,  Routes, Route  } from "react-router-dom"
 import { useEffect, useState } from "react";
 import React, {  useMemo } from 'react';
 import { useTable, useSortBy, usePagination, useFilters, useGlobalFilter } from 'react-table';
-import { getAllRequests } from "../../api/solicitudes.api";
+import { getAllRequests, getRequestsMain } from "../../api/solicitudes.api";
 import '../CSS/DataTable.css';
 import '../CSS/Layout.css';
+import '../CSS/TreasuryMovements.css'
 
 import {
     useReactTable,
@@ -13,7 +14,6 @@ import {
     getSortedRowModel,
     flexRender,
 } from '@tanstack/react-table';
-import axios from 'axios';
 import { SolicitudFormPage } from "./SolicitudFormPage";
 
 
@@ -30,8 +30,7 @@ export function RequestsList() {
     const fetchData = async () => {
         setLoading(true);
         try {
-        //const response = await axios.get('http://192.168.20.75:8000/api/treasury/solicitudes/', {
-        const response = await getAllRequests({
+        const response = await getRequestsMain({
             params: {
             page: pagination.pageIndex + 1,
             limit: pagination.pageSize,
@@ -44,6 +43,8 @@ export function RequestsList() {
         }
         setLoading(false);
     };
+
+    console.log(data)
 
     useEffect(() => {
         fetchData();
@@ -62,15 +63,32 @@ export function RequestsList() {
             header: 'Acciones',
             cell: ({ row }) => (
                 <div>
-                    <button onClick={() => handleDetalle(row)}>Detalle</button>
-                    <button onClick={() => handleEditar(row)}>Editar</button>
+                   ...
                 </div>
             ),
         },
         {
             accessorKey: 'status',
             header: 'Status',
-            cell: (info) => info.getValue() || '-',
+            //cell: (info) => info.getValue() || '-',
+            cell: (info) => {
+                const status = info.getValue();
+                const statusMap = {
+                    1: { label: 'Pendiente', colorClass: 'orange' },
+                    2: { label: 'Ingreso', colorClass: 'blue' },
+                    3: { label: 'Egreso Parcial', colorClass: 'green' },
+                    4: { label: 'Egreso Total', colorClass: 'green' },
+                };
+
+                const statusData = statusMap[status] || { label: '-', colorClass: 'gray' };
+                return (
+                    <span className={`status-label ${statusData.colorClass}`}>
+                        {statusData.label}
+                    </span>
+                );
+
+            }
+        
         },
         {
             accessorKey: 'folio',
@@ -80,15 +98,26 @@ export function RequestsList() {
         {
             accessorKey: 'date',
             header: 'Fecha',
-            cell: (info) => info.getValue() || '-',
+            //cell: (info) => info.getValue() || '-',
+            cell: (info) => {
+        const rawDate = info.getValue();
+        if (!rawDate) return '-';
+
+        const date = new Date(rawDate);
+        return date.toLocaleDateString('es-MX', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }).replace(/\//g, '-');;
+    },
         },
         {
-            accessorKey: 'type_request',
+            accessorKey: 'type_request.name',
             header: 'Tipo',
             cell: (info) => info.getValue() || '-',
         },
         {
-            accessorKey: 'tipo_pago.name',
+            accessorKey: 'type_payment.name',
             header: 'Pago',
             cell: (info) => info.getValue() || '-',
         },
@@ -98,9 +127,21 @@ export function RequestsList() {
             cell: (info) => info.getValue() || '-',
         },
         {
-            accessorKey: 'cliente',
+            accessorKey: 'clients',
             header: 'Cliente',
-            cell: (info) => info.getValue() || '-',
+            //cell: (info) => info.getValue() || '-',
+            cell: (info) => {
+    const clients = info.getValue(); // array de clientes
+    if (!clients || clients.length === 0) return '-';
+
+    return (
+      <ul style={{ paddingLeft: '1em', margin: 0 }}>
+        {clients.map((client, index) => (
+          <li key={index}>{client.customer_name}</li>
+        ))}
+      </ul>
+    );
+  },
         },
         {
             accessorKey: '',
@@ -265,7 +306,7 @@ export function RequestsList() {
             value={table.getState().pagination.pageSize}
             onChange={(e) => table.setPageSize(Number(e.target.value))}
             >
-            {[5, 10, 20].map((size) => (
+            {[10, 25, 50, 100].map((size) => (
                 <option key={size} value={size}>
                 Mostrar {size}
                 </option>

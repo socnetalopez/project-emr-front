@@ -104,6 +104,38 @@
 /* < ----- */
 
 
+/* <<< Request View >>> */ 
+.status-label {
+  border-radius: 5px;       /* Bordes redondeados para forma ovalada */
+  padding: 4px 10px;         /* Espacio interno */
+  color: white;              /* Texto blanco */
+  font-size: 0.6rem;
+  display: inline-block;
+  min-width: 90px;          /* Ancho mínimo */
+  text-align: center;
+  font-weight: 600;
+  user-select: none;         /* Evita selección accidental */
+}
+
+.status-label.orange {
+  background-color: #ffa969;
+}
+
+.status-label.blue {
+  background-color: #2a9aea;
+}
+
+.status-label.green {
+  background-color: #20db8b;
+}
+
+.status-label.gray {
+  background-color: gray;
+}
+
+/* < --- */ 
+
+
 
 /* App.css 
 .contenedor {
