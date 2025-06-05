@@ -122,7 +122,7 @@ export function RequestsList() {
             cell: (info) => info.getValue() || '-',
         },
         {
-            accessorKey: 'promotor.name',
+            accessorKey: 'promoter.fullname',
             header: 'Promotor',
             cell: (info) => info.getValue() || '-',
         },
@@ -131,17 +131,17 @@ export function RequestsList() {
             header: 'Cliente',
             //cell: (info) => info.getValue() || '-',
             cell: (info) => {
-    const clients = info.getValue(); // array de clientes
-    if (!clients || clients.length === 0) return '-';
+                const clients = info.getValue(); // array de clientes
+                if (!clients || clients.length === 0) return '-';
 
-    return (
-      <ul style={{ paddingLeft: '1em', margin: 0 }}>
-        {clients.map((client, index) => (
-          <li key={index}>{client.customer_name}</li>
-        ))}
-      </ul>
-    );
-  },
+                return (
+                <ul style={{ paddingLeft: '1em', margin: 0 }}>
+                    {clients.map((client, index) => (
+                    <li key={index} style={{fontSize:'9px'}}>{client.customer_name}</li>
+                    ))}
+                </ul>
+                );
+            },
         },
         {
             accessorKey: '',
@@ -149,7 +149,7 @@ export function RequestsList() {
             cell: (info) => info.getValue() || '-',
         },
         {
-            accessorKey: 'moneda.name',
+            accessorKey: 'currency.type',
             header: 'Moneda',
             cell: (info) => info.getValue() || '-',
         },

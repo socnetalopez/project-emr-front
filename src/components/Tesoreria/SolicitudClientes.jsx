@@ -85,6 +85,8 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         nuevos[index].tipo_pago = data.tipo_pago.name;
         nuevos[index].comision_venta = data.comision_venta;
         nuevos[index].comision = data.comision_venta.percentage_commission;
+        console.log(data)
+        console.log("porcentaje de cliente tax", nuevos[index].taxpercentage = data.tax.percentage)
         //nuevos[index].comision = data.comision_venta.percentage_commission;
         setImporteComision(data.comision_venta.percentage_sales)
         setPercentageTax(data.tax.percentage)
@@ -112,10 +114,10 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         //console.log(importe,"index", index)
         //console.log("nuevos", nuevos[index])
 
-        nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagecomsion/100).toFixed(2));
+        nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagecomsion/100));
         //nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  nuevos[index].comsion/100));
         nuevos[index].taxes = parseFloat((nuevos[index].totalimportecomision) * (percentageTax/100));
-        nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)).toFixed(2));
+        nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)));
         console.log("actualizar Importe",nuevos)
         setClientesSeleccionados(nuevos);
     };
@@ -138,6 +140,13 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 			//console.log("clientes cobertidos",clientesData, clientesConvertidos, clientesSeleccionados)
 		}
     }, [clientesData]);
+
+    const totales_Importe = clientesSeleccionados.reduce((total, c) => total + Number(c.importe || 0), 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
+    const totales_PComision = clientesSeleccionados.reduce((total, c) => total + Number(c.totalimportecomision || 0), 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
+    const totales_IVA = clientesSeleccionados.reduce((total, c) => total + Number(c.taxes || 0), 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
+    const totales_Retorno = clientesSeleccionados.reduce((total, c) => total + Number(c.calculoretorno || 0), 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
+    const totales_Desglose = clientesSeleccionados.reduce((total, c) => total + Number(c.desglose || 0), 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
+
 
     
     //console.log("al final clientesData", clientesData)
@@ -211,9 +220,9 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
               
 				<td>
 					<input
-						type="number"
+						type="text"
 						className="input-field"
-						value = {item.totalimportecomision}
+						value = {(Number(item.totalimportecomision) || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
 						//onChange={(e) => actualizarImporte(index, e.target.value)}
 						style={{ width: '100px', }}
 					/>
@@ -230,8 +239,8 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
               </td>
               <td>
                 <input
-                    type="number"
-                    value = {item.calculoretorno}
+                    type="text"
+                    value = {(Number(item.calculoretorno || 0)).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                     className="input-field"
                     style={{ width: '100px', }}
                 />
@@ -239,7 +248,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
               <td>
                 <input
                     type="number"
-					value={item.desglose}
+					          value={item.desglose}
                     className="input-field"
                     style={{ width: '100px', }}
                 />
@@ -254,48 +263,61 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
               </td>
             </tr>
                 
-          )) ):( 
-        
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-                <input
+          )) 
+        ):( 
+            
+        <tr>
+                <td colSpan="11" style={{ textAlign: 'center' }}>No hay clientes seleccionados</td>
+              </tr>
+        )}
+        {clientesSeleccionados.length > 0 && (
+              <tr style={{ backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>
+                <td colSpan="5" style={{ textAlign: 'right' }}>Totales:</td>
+                <td>
+                  <input
+                    value={totales_Importe}
+                    className="input-field"
+                    style={{ width: '100px' }}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <input
                     type="number"
-                    value = {totalImporte}
+                    value={totales_PComision}
                     className="input-field"
-                    style={{ width: '100px', }} />
-            </td>
-            <td>
-                <input
-                    type="number"
-                    value = {totalPComision}
+                    style={{ width: '100px' }}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <input
+                    value={totalIVA}
                     className="input-field"
-                    style={{ width: '100px', }} />
-            </td>
-            <td>
-                <input
-                    type="number"
-                    value = {totalIVA}
+                    style={{ width: '100px' }}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <input
+                    value={totales_Retorno}
                     className="input-field"
-                    style={{ width: '100px', }} />
-            </td>
-            <td>
-                <input
-                    type="number"
-                    value = {totalRetorno}
+                    style={{ width: '100px' }}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <input
+                    value={totales_Desglose}
                     className="input-field"
-                    style={{ width: '100px', }} />
-            </td>
-            <td>
-                <input
-                    className="input-field"
-                    style={{ width: '100px', }} />
-            </td>
-          </tr> )}
+                    style={{ width: '100px' }}
+                    readOnly
+                  />
+                </td>
+                <td></td>
+              </tr>
+            )}
+          
         </tbody>
         </table>
 		</div>
