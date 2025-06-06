@@ -218,7 +218,7 @@ const SolicitudGeneral = () => {
     
        
         if (params.id) {
-                await Requestupdate(params.id, data)
+                //await Requestupdate(params.id, data)
                 console.log(params.id,"updated:", data)
                 toast.success('Cliente updated success', {
                     position: "bottom-right",
@@ -230,7 +230,7 @@ const SolicitudGeneral = () => {
             } else {
                 data.status = 1;
                 console.log("created:", data)
-                await RequestCreate(data);
+                //await RequestCreate(data);
                 toast.success('Cliente created success', {
                     position: "bottom-right",
                     style: {
@@ -273,8 +273,8 @@ const SolicitudGeneral = () => {
                         request.status === 4 ? 'green' : 'gray'
                         }`}
                     >
-                        {request.status === 1 ? 'Pendiente' :
-                        request.status === 2 ? 'Ingreso' :
+                        {request.status === 1 ? 'Pendiente : Convertir a INGRESO' :
+                        request.status === 2 ? 'Ingreso : Convertir a EGRESO' :
                         request.status === 3 ? 'Egreso Parcial' :
                         request.status === 4 ? 'Egreso Total' : '-'}
                     </span>

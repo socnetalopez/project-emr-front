@@ -85,8 +85,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         nuevos[index].tipo_pago = data.tipo_pago.name;
         nuevos[index].comision_venta = data.comision_venta;
         nuevos[index].comision = data.comision_venta.percentage_commission;
-        console.log(data)
-        console.log("porcentaje de cliente tax", nuevos[index].taxpercentage = data.tax.percentage)
+        //console.log("porcentaje de cliente tax", nuevos[index].taxpercentage = data.tax.percentage)
         //nuevos[index].comision = data.comision_venta.percentage_commission;
         setImporteComision(data.comision_venta.percentage_sales)
         setPercentageTax(data.tax.percentage)
@@ -149,7 +148,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 
 
     
-    //console.log("al final clientesData", clientesData)
+    console.log("al final clientesData", clientesData)
     
       return (
 		<div>
@@ -292,7 +291,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
                 </td>
                 <td>
                   <input
-                    value={totalIVA}
+                    value={totales_IVA}
                     className="input-field"
                     style={{ width: '100px' }}
                     readOnly
