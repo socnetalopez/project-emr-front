@@ -72,55 +72,76 @@ function Sidebar() {
           </Link>
         </li>
         
-        <li>
-            <Link to="#" style={{ color: "white", textDecoration: "none" }}>
-        	    Estructura
-            </Link>
-                
-            <ul style={{ listStyle: "none", paddingLeft: "10px" }}>
-                <li>
-                    <Link to="/dashboard/#" style={{ color: "white", textDecoration: "none" }}>
-                        Comisiones Venta
-                    </Link>
-				        </li>
-                <li>
-                  <Link to="/dashboard/promotores" style={{ color: "white", textDecoration: "none" }}>
-                    Promotores
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/dashboard/brokers" style={{ color: "white", textDecoration: "none" }}>
-                    Brokers
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/dashboard/comisionistas" style={{ color: "white", textDecoration: "none" }}>
-                    Comisionistas
-                  </Link>
-                </li>
-              </ul>
-          </li>
+			<li>
+				<Link to="#" style={{ color: "white", textDecoration: "none" }}>
+					Estructura
+				</Link>
+					
+				<ul style={{ listStyle: "none", paddingLeft: "10px" }}>
+					<li>
+						<Link to="/dashboard/#" style={{ color: "white", textDecoration: "none" }}>
+							Comisiones Venta
+						</Link>
+					</li>
+					<li>
+						<Link to="/dashboard/promotores" style={{ color: "white", textDecoration: "none" }}>
+							Promotores
+						</Link>
+					</li>
+					<li>
+						<Link to="/dashboard/brokers" style={{ color: "white", textDecoration: "none" }}>
+							Brokers
+						</Link>
+					</li>
+					<li>
+						<Link to="/dashboard/comisionistas" style={{ color: "white", textDecoration: "none" }}>
+							Comisionistas
+						</Link>
+					</li>
+				</ul>
+			</li>
+
+          
+			<li>
+				<Link to="#" style={{ color: "white", textDecoration: "none" }}>
+					Tesoreria
+				</Link>
+
+				<ul style={{ listStyle: "none", paddingLeft: "10px" }}>
+					<li>
+						<Link to="/dashboard/#" style={{ color: "white", textDecoration: "none" }}>
+							Catalogos
+						</Link>
+					</li>
+					<li>
+						<Link to="/dashboard/treasury/movements" style={{ color: "white", textDecoration: "none" }}>
+							Movimientos
+						</Link>
+					</li>
+				</ul>
+			</li>
 
 
-          <li>
-            <Link to="#" style={{ color: "white", textDecoration: "none" }}>
-        	    Tesoreria
-            </Link>
+			<li>
+				<Link to="#" style={{ color: "white", textDecoration: "none" }}>
+					Empresas
+				</Link>
 
-            <ul style={{ listStyle: "none", paddingLeft: "10px" }}>
-                <li>
-                    <Link to="/dashboard/#" style={{ color: "white", textDecoration: "none" }}>
-                      Catalogos
-                    </Link>
-				        </li>
-                <li>
-                  <Link to="/dashboard/treasury/movements" style={{ color: "white", textDecoration: "none" }}>
-                    Movimientos
-                  </Link>
-                </li>
-            </ul>
+				<ul style={{ listStyle: "none", paddingLeft: "10px" }}>
+					<li>
+						<Link to="/dashboard/companies" style={{ color: "white", textDecoration: "none" }}>
+							Empresas
+						</Link>
+					</li>
+					<li>
+						<Link to="/dashboard/#" style={{ color: "white", textDecoration: "none" }}>
+							Catalogos
+						</Link>
+					</li>
+				</ul>
+			</li>
 
-          </li>
+
     </ul>
 
     </div>

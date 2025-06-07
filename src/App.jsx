@@ -27,6 +27,9 @@ import { RequestsList } from './components/Tesoreria/ListsRequests';
 import Layout from './components/Tesoreria/layout';
 import { Movements } from './components/Tesoreria/Movements';
 
+import { CompaniesList } from './components/Companies/ListsCompanies';
+
+
 function App() {
   return (
     <Router>
@@ -65,9 +68,13 @@ function App() {
 
           { /*<Route path="treasury/movements/*" element={<TreasuryPage/>} /> */}
           <Route path="treasury/movements/*" element={<Movements/>}>
+          </Route>
+
+          <Route path="companies/*" element={<CompaniesList/>}>
             </Route>
           </Route>
-          
+
+
         
         
       </Routes>

@@ -86,7 +86,7 @@ const SolicitudGeneral = () => {
 
             } 
             //console.log("Load: ",params.id, selectedPromotor, tipoSolicitud)
-            //console.log("req:",request, "-", clientesData, datosComision)
+            console.log("req:",request, "-", clientesData, datosComision)
             
         }
         loadRequest()
@@ -218,8 +218,8 @@ const SolicitudGeneral = () => {
     
        
         if (params.id) {
-                //await Requestupdate(params.id, data)
                 console.log(params.id,"updated:", data)
+                await Requestupdate(params.id, data)
                 toast.success('Cliente updated success', {
                     position: "bottom-right",
                     style: {
@@ -230,7 +230,7 @@ const SolicitudGeneral = () => {
             } else {
                 data.status = 1;
                 console.log("created:", data)
-                //await RequestCreate(data);
+                await RequestCreate(data);
                 toast.success('Cliente created success', {
                     position: "bottom-right",
                     style: {
