@@ -3,8 +3,8 @@ import axios from 'axios'
 //const token = localStorage.getItem('token');
 
 const URLApi = axios.create({
-    baseURL: 'http://192.168.20.30:8000/api/'
-    //baseURL: 'http://192.168.100.226:8000/api/'
+    //baseURL: 'http://192.168.20.30:8000/api/'
+    baseURL: 'http://192.168.56.101:8000/api/'
 });
 
 URLApi.interceptors.request.use((config) => {
@@ -83,6 +83,12 @@ URLApi.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// >>> Global 
+
+export const getGCurrency = () => URLApi.get('global/currency/')
+
+// >>>>
 
 export const createComisionVenta = (b) => URLApi.post('commissions/comisiones/', b)
 export const getComisionVenta = (id) => URLApi.get(`commissions/comisionventas/${id}`)

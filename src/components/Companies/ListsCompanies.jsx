@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from "react-router-dom"
 import { useTable, useSortBy, usePagination, useFilters, useGlobalFilter } from 'react-table';
-import { TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel, CircularProgress } from '@mui/material';
 
-
-import { getAllBrokers } from '../../api/catalogos.api';
-//import '../CSS/BrokersList.css';
+import { getAllCompanies } from '../../api/companies.api'; 
 
 export function CompaniesList() {
   // Estados
@@ -17,7 +14,7 @@ export function CompaniesList() {
 
   useEffect(() => {
     async function loadBroker() {
-      const res = await getAllBrokers();
+      const res = await getAllCompanies();
       setData(res.data);
       setLoading(false);
     }
@@ -37,9 +34,9 @@ export function CompaniesList() {
   const columns = useMemo(() => [
     { Header: 'ID', accessor: 'id', Filter: DefaultColumnFilter },
     { Header: 'Código', accessor: 'code', Filter: DefaultColumnFilter },
-    { Header: 'Nombre', accessor: 'name', Filter: DefaultColumnFilter },
-    { Header: 'Apellido Paterno', accessor: 'paternal_surname', Filter: DefaultColumnFilter },
-    { Header: 'Apellido Materno', accessor: 'maternal_surname', Filter: DefaultColumnFilter },
+    { Header: 'Nombre Comercial', accessor: 'trade_name', Filter: DefaultColumnFilter },
+    { Header: 'Nombre o Razon Social', accessor: 'company_name', Filter: DefaultColumnFilter },
+    { Header: 'RFC', accessor: 'rfc', Filter: DefaultColumnFilter },
   ], []);
 
   // Tabla
@@ -99,6 +96,10 @@ export function CompaniesList() {
 
   return (
     <div className="container">
+      
+
+      <h3> Empresas </h3>
+
       {/* Input de búsqueda global */}
       <input
         type="text"

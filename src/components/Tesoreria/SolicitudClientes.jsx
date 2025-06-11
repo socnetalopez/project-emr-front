@@ -22,6 +22,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
       return jsonClients.map(client => ({
         cliente: client.customer.id,
         comision_venta: client.customer.comision_venta,
+        percentage_sales: client.percentage_sales,
         percentage_commission: client.percentage_commission,
         tipo_calculo: client.customer.tipo_calculo,
         comprobante: client.customer.comprobante,
@@ -88,9 +89,10 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         nuevos[index].tipo_pago = data.tipo_pago.name;
         nuevos[index].comision_venta = data.comision_venta;
         nuevos[index].percentage_commission = data.comision_venta.percentage_commission;
+        nuevos[index].percentage_sales = data.comision_venta.percentage_sales;
         //console.log("porcentaje de cliente tax", nuevos[index].taxpercentage = data.tax.percentage)
         //nuevos[index].comision = data.comision_venta.percentage_commission;
-        setImporteComision(data.comision_venta.percentage_sales)
+        //setImporteComision(data.comision_venta.percentage_commission)
         setPercentageTax(data.tax.percentage)
 
         // Reset valores de brokers y comisionistas
@@ -111,22 +113,20 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         const nuevos = [...clientesSeleccionados];
 
         const percentagecomsion = nuevos[index].percentage_commission;
-        //onst percentage_commission = nuevos[index].comision;
+        const percentagesales = nuevos[index].percentage_sales;
+        console.log("percentage comision", percentagesales)
 
         nuevos[index].importe = parseFloat(importe);
-        //console.log(importe,"index", index)
         console.log("nuevos", nuevos[index], percentagecomsion)
         
-        nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagecomsion/100));
+        nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagesales/100));
         nuevos[index].commission = nuevos[index].totalimportecomision;
-        //nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  nuevos[index].comsion/100));
-        //console.log("percentgae_tac_actualizar import",percentageTax)
+        console.log("percentgae_tac_actualizar import",percentagecomsion)
 
         if (percentageTax?.length){
           console.log("Nuevo", percentageTax)
           nuevos[index].taxes = parseFloat((nuevos[index].totalimportecomision) * (percentageTax/100));
         } else{
-          //setPercentageTax(nuevos[index].tax_percentage)
           console.log("update", nuevos[index].tax_percentage)
           nuevos[index].taxes = parseFloat((nuevos[index].totalimportecomision) * (nuevos[index].tax_percentage/100));
         }
@@ -152,7 +152,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 			setClientesSeleccionados(clientesConvertidos); 
 		}
     }, [clientesData]);
-    console.log("clientes cobertidos",clientesData, clientesSeleccionados)
+    //console.log("clientes cobertidos",clientesData, clientesSeleccionados)
 
     const totales_Importe = clientesSeleccionados.reduce((total, c) => total + Number(c.importe || 0), 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
     const totales_PComision = clientesSeleccionados.reduce((total, c) => total + Number(c.totalimportecomision || 0), 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });

@@ -95,7 +95,7 @@
 
   .campo-formulariocustomer input,
   .campo-formulariocustomer select {
-  background-color: #e2dede;
+  /* background-color: #e2dede; */
   height: 30px;
   font-size: 12px;
   border-radius: 5px;
@@ -115,7 +115,7 @@
   .campo-formulariocustomer select {
     width: 200px;
     height: 30px ;
-    background-color: #e2dede;
+    /* background-color: #e2dede;*/
     font-size: 12px;
     border-radius: 5px;
   }

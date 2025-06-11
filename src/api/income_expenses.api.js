@@ -1,8 +1,10 @@
 import axios from 'axios'
 
+//const token = localStorage.getItem('token');
+
 const URLApi = axios.create({
-    //baseURL: 'http://192.168.20.30:8000/api/customers'
-    baseURL: 'http://192.168.56.101:8000/api/customers'
+    //baseURL: 'http://192.168.1.10:8000/api/companies'
+    baseURL: 'http://192.168.56.101:8000/api/transactions'
 });
 
 URLApi.interceptors.request.use((config) => {
@@ -55,7 +57,7 @@ URLApi.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.post('http://192.168.20.30:8000/api/users/token/', {
+        const res = await axios.post('http://192.168.56.101:8000/api/users/token/', {
           refreshToken: localStorage.getItem('refreshToken'),
         });
 
@@ -82,28 +84,5 @@ URLApi.interceptors.response.use(
   }
 );
 
-export const getAllCustomers = () => URLApi.get('/')
-export const getCustomer = (id) => URLApi.get(`/${id}/`)
-export const createCustomer = (p) => URLApi.post('/create/', p)
-export const updateCustomer =(id, p) => URLApi.put(`/${id}/update/`, p)
 
-export const getCustomersPromotorId = (id) => URLApi.get(`/promotor/${id}/`)
-export const getCustomerIdRequest = (id) => URLApi.get(`/${id}/?tipo=solicitud`) //obtiene la comision de venta
-
-export const getRegimenTipo = () => URLApi.get('/regimentipo/')
-export const getCountry = () => URLApi.get('/country/')
-export const getStates = () => URLApi.get('/states/')
-export const getMunicpio = () => URLApi.get('/municipios/')
-
-export const getTipoCalculo = () => URLApi.get('/tipocalculo/')
-export const getComprobante = () => URLApi.get('/comprobante/')
-export const getTax = () => URLApi.get('/tax/')
-export const getTipoPago = () => URLApi.get('/tipopago/')
-
-export const getREgimenFiscal = () => URLApi.get('/regimenfiscal/')
-export const getUsoFactura = () => URLApi.get('/usofactura/')
-
-// Comision Venta ****
-//export const getComisionVenta = (id) => URLApi.get(`comisionventa/${id}`)
-
-//export const getBroker = (id) => URLApi.get(`/${id}/`)
+export const getIncomeType = () => URLApi.get('/incometype/')

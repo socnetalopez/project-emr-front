@@ -11,6 +11,7 @@ import  SolicitudClientes  from './SolicitudClientes';
 
 import { getMonedas, getFormaPago, getTipoOperacion, getTipoSolicitud, getTipoPago, RequestCreate, getRequest, Requestupdate } from "../../api/solicitudes.api";
 import { getAllPromoters } from "../../api/catalogos.api";
+import { getIncomeType } from "../../api/income_expenses.api";
 
 import LayoutSUP from "./LayoutSup";
 
@@ -36,7 +37,13 @@ const SolicitudGeneral = () => {
     const [clientesData, setClientesData] = useState([]);
     const [comisionesData, setComisionesData] = useState([]);
     const [datosComision, setDatosComision] = useState([]);
-    const [request, setRequest] = useState({ date: new Date(),});
+    //const [request, setRequest] = useState({ date: new Date()});
+    const [request, setRequest] = useState({ 
+                                        date: new Date(), 
+                                        currency : '', 
+                                        type_request : '',
+                                        amount : '',
+                                    });
 
     const [isLoaded, setIsLoaded] = useState(false);
     
@@ -106,7 +113,7 @@ const SolicitudGeneral = () => {
                 const formapagoResponse = await getFormaPago();
                 const promotorResponse = await getAllPromoters();
                 const tipooperacionResponse = await getTipoOperacion();
-                const tiposolicitudResponse = await getTipoSolicitud();
+                const tiposolicitudResponse = await getIncomeType();
                 const tipopagoResponse = await getTipoPago();
                 
                 setMonedas(monedasResponse.data);
@@ -202,8 +209,8 @@ const SolicitudGeneral = () => {
             type_payment: request.type_payment,
             type_request: request.type_request,
             clientes: clientesData.clientesSeleccionados,
-            commission_agents : datosComision.comisionistas.filter( item => item !== undefined && item !== null && item !== ''),
-            brokers : datosComision.brokers.filter(item => item !== undefined && item !== null && item !== ''),
+            commission_agents : (datosComision.comisionistas || []).filter( item => item !== undefined && item !== null && item !== ''),
+            brokers : (datosComision.brokers  || []).filter(item => item !== undefined && item !== null && item !== ''),
             cost_commission: datosComision.cost_commission,
             cost_tax: datosComision.cost_tax,
             cost_retorno: datosComision.cost_retorno,
@@ -251,8 +258,31 @@ const SolicitudGeneral = () => {
     const handleBack = () => {
         navigate(-1); // Esto regresa una página en el historial
     };
+
+    const requestWithId = { ...request, id: params.id };
+
+    const newIncome = () => {
+        navigate("/dashboard/treasury/movements/ingresos/income", {
+            state: {request: requestWithId}
+        }
+
+        );
+    };
+
     //console.log("al final general", request)
     //console.log("al final",clientesData );
+
+    // >>> Anticipo Cliente
+
+    const agregar_AnticipoCliente = () => {
+    //setClientesSeleccionados([
+    //    ...clientesSeleccionados,
+    //    { cliente: null, importe: 0, comision_venta: null }
+    //]);
+    console.log("Anticipo Cliente")
+    };
+
+    // <<<<
 
     return (
 
@@ -266,6 +296,7 @@ const SolicitudGeneral = () => {
                 <div className="formulario-rectangulo--movements-flotante">
                     
                     <h2>Solicitudes : {params.id ? 'Editar  ' : 'Nuevo  '}
+                    {/*}
                     <span className={`status-label ${
                         request.status === 1 ? 'orange' :
                         request.status === 2 ? 'blue' :
@@ -278,6 +309,7 @@ const SolicitudGeneral = () => {
                         request.status === 3 ? 'Egreso Parcial' :
                         request.status === 4 ? 'Egreso Total' : '-'}
                     </span>
+                    */}
 
                     </h2>
 
@@ -291,6 +323,14 @@ const SolicitudGeneral = () => {
                         style={{padding:'6px', margin:'4px'}}    
                     >
                         Regresar
+                    </button>
+
+                    <button 
+                        onClick={newIncome} 
+                        className="btn-cancelar"
+                        style={{padding:'6px', margin:'4px', background: 'orange '}}    
+                    >
+                        Crear Ingreso
                     </button>
 
                     
@@ -432,10 +472,11 @@ const SolicitudGeneral = () => {
                             </select>
                         </div>
                     </div>
+
                     
                 </div>
                 </form>
-                
+
                  
                 {/* Advertencia de cambio de promotor */}
                 {warningVisible && (
@@ -446,18 +487,83 @@ const SolicitudGeneral = () => {
                     </div>
                 )}
 
-                {tipoSolicitud === '1' && selectedPromotor && (            
+                
+                {tipoSolicitud === '1' && selectedPromotor && (
+                            
                     <SolicitudClientes 
                             promotorId={selectedPromotor} 
                             clientesData={clientesData} setClientesData={setClientesData} 
                             datosComision={datosComision} setDatosComision={setDatosComision} 
                     />
                 )}
-
+                
+                
                 {tipoSolicitud === '2' && selectedPromotor && (
                     <div>
-                        <h2>Aplicacion Anticipo de Clientes</h2>
-                        <label>Tipo de Ingreso: </label>
+                        <div className="formulario-rectangulo">
+
+                            <h2>Aplicacion Anticipo de Clientes</h2>
+                            <button onClick={agregar_AnticipoCliente}>Agregar</button>
+
+                            <div className="campo-formulariocustomer">
+                                <table >
+                                <thead>
+                                    <tr>
+                                        <th>Tipo Ingreso</th>
+                                        <th>Cliente</th>
+                                        <th>Anticipo</th>
+                                        <th>Aplicaciones</th>
+                                        <th>Saldo</th>
+                                        <th>Aplicacion</th>
+                                        <th>Nuevo Saldo</th>
+                                    </tr>
+			                    </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select>
+                                                <option></option>
+                                            </select>
+                                        </td>
+
+                                        <td>
+                                            <select>
+                                                <option></option>
+                                            </select>
+                                        </td>
+
+                                        <td>
+                                            <input>
+                                            </input>
+                                        </td>
+
+                                        <td>
+                                            <input>
+                                            </input>
+                                        </td>
+
+                                        <td>
+                                            <input>
+                                            </input>
+                                        </td>
+
+                                        <td>
+                                            <input>
+                                            </input>
+                                        </td>
+
+                                        <td>
+                                            <input>
+                                            </input>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                                </table>
+
+                                
+                            </div>
+                        </div>
                         <SolicitudClientes 
                             promotorId={selectedPromotor} 
                             clientesData={clientesData} setClientesData={setClientesData} 
@@ -466,7 +572,6 @@ const SolicitudGeneral = () => {
                     </div>
                             
                 )}
-            
                 </div>
 
             </div>
