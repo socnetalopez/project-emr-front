@@ -1,3 +1,6 @@
+
+// **** Companies ****
+
 import { Link, Routes, Route, NavLink, Outlet  } from 'react-router-dom';
 import React, { useState } from 'react';
 
@@ -25,7 +28,6 @@ export function Movements() {
 			<div style={{ flex: 1, padding: '20px' }}>
 				<Routes>
 				<Route path="solicitudes" element={<RequestsList />} />
-				<Route path="ingresos" element="" />
 				<Route path="solicitudes/solicitud" element={<SolicitudFormPage />} />
 				<Route path="solicitudes/solicitud/:id" element={<SolicitudFormPage />} />
 				</Routes>

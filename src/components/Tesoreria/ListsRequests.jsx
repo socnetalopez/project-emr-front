@@ -211,11 +211,11 @@ export function RequestsList() {
                 </button>
             </div>
             
-            <div >
-                <Outlet />
-            </div>
+        <div >
+            <Outlet />
+        </div>
 
-
+        <div className="formulario-rectangulo">
         {/* Input de búsqueda */}
         <input
             type="text"
@@ -313,6 +313,8 @@ export function RequestsList() {
                 </option>
             ))}
             </select>
+
+            </div>
         </div>
     </div>
     );

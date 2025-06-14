@@ -197,7 +197,7 @@ const SolicitudGeneral = () => {
         }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e, shouldNavigate = true) => {
         const data = {
             date : request.date,
             currency: request.currency,
@@ -247,9 +247,11 @@ const SolicitudGeneral = () => {
                 })
             }
 
-            setTimeout(() => {
-                navigate("/dashboard/treasury/movements/solicitudes");
-            }, 1000); // Espera 1.5 segundos
+            if (shouldNavigate) {
+                setTimeout(() => {
+                    navigate("/dashboard/treasury/movements/solicitudes");
+                }, 1000); // Espera 1.5 segundos
+            }
             //navigate("/dashboard/treasury/movements/solicitudes")
         //alert('Datos guardados');
 
@@ -261,7 +263,10 @@ const SolicitudGeneral = () => {
 
     const requestWithId = { ...request, id: params.id };
 
-    const newIncome = () => {
+    const newIncome = async (e) => {
+
+        //await handleSubmit(e, false);
+
         navigate("/dashboard/treasury/movements/ingresos/income", {
             state: {request: requestWithId}
         }

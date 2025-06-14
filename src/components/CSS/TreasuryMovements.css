@@ -18,8 +18,10 @@
   align-items: flex-start;
   box-sizing: border-box;
   border-right: 2px solid #ccc;      /* 🔲 Borde derecho */
-  border-top-right-radius: 8px;      /* 🔵 Bordes redondeados arriba */
-  border-bottom-right-radius: 8px;
+  border-left: 2px solid #ccc;
+  border-radius: 8px;
+  /* border-top-right-radius: 8px;      
+  border-bottom-right-radius: 8px; */
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05); /* 🌫 Sombra lateral */
 }
 

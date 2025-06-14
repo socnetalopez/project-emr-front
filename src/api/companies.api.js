@@ -3,8 +3,8 @@ import axios from 'axios'
 //const token = localStorage.getItem('token');
 
 const URLApi = axios.create({
-    //baseURL: 'http://192.168.1.10:8000/api/companies'
     baseURL: 'http://192.168.56.101:8000/api/companies'
+    //baseURL: 'http://192.168.100.226:8000/api/'
 });
 
 URLApi.interceptors.request.use((config) => {
@@ -85,8 +85,9 @@ URLApi.interceptors.response.use(
 );
 
 
-export const getAllCompanies = () => URLApi.get('/')
+export const getAllCompanies = () => URLApi.get('/companies/')
+export const getBankAccountDetail = (id) => URLApi.get(`bankaccounts/company/${id}/`)
 
 //export const createComisionVenta = (b) => URLApi.post('commissions/comisiones/', b)
-//export const getSaleCommissionDetail = (id) => URLApi.get(`comisionventa/${id}/detalle/`)
+
 //export const updateComisionVenta =(id, b) => URLApi.put(`commissions/comisiones/${id}/update/`, b)

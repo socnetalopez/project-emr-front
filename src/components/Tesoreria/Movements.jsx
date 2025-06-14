@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { RequestsList } from './ListsRequests';
 import { SolicitudFormPage } from './SolicitudFormPage';
 
+import { IncomeList } from '../Income_Expenses/ListsIncome';
+
 import IncomeForm from '../Income_Expenses/FormIncome';
 
 import '../CSS/TreasuryMovements.css'
@@ -26,10 +28,14 @@ export function Movements() {
 
 			<div style={{ flex: 1, padding: '20px' }}>
 				<Routes>
+
 				<Route path="solicitudes" element={<RequestsList />} />
-				<Route path="ingresos/income" element={< IncomeForm />} />
 				<Route path="solicitudes/solicitud" element={<SolicitudFormPage />} />
 				<Route path="solicitudes/solicitud/:id" element={<SolicitudFormPage />} />
+
+				<Route path="ingresos" element={< IncomeList />} />
+				<Route path="ingresos/income" element={< IncomeForm />} />
+
 				</Routes>
       		</div>
     	</div>

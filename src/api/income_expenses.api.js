@@ -84,5 +84,7 @@ URLApi.interceptors.response.use(
   }
 );
 
+export const getAllIncome = () => URLApi.get('/income/')
+export const getIncomeType = () => URLApi.get('/income/type/')
+export const getIncomeConciliation = () => URLApi.get('/income/conciliation/')
 
-export const getIncomeType = () => URLApi.get('/incometype/')
