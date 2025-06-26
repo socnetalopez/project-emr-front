@@ -6,6 +6,8 @@ import { toast } from "react-hot-toast";
 
 import { getPromoter, createPromoter, updatePromoter } from "../../api/catalogos.api";
 
+import '../CSS/FormGeneral.css';
+
 export function PromotorFormPage() {
 
     const {
@@ -67,22 +69,42 @@ export function PromotorFormPage() {
         loadPromoter()
     }, [])
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
+
     return(
         
-        <div className="form-container">
+        <div className="container">
             <form onSubmit={onSubmit}>
 
-                <div className="formulario">     
+                <div className="form-rectangulo-head">
                     <div className="title-button-wrapper"> 
                         <h1>
                             {params.id ? 'Editar ' : 'Nuevo '} Promotor 
                         </h1>
+
+                        <button onClick={handleBack}
+                            style={{backgroundColor: 'gray'}}
+                        > 
+                            Regresar
+                        </button> 
+
+                        <button 
+                            onClick={handleBack}
+                            style={{backgroundColor: 'orange'}}
+                        > 
+                            Desactivar
+                        </button> 
                         
                         <button type="submit"> 
                             {params.id ? 'Actualizar' : 'Guardar'} 
                         </button> 
                     </div>
-                
+                </div>
+
+            <div className="form-rectangulo">
                 {params.id && (
                 <div className="form-row row-3 ">
                     <div className="form-group-inline">
@@ -163,8 +185,8 @@ export function PromotorFormPage() {
                     ></textarea>
                 </div>
                 
+        
             </div>
-
             </form>
         </div>
     )

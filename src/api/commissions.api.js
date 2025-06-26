@@ -3,8 +3,8 @@ import axios from 'axios'
 //const token = localStorage.getItem('token');
 
 const URLApi = axios.create({
-    //baseURL: 'http://192.168.20.30:8000/api/commissions/'
-    baseURL: 'http://192.168.56.101:8000/api/'
+    baseURL: 'http://192.168.56.101:8000/api/commissions/'
+    //baseURL: 'http://192.168.100.226:8000/api/'
 });
 
 URLApi.interceptors.request.use((config) => {
@@ -87,4 +87,5 @@ URLApi.interceptors.response.use(
 //export const createComisionVenta = (b) => URLApi.post('commissions/comisiones/', b)
 //export const getComisionVenta = (id) => URLApi.get(`commissions/comisionventas/${id}`)
 export const getSaleCommissionDetail = (id) => URLApi.get(`comisionventa/${id}/detalle/`)
-//export const updateComisionVenta =(id, b) => URLApi.put(`commissions/comisiones/${id}/update/`, b)
+
+export const getCommIVA = () => URLApi.get('comiva/')

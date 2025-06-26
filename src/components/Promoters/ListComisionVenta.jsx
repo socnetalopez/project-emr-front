@@ -158,7 +158,7 @@ const ComisionVentaLists = ({ promotorId }) => {
     
 
     return(
-        <div className="container">
+        <div>
             { /*<GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} /> */}
           
           <table {...getTableProps()} className="data-table">

@@ -10,8 +10,6 @@ import { getPromoter, createComisionVenta} from "../../api/catalogos.api";
 import ComisionVentaLists from "./ListComisionVenta";
 import FormularioComision from "./FormComisionVenta";
 
-//import '../CSS/Comisiones.css';
-//import { ColumnSizing } from "@tanstack/react-table";
 
 export function PromotorDetail() {
 
@@ -77,30 +75,49 @@ export function PromotorDetail() {
 
       };
 
+      const buttonClick = () => {
+            navigate(`/dashboard/promotor/${params.id}`)
+        };
+    
+    const handleBack = () => {
+        navigate(-1); // Esto regresa una página en el historial
+    };
 
     return(
-        <div>
-            
-            <label style={{fontSize:'20px'}}>
-                Promotor: {Promoter.code} :  
-                 {Promoter.name } {Promoter.paternal_surname } {Promoter.maternal_surname}</label> 
+        
+        <div >
+            <div className="form-rectangulo-head" style={{ alignItems: 'center' }}>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <h1>Comision de venta </h1>
-                <button onClick={() => setMostrarFormulario(true)}> Nueva Comision
+                <h1 style={{fontSize:'20px'}}>
+                    Promotor: {  Promoter.name } {Promoter.paternal_surname } {Promoter.maternal_surname}
+                </h1>
+                
+                <button  onClick={handleBack} style={{marginLeft: '10px'}}>
+                    Regresar
                 </button>
+                
+                <button  onClick={buttonClick} style={{marginLeft: '10px'}}>
+                    Editar Promotor
+                </button>
+
             </div>
 
-            {mostrarFormulario && (
-                <FormularioComision 
-                    promotorId={params.id} 
-                    onGuardar={agregarComision}
-                    onCancelar={() => setMostrarFormulario(false)}
-                />
-            )}
-           
-             < ComisionVentaLists promotorId={params.id} /> 
-                
+            <div className="form-rectangulo" >
+                <label style={{fontSize:'16px'}}> Comision de venta </label>
+                <button onClick={() => setMostrarFormulario(true)}> Nueva Comision
+                </button>
+
+                {mostrarFormulario && (
+                    <FormularioComision 
+                        promotorId={params.id} 
+                        onGuardar={agregarComision}
+                        onCancelar={() => setMostrarFormulario(false)}
+                    />
+                )}
+            
+                < ComisionVentaLists promotorId={params.id} /> 
+            
+            </div>
         </div>
     )
 }

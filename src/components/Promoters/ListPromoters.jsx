@@ -118,22 +118,43 @@ const PromoterLists = () => {
                 />
             );
         };
-    
-        // Manejar doble clic
-        const navigate = useNavigate()
-        const handleDoubleClick = (row) => {
-            //setSelectedRow(row.original);
-            navigate(`/dashboard/promotordetail/${row.original.id}`)
-        };
-    
-        if (loading) return <div className="loading">Cargando datos...</div>;
+        
+            
+
+	// Manejar doble clic
+	const navigate = useNavigate()
+	
+	const handleClick = () => {
+			navigate('/dashboard/promotor');
+		};
+	const handleDoubleClick = (row) => {
+		//setSelectedRow(row.original);
+		navigate(`/dashboard/promotordetail/${row.original.id}`)
+	};
+
+	const handleBack = () => {
+		navigate(-1);
+	};
+
+	if (loading) return <div className="loading">Cargando datos...</div>;
 
     
 
     return(
-        <div className="container">
-            
+
+      <div className="">
+          <div className="form-rectangulo-head" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <h2 style={{margin : '0', fontSize:'20px', fontWeight:'bold'}}>Promotores </h2>
+            <button 
+              onClick={handleClick}
+            > Nuevo
+            </button>
             <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+          </div>
+
+          <div className="form-rectangulo">
+            
+            
           <table {...getTableProps()} className="data-table">
             <thead>
               {headerGroups.map(headerGroup => (
@@ -184,8 +205,10 @@ const PromoterLists = () => {
           ))}
         </select>
       </div>
+      </div>
 
-    </div>
+  </div>
+        
   );
     
 

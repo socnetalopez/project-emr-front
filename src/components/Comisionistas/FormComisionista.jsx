@@ -64,18 +64,19 @@ export function ComisionistaFormPage() {
 
     return(
         
-        <div className="form-container">
+        <div className="container">
             <form onSubmit={onSubmit}>
 
-            <div className="formulario">
+            <div className="formulario-rectangulo">
                 <div className="title-button-wrapper"> 
                     <h1>
                         {params.id ? 'Editar ' : 'Nuevo'} Comisionista 
                     </h1>
-
-                    <button> Save </button>
+                    <button> {params.id ? 'Actualizar' : 'Guardar'} </button>
                 </div>
+            </div>
 
+            <div className="formulario-rectangulo">
                 <div className="form-row row-3 ">
                     <div className="form-group-inline">
                         <label>Codigo</label>
@@ -156,9 +157,8 @@ export function ComisionistaFormPage() {
                         
                     ></textarea>
                     {errors.notes && <span>this field is required</span>}
-                </div>
-
-            </div> 
+                </div> 
+            </div>
             </form>
         </div>
     )

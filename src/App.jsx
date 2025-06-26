@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './login';
+import Login from './Login';
 import DashboardLayout from './components/Dashboard';
 import DashboardHome from './components/DashboardHome';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -18,16 +18,19 @@ import { ComisionistaFormPage } from "./components/Comisionistas/FormComisionist
 import { CustomersPage } from "./pages/CustomerPage";
 import { CustomerFormPage } from "./components/Customers/FormCustomer";
 
-import LayoutMovimientos from './components/Tesoreria/layoutMovimientos';
+import LayoutMovimientos from './components/Tesoreria/LayoutMovimientos';
 import { TreasuryPage } from './pages/TreasuryPage';
 import { SolicitudFormPage } from './components/Tesoreria/SolicitudFormPage';
 
 import Sidebar from './components/Sidebar';
 import { RequestsList } from './components/Tesoreria/ListsRequests';
-import Layout from './components/Tesoreria/layout';
+import Layout from './components/Tesoreria/Layout';
 import { Movements } from './components/Tesoreria/Movements';
 
 import { CompaniesList } from './components/Companies/ListsCompanies';
+
+import { EquipmentList } from './components/Equipments/ListsEquipment';
+import { EquipmentsFormPage } from './components/Equipments/FormEquipments';
 
 
 function App() {
@@ -66,12 +69,18 @@ function App() {
           <Route path="customer" element={<CustomerFormPage/>} />
           <Route path="customer/:id" element={<CustomerFormPage/>} />
 
+          <Route path="equipments/equipments" element={< EquipmentList />} />
+          <Route path="equipments/equipment" element={< EquipmentsFormPage />} />
+          <Route path="equipments/equipment/:id" element={< EquipmentsFormPage />} />
+
           { /*<Route path="treasury/movements/*" element={<TreasuryPage/>} /> */}
           <Route path="treasury/movements/*" element={<Movements/>}>
           </Route>
 
           <Route path="companies/*" element={<CompaniesList/>}>
             </Route>
+
+
           </Route>
 
 

@@ -23,7 +23,7 @@ const IncomeForm = () => {
         importe: ""
     };
 
-     const [rows, setRows] = useState([{ ...defaultRow }]);
+    const [rows, setRows] = useState([{ ...defaultRow }]);
 
     const location = useLocation();
     const { request } = location.state || {}; // Accede al estado pasado

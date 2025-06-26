@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from "react-router-dom"
 import { useTable, useSortBy, usePagination, useFilters, useGlobalFilter } from 'react-table';
-import { TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel, CircularProgress } from '@mui/material';
+//import { TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel, CircularProgress } from '@mui/material';
 
 
 import { getAllBrokers } from '../../api/catalogos.api';

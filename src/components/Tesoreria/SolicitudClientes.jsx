@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Select from 'react-select';
 
 import SolicitudComisiones from './SolicitudComisiones';
 import { getCustomersPromotorId, getCustomerIdRequest } from "../../api/customers.api";
+import { getAllCompanies, getBankAccountDetail } from "../../api/companies.api";
 
 import "../CSS/DataTable.css"
 import '../CSS/TreasuryMovements.css'
@@ -15,6 +17,8 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
     const [clientesSeleccionados, setClientesSeleccionados] = useState([]);
     const [importeComision, setImporteComision] = useState([]);
     const [percentageTax, setPercentageTax] = useState([]);
+    const [empresas, setEmpresas] = useState([]);
+    const [cuentasPorEmpresa, setCuentasPorEmpresa] = useState({}); // { empresaId: [cuentas] }
 
     
     //console.log("Sol_clientes: clientesData", clientesData)
@@ -160,8 +164,47 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
     const totales_Retorno = clientesSeleccionados.reduce((total, c) => total + Number(c.calculoretorno || 0), 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
     const totales_Desglose = clientesSeleccionados.reduce((total, c) => total + Number(c.desglose || 0), 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
 
+// Cargar empresas al inicio
+useEffect(() => {
+  getAllCompanies().then(res => setEmpresas(res.data));
+}, []);
 
-    
+
+    const agregarSubitem = (clienteIdx) => {
+  const nuevos = [...clientesSeleccionados];
+  if (!nuevos[clienteIdx].subitems) nuevos[clienteIdx].subitems = [];
+  nuevos[clienteIdx].subitems.push({
+    company: '',
+    account: '',
+    amount: '',
+    conciliacion: '',
+    cuentasEmpresa: [],
+  });
+  setClientesSeleccionados(nuevos);
+};
+
+// Eliminar subitem
+const eliminarSubitem = (clienteIdx, subIdx) => {
+  const nuevos = [...clientesSeleccionados];
+  nuevos[clienteIdx].subitems.splice(subIdx, 1);
+  setClientesSeleccionados(nuevos);
+};
+
+// Actualizar subitem
+const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
+  const nuevos = [...clientesSeleccionados];
+  const subitem = nuevos[clienteIdx].subitems[subIdx];
+  subitem[field] = value;
+
+  // Si cambia la empresa, carga cuentas bancarias
+  if (field === 'company') {
+    const res = await getBankAccountDetail(value);
+    subitem.account = '';
+    subitem.cuentasEmpresa = res.data;
+  }
+  setClientesSeleccionados(nuevos);
+};
+
     console.log("al final clientesData", clientesData)
     
       return (
@@ -192,7 +235,8 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
           
 			{ clientesSeleccionados.length > 0 ? (
 				clientesSeleccionados.map((item, index) => (
-				<tr key={index} style={{ marginBottom: '1rem' }}>
+				<React.Fragment key={index}>
+                  <tr style={{ marginBottom: '1rem' }}>
 				<td>
 					<select
 						value={item.cliente || ''}
@@ -268,14 +312,108 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
               </td>
               
               <td>
-                <button 
-                  onClick={() => eliminarCliente(index)} 
-                >
-                  ❌
-                </button>
+                <button onClick={() => eliminarCliente(index)}>❌</button>
+                <button onClick={() => agregarSubitem(index)} style={{ marginLeft: 8 }}>➕:Empresa</button>
               </td>
             </tr>
-                
+                {/* Subitems */}
+                {item.subitems && item.subitems.length > 0 && (
+                  <tr style={{ background: '#ececec' }}>
+                    <td colSpan={11}>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontWeight: 'bold' }}>
+                        <span style={{ width: 180 }}>Empresa</span>
+                        <span style={{ width: 180 }}>Cuenta</span>
+                        <span style={{ width: 100 }}>Monto</span>
+                        <span style={{ width: 140 }}>Conciliación</span>
+                        <span style={{ width: 80 }}>Acciones</span>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+                {item.subitems && item.subitems.map((sub, subIdx) => (
+                  <tr key={subIdx} style={{ background: '#f9f9f9' }}>
+                    <td colSpan={11}>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        {/* Empresa */}
+                        <div className="campo-formulariocustomer" style={{ width: 180 }}>
+                          <Select
+                            options={empresas.map(emp => ({
+                              value: emp.id,
+                              label: emp.company_name
+                            }))}
+                            value={empresas
+                              .map(emp => ({ value: emp.id, label: emp.company_name }))
+                              .find(opt => opt.value === sub.company) || null}
+                            onChange={selected =>
+                              actualizarSubitem(index, subIdx, 'company', selected ? selected.value : '')
+                            }
+                            className="react-select"
+                            classNamePrefix="react-select"
+                            placeholder="Seleccione Empresa"
+                            isClearable
+                            isSearchable
+                          />
+                        </div>
+                        {/* Cuenta */}
+                        <div className="campo-formulariocustomer" style={{ width: 180 }}>
+                          <Select
+                            options={(sub.cuentasEmpresa || []).map(acc => ({
+                              value: acc.id,
+                              label: acc.name
+                            }))}
+                            value={(sub.cuentasEmpresa || [])
+                              .map(acc => ({ value: acc.id, label: acc.name }))
+                              .find(opt => opt.value === sub.account) || null}
+                            onChange={selected =>
+                              actualizarSubitem(index, subIdx, 'account', selected ? selected.value : '')
+                            }
+                            className="react-select"
+                            classNamePrefix="react-select"
+                            placeholder="Seleccione Cuenta"
+                            isClearable
+                            isSearchable
+                            isDisabled={!sub.cuentasEmpresa?.length}
+                          />
+                        </div>
+                        {/* Monto */}
+                        <input
+                          type="number"
+                          placeholder="Monto"
+                          value={sub.amount}
+                          onChange={e => actualizarSubitem(index, subIdx, 'amount', e.target.value)}
+                          style={{ width: 100 }}
+                        />
+                        {/* Conciliación */}
+                        <div className="campo-formulariocustomer" style={{ width: 140 }}>
+                          <Select
+                            options={[
+                              { value: '', label: 'Conciliación' },
+                              { value: 'conciliado', label: 'Conciliado' },
+                              { value: 'no_conciliado', label: 'No conciliado' }
+                            ]}
+                            value={
+                              [
+                                { value: '', label: 'Conciliación' },
+                                { value: 'conciliado', label: 'Conciliado' },
+                                { value: 'no_conciliado', label: 'No conciliado' }
+                              ].find(opt => opt.value === sub.conciliacion) || null
+                            }
+                            onChange={selected =>
+                              actualizarSubitem(index, subIdx, 'conciliacion', selected ? selected.value : '')
+                            }
+                            className="react-select"
+                            classNamePrefix="react-select"
+                            placeholder="Conciliación"
+                            isClearable
+                            isSearchable
+                          />
+                        </div>
+                        <button onClick={() => eliminarSubitem(index, subIdx)} style={{ width: 80 }}>Eliminar</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                </React.Fragment>
           )) 
         ):( 
             

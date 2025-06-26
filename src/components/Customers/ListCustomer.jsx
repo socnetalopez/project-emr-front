@@ -105,6 +105,10 @@ const CustomersLists = () => {
             //setSelectedRow(row.original);
             navigate(`/dashboard/customer/${row.original.id}`)
         };
+
+        const handleClick = () => {
+          navigate('/dashboard/customer');
+        }
     
         if (loading) return <div className="loading">Cargando datos...</div>;
 
@@ -112,9 +116,14 @@ const CustomersLists = () => {
 
     return(
         <div className="container">
-            <h2>** Lists ***</h2>
-            <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
-          <table {...getTableProps()} className="data-table">
+			<div className="form-rectangulo-head">
+            	<h1 className="font-bold uppercase">Customers
+        		<button onClick={handleClick} >   Nuevo</button> </h1>
+            	<GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+			</div>
+          
+		  	<div className="form-rectangulo-head">
+		  	<table {...getTableProps()} className="data-table">
             <thead>
               {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
@@ -177,6 +186,7 @@ const CustomersLists = () => {
         </div>
       )}
     </div>
+	</div>
   );
     
 

@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form"
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+
 import { getBroker, createBroker, updateBroker } from "../../api/catalogos.api";
-//import '../CSS/Comisiones.css';
-//import '../CSS/FormularioCentrado.css';
+
 import '../CSS/FormGeneral.css';
 
 export function BrokerFormPage() {
@@ -52,7 +52,7 @@ export function BrokerFormPage() {
                 const data = await getBroker(params.id)
                 //console.log(data)
                 const {
-                    data: { code, name, paternal_surname, maternal_surname, notes}
+                    data: { code, name, paternal_surname, maternal_surname, phone, email, notes}
                 } = await getBroker(params.id)
                 setValue('code', code)
                 setValue('name', name)
@@ -69,21 +69,24 @@ export function BrokerFormPage() {
     return(
         
        
-            <div className="form-container">
-
+            <div className="container">
+    
                 <form onSubmit={onSubmit} >
-
-                <div className="formulario">     
+     
+                <div className="form-rectangulo-head">
                     <div className="title-button-wrapper"> 
                         <h1>
-                            {params.id ? 'Editar Broker' : 'Nuevo Broker'} 
+                            {params.id ? 'Editar ' : 'Nuevo '} Broker 
                         </h1>
                         
                         <button type="submit"> 
                             {params.id ? 'Actualizar' : 'Guardar'} 
                         </button> 
                     </div>
+                </div>
+
                 
+                <div className="form-rectangulo">
                     <div className="form-row row-3 ">
                         <div className="form-group-inline">
                             <label>Codigo:</label>
@@ -167,6 +170,7 @@ export function BrokerFormPage() {
                         
                         </div>
                 </div>
+               
             
                 </form>
         </div>

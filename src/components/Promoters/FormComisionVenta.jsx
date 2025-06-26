@@ -6,6 +6,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import '../CSS/Comisiones.css';
 
 import { getComisionVta, getAllTipo, getAllBase, getAllTaxes, getAllBrokers, getAllComisionistas } from '../../api/catalogos.api';
+import { getCommIVA } from '../../api/commissions.api';
+
 //import { ColumnSizing } from '@tanstack/react-table';
 
 const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar }) => {
@@ -19,9 +21,14 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
   const [costo, setCosto] = useState(0);
   const [casa, setCasa] = useState(0);
   const [comision, setComision] = useState();
+  const [iva, setIVA] = useState(1);
+  const [ivaCosto, setIVACosto] = useState(0);
+  const [ivaCasa, setIVACasa] = useState(0);
+  const [ivaComision, setIVAComision] = useState();
   const [pPromotor, setpPromotor] = useState([]);
   const [comisionPromotor, setComisionPromotor] = useState([]);
-  const [tax, setTax] = useState([]);
+  const [tax, setTax] = useState(1);
+  const [commIVA, setCommIVA] = useState([]);
   const [tax_All, setTax_All] = useState([]);
 
   const [tipos, setTipos] = useState([]);
@@ -58,12 +65,14 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
             const tipoResponse = await getAllTipo();
             const baseResponse = await getAllBase();
 			const taxResponse = await getAllTaxes();
+			const ivaResponse = await getCommIVA();
             const brokerResponse = await getAllBrokers();
             const comisionistaResponse = await getAllComisionistas(); 
 
             setTipos(tipoResponse.data);
             setBases(baseResponse.data);
 			setTax_All(taxResponse.data);
+			setCommIVA(ivaResponse.data);
             setBrokersApi(brokerResponse.data)
             setComisionistasApi(comisionistaResponse.data)
 
@@ -83,11 +92,16 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
           try {
             const Response = await getComisionVta(comisionventaId);
             const data = Response.data
+			console.log("load cv",data)
             setCode(data.code)
             setName(data.name)
             setTipo(data.tipo.id)
             setBase(data.base.id)
 			setTax(data.tax)
+			setIVA(data.comiva)
+			setIVACosto(data.iva_cost)
+			setIVACasa(data.iva_house)
+			setIVAComision(data.iva_commission)
             setVenta(data.percentage_sales)
             setCosto(data.percentage_cost)
             setCasa(data.percentage_house)
@@ -222,8 +236,6 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
   useEffect(() => {
   const totalUsado = [...brokersSeleccionados, ...comisionistasSeleccionados]
     .reduce((acc, item) => acc + Number(item.porcentaje), 0);
-    //setPromotorPorcentaje(Math.max(comision - totalUsado, 0));
-    //setPromotorPorcentaje(Math.max(porcentajeGlobal - totalUsado, 0));
     setpPromotor(toFixed5(Math.max(comision - totalUsado, 0)));
   }, [brokersSeleccionados, comisionistasSeleccionados,comision]);
 
@@ -270,11 +282,16 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
 // **** Final 2
 
   const handleSubmit = (e) => {
+	console.log("submit", iva)
     e.preventDefault();
     //if (!descripcion || !monto) return;
     const brokers = brokersSeleccionados;
     const comisionistas = comisionistasSeleccionados;
     const promotor = promotorId;
+	const comiva = iva;
+	const iva_cost = ivaCosto;
+	const iva_house = ivaCasa;
+	const iva_commission = ivaComision;
     const percentage_cost = costo;
     const percentage_sales = venta;
     const percentage_house = casa;
@@ -290,6 +307,10 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
         tipo,
         base,
 		tax,
+		comiva,
+		iva_cost,
+		iva_house,
+		iva_commission,
         percentage_cost,
         percentage_sales,
         percentage_house,
@@ -309,269 +330,304 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
   return (
 
     <div className="modal-overlay">
-
     	<div className="modal">
 		
-	
-			<form className="formulario" onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit}>
 			
-			<div className="encabezado-con-botones">
+				<div className="encabezado-con-botones">
 
-				<span style={{fontSize:'18px', fontWeight:'bold'}}>Comision de Venta</span>			
-	
-				<div className="botones">
-					<button 
-						type='submit'  
-						className="btn-guardar"
-						style={{marginLeft:'580px'}}	
-					> Guardar
-					</button>
-
-					<button type="button" onClick={onCancelar} className="btn-cancelar">Cancelar</button>
-				</div>
-			</div>
-			
-							
-			<div className="input-select-container">
-
-        		<div className="form-group">
-					<label>Codigo:</label>
-					<input
-						type="text"
-						value={code}
-						style={{ width: '150px', }}
-						onChange={(e) => setCode(e.target.value)}
-						required
-					/>
-        		</div>
-
-				<div className="form-group">
-					<label>Nombre:</label>
-					<input
-						type="text"
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-						style={{ width: '360px'}}
-						required
-					/>
-				</div>
-        
-				<div className="form-group">
-					<label >Tipo:</label>
-					<select
-						value={tipo}
-						onChange={(e) => setTipo(e.target.value)}
-					>
-					<option value="">Selecciona el Tipo</option>
-						{tipos.map((tipo) => (
-					<option key={tipo.id} value={tipo.id}>
-						{tipo.name}
-					</option>
-						))}
-					</select>
-				</div>
-        
-				<div className="form-group">
-					<label>Base:</label>
-					<select
-						value={base}
-						onChange={(e) => setBase(e.target.value)}     
-					>
-					<option value="">Selecciona el Tipo</option>
-						{bases.map((base) => (
-					<option key={base.id} value={base.id}>
-						{base.name}
-					</option>
-						))}
-					</select>
-				</div>
-      		</div>
-
-			<div className="input-select-container">
-				<div className="form-group">
-					<label>%Venta:</label>
-					<input
-						type="number"
-						value={venta}
-						onChange={handleVentaChange}
-						//onChange={(e) => setVenta(e.target.value)}
-						required
-					/>
-				</div>
-        
-				<div className="form-group">
-					<label>%Costo:</label>
-					<input
-						type="number"
-						value={costo}
-						//onFocus={() => handleStartEdit(setPcosto)}
-						onChange={handlePcostoChange}
-						className="input-field"
-					/>
-				</div>
-        
-				<div className="form-group">
-					<label>%Casa:</label>
-					<input
-						type="number"
-						value={casa}
-						onChange={handlePcasaChange}
-						required
-					/>
-				</div>
-
-				<div className="form-group">
-					<label>%Comision:</label>
-					<input
-						type="text"
-						value={comision}
-						onChange={e => setPorcentajeGlobal(Number(e.target.value))}
-						required
-					/>
-				</div>
-
-				<div className="form-group">
-				<label>%Promotor:</label>
-				<input
-					type="text"
-					value={pPromotor}
-					onChange={(e) => setpPromotor(e.target.value)}
-					required
-				/>
-				</div>
-        	</div>
-
-			<div className="input-select-container">
-				<div className="form-group">
-					<label>Impuesto:</label>
-					<select
-						value={tax}
-						onChange={(e) => setTax(e.target.value)}	
-					>
-						<option value="">Selecciona el Tipo</option>
-							{tax_All.map((t) => (
-						<option key={t.id} value={t.id}>
-							{t.name}
-						</option>
-							))}
+					<span style={{fontSize:'18px', fontWeight:'bold'}}>Comision de Venta</span>			
 					
-					</select>
-				</div>
-			</div>
-			
-			
-        	<div style={{ padding: '30px', marginLeft:'50px' }}>
-          		<div style={{ marginBottom: '10px' }}>
+					<div className="botones">
+						<button 
+							type='submit'  
+							className="btn-guardar"
+							style={{marginLeft:'580px'}}	
+						> Guardar
+						</button>
 
-					
-					<div style={{ display: 'flex', width : '100%' }}>
-						<div style={{ flex: '0 0 500px' }}>
-						<div style={{ flex: 1, paddingRight: '10px'}}>
-
-							<label>Brokers</label>
-							<select onChange={e => {
-								const selected = brokersApi.find(b => b.id === Number(e.target.value));
-								if (selected) agregarItem('broker', selected);
-							}}>
-								<option value="">Seleccionar</option>
-									{brokersApi.map(b => (
-								<option key={b.id} value={b.id}> { `${b.name} ${b.paternal_surname} ${b.maternal_surname}` } </option>
-							))}
-							</select>
-
-							<ul>
-							{brokersSeleccionados.map(b => (
-								<li key={b.id} 
-									style={{fontSize: '11px'}}
-								>
-								<span
-									style={{
-										width: '200px',        // ancho fijo del texto
-										display: 'inline-block',
-										whiteSpace: 'nowrap',  // evita que se corte en varias líneas
-										overflow: 'hidden',
-										textOverflow: 'ellipsis', // puntos suspensivos si se pasa del ancho
-										color: '#06386b'
-									}}
-								>
-									{b.name} {b.paternal_surname} {b.maternal_surname}
-                  				</span>
-								<input
-									type="number"
-									value={b.porcentaje}
-									onChange={e => cambiarPorcentaje('broker', b.id, e.target.value)}
-									style={{ width: '80px' }}
-								/>%
-								<button 
-									onClick={() => eliminarItem('broker', b.id)} 
-									className="boton-eliminar"
-								>
-									🗑️
-								</button>
-								</li>
-							))}
-							</ul>
-						</div>
-						</div>
-            
-						{/* Comisionistas */}
-						<div style={{ flex: '0 0 500px' }}>
-						<div style={{ flex: 1, paddingLeft: '10px' }}>
-						
-							<label>Comisionista:</label>
-							<select onChange={e => {
-								const selected = comisionistasApi.find(c => c.id === Number(e.target.value));
-								if (selected) agregarItem('comisionista', selected);
-							}}>
-								<option value="">Seleccionar</option>
-									{comisionistasApi.map(c => (
-								<option key={c.id} value={c.id}>{ `${c.name} ${c.paternal_surname} ${c.maternal_surname}` }</option>
-									))}
-              				</select>
-
-              				<ul>
-								{comisionistasSeleccionados.map(c => (
-								<li key={c.id} 
-									style={{fontSize: '11px'}}>
-									<span
-										style={{
-											width: '200px',        // ancho fijo del texto
-											display: 'inline-block',
-											whiteSpace: 'nowrap',  // evita que se corte en varias líneas
-											overflow: 'hidden',
-											textOverflow: 'ellipsis', // puntos suspensivos si se pasa del ancho
-										}}
-									>
-									{c.name} {c.paternal_surname} {c.maternal_surname} </span>
-									<input
-										type="number"
-										value={c.porcentaje}
-										onChange={e => cambiarPorcentaje('comisionista', c.id, e.target.value)}
-										style={{ width: '90px',  }}
-									/>%
-									<button 
-										onClick={() => eliminarItem('comisionista', c.id)} 
-										className="boton-eliminar"
-									>
-										🗑️
-									</button>
-								</li>
-								))}
-							</ul>
-						
-						</div>
-						</div>
-
+						<button 
+							type="button" 
+							onClick={onCancelar} 
+							className="btn-cancelar"
+						> Cancelar
+						</button>
 					</div>
+				</div>
+			
+				<div className='form-rectangulo'>		
+					<div className="input-select-container">
+
+						<div className="form-group">
+							<label>Codigo:</label>
+							<input
+								type="text"
+								value={code}
+								style={{ width: '150px', }}
+								onChange={(e) => setCode(e.target.value)}
+								required
+							/>
+						</div>
+
+						<div className="form-group">
+							<label>Nombre:</label>
+							<input
+								type="text"
+								value={name}
+								onChange={(e) => setName(e.target.value)}
+								style={{ width: '360px'}}
+								required
+							/>
+						</div>
+			
+						<div className="form-group">
+							<label >Tipo:</label>
+							<select
+								value={tipo}
+								onChange={(e) => setTipo(e.target.value)}
+							>
+							<option value="">Selecciona el Tipo</option>
+								{tipos.map((tipo) => (
+							<option key={tipo.id} value={tipo.id}>
+								{tipo.name}
+							</option>
+								))}
+							</select>
+						</div>
 				
-        		</div>
+						<div className="form-group">
+							<label>Base:</label>
+							<select
+								value={base}
+								onChange={(e) => setBase(e.target.value)}     
+							>
+							<option value="">Selecciona el Tipo</option>
+								{bases.map((base) => (
+							<option key={base.id} value={base.id}>
+								{base.name}
+							</option>
+								))}
+							</select>
+						</div>
+					</div>
 
-    		</div>
+					<div className="input-select-container">
+						<div className="form-group">
+							<label>%Venta:</label>
+							<input
+								type="number"
+								value={venta}
+								onChange={handleVentaChange}
+								//onChange={(e) => setVenta(e.target.value)}
+								required
+							/>
+						</div>
+		
+						<div className="form-group">
+							<label>%Costo:</label>
+							<input
+								type="number"
+								value={costo}
+								//onFocus={() => handleStartEdit(setPcosto)}
+								onChange={handlePcostoChange}
+								className="input-field"
+							/>
+						</div>
+		
+						<div className="form-group">
+							<label>%Casa:</label>
+							<input
+								type="number"
+								value={casa}
+								onChange={handlePcasaChange}
+								required
+							/>
+						</div>
 
-      	</form>
+						<div className="form-group">
+							<label>%Comision:</label>
+							<input
+								type="text"
+								value={comision}
+								onChange={e => setPorcentajeGlobal(Number(e.target.value))}
+								required
+							/>
+						</div>
+
+						<div className="form-group">
+						<label>%Promotor:</label>
+						<input
+							type="text"
+							value={pPromotor}
+							onChange={(e) => setpPromotor(e.target.value)}
+							required
+						/>
+						</div>
+					</div>
+
+					<div className="input-select-container">
+						<div className="form-group">
+							<label>IVA:</label>
+							<select
+								value={iva}
+								onChange={(e) => setIVA(Number(e.target.value))}	
+							>
+								<option value="">Selecciona el Tipo</option>
+									{commIVA.map((t) => (
+								<option key={t.id} value={t.id}>
+									{t.name}
+								</option>
+									))}
+							
+							</select>
+							
+						</div>
+						{ iva === 2 && (
+							<>
+								<div className="form-group">
+									<label>% Costo</label>
+									<input 
+										type="text"
+										value={ivaCosto}
+										onChange={(e) => setIVACosto(e.target.value)}
+										placeholder="0.00" />
+								</div>
+
+								<div className="form-group">
+									<label>% Casa</label>
+									<input type="text" 
+										value={ivaCasa}
+										onChange={(e) => setIVACasa(e.target.value)}
+										placeholder="0.00" />
+								</div>
+
+								<div className="form-group">
+									<label>% Comision</label>
+									<input 
+										type="text" 
+										value={ivaComision}
+										onChange={(e) => setIVAComision(e.target.value)}
+										placeholder="0.00" />
+								</div>
+
+								<div className="form-group">
+									<label>% Promotor</label>
+									<input 
+										type="text" 
+										value={ivaComision}
+										placeholder="0.00" />
+								</div>
+							</>
+								)}
+					</div>
+				</div>
+
+				<div className='form-rectangulo'>
+					<div style={{ padding: '0px', marginLeft:'50px' }}>
+						<div style={{ display: 'flex', width : '100%' }}>
+							<div style={{ flex: '0 0 500px' }}>
+								<div style={{ flex: 1, paddingRight: '10px'}}>
+
+									<label>Brokers</label>
+									<select onChange={e => {
+										const selected = brokersApi.find(b => b.id === Number(e.target.value));
+										if (selected) agregarItem('broker', selected);
+									}}>
+										<option value="">Seleccionar</option>
+											{brokersApi.map(b => (
+										<option key={b.id} value={b.id}> { `${b.name} ${b.paternal_surname} ${b.maternal_surname}` } </option>
+									))}
+									</select>
+
+									<ul>
+									{brokersSeleccionados.map(b => (
+										<li key={b.id} 
+											style={{fontSize: '11px'}}
+										>
+										<span
+											style={{
+												width: '200px',        // ancho fijo del texto
+												display: 'inline-block',
+												whiteSpace: 'nowrap',  // evita que se corte en varias líneas
+												overflow: 'hidden',
+												textOverflow: 'ellipsis', // puntos suspensivos si se pasa del ancho
+												color: '#06386b'
+											}}
+										>
+											{b.name} {b.paternal_surname} {b.maternal_surname}
+										</span>
+										<input
+											type="number"
+											value={b.porcentaje}
+											onChange={e => cambiarPorcentaje('broker', b.id, e.target.value)}
+											style={{ width: '80px' }}
+										/>%
+										<button 
+											onClick={() => eliminarItem('broker', b.id)} 
+											className="boton-eliminar"
+										>
+											🗑️
+										</button>
+										</li>
+									))}
+									</ul>
+								</div>
+							</div>
+				
+							{/* Comisionistas */}
+							<div style={{ flex: '0 0 500px' }}>
+								<div style={{ flex: 1, paddingLeft: '10px' }}>
+							
+									<label>Comisionista:</label>
+									<select onChange={e => {
+										const selected = comisionistasApi.find(c => c.id === Number(e.target.value));
+										if (selected) agregarItem('comisionista', selected);
+									}}>
+										<option value="">Seleccionar</option>
+											{comisionistasApi.map(c => (
+										<option key={c.id} value={c.id}>{ `${c.name} ${c.paternal_surname} ${c.maternal_surname}` }</option>
+											))}
+									</select>
+
+									<ul>
+										{comisionistasSeleccionados.map(c => (
+										<li key={c.id} 
+											style={{fontSize: '11px'}}>
+											<span
+												style={{
+													width: '200px',        // ancho fijo del texto
+													display: 'inline-block',
+													whiteSpace: 'nowrap',  // evita que se corte en varias líneas
+													overflow: 'hidden',
+													textOverflow: 'ellipsis', // puntos suspensivos si se pasa del ancho
+												}}
+											>
+											{c.name} {c.paternal_surname} {c.maternal_surname} </span>
+											<input
+												type="number"
+												value={c.porcentaje}
+												onChange={e => cambiarPorcentaje('comisionista', c.id, e.target.value)}
+												style={{ width: '90px',  }}
+											/>%
+											<button 
+												onClick={() => eliminarItem('comisionista', c.id)} 
+												className="boton-eliminar"
+											>
+												🗑️
+											</button>
+										</li>
+										))}
+									</ul>
+							
+								</div>
+							</div>
+						</div>
+					</div>
+            	</div>
+
+      		</form>
 
     	</div>
-
 	</div>
 
   	);

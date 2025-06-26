@@ -3,7 +3,7 @@ import axios from 'axios'
 //const token = localStorage.getItem('token');
 
 const URLApi = axios.create({
-    baseURL: 'http://192.168.56.101:8000/api/companies'
+    baseURL: 'http://192.168.56.101:8000/api/it'
     //baseURL: 'http://192.168.100.226:8000/api/'
 });
 
@@ -85,11 +85,18 @@ URLApi.interceptors.response.use(
 );
 
 
-export const getAllCompanies = () => URLApi.get('/companies/')
-export const getBankAccountDetail = (id) => URLApi.get(`bankaccounts/company/${id}/`)
+export const getAllEquipments = () => URLApi.get('/equipments/equipments/')
+export const CreateEquipment = (d) => URLApi.post('/equipments/equipmentsave/', d)
+export const getEquipmentDetail = (id) => URLApi.get(`equipments/equipment/${id}/`)
+export const updateEquipment =(id, d) => URLApi.put(`equipments/equipment/${id}/update/`, d)
 
-export const getEmpresas = () => URLApi.get('/companies/')
-export const getCuentasPorEmpresa = (id) => URLApi.get(`bankaccounts/company/${id}/`)
+export const getAllMake = () => URLApi.get('/catalogues/make/')
+export const getAllModel = () => URLApi.get('/catalogues/model/')
+export const getAllEquipmentType = () => URLApi.get('/catalogues/equipmenttype/')
+export const getAllBranches = () => URLApi.get('/catalogues/branches/')
+export const getAllStatus = () => URLApi.get('/catalogues/equipmentstatus/')
+
+
 
 //export const createComisionVenta = (b) => URLApi.post('commissions/comisiones/', b)
 

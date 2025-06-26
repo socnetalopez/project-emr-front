@@ -11,10 +11,9 @@ export function PromotersPage() {
     };
 
     return (
-      <div >
-        <h1 className="font-bold p-5 uppercase">Promotors  
-        <button onClick={handleClick} >Nuevo</button> </h1>
-            <PromoterLists />
+
+      <div>
+        <PromoterLists />
       </div>
     );
   }

@@ -294,9 +294,9 @@ const SolicitudGeneral = () => {
     <div>   
         <Toaster /> {/* ¡Sin esto, no se ve el toast! */} 
 
-        <div className="containerRequest">
+        <div className="container">
 
-            <div className="formRequest">
+            <div className="">
 
                 <div className="formulario-rectangulo--movements-flotante">
                     

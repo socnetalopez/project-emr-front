@@ -56,7 +56,7 @@ function Sidebar() {
   return (
     <div style={{
       width: "180px",
-      backgroundColor: "#575360",
+      backgroundColor: "#242948",
       color: "white",
       padding: "0px",
       height: "100vh",
@@ -113,6 +113,18 @@ function Sidebar() {
 				]}
 			/>
 
+      <MenuItem
+				label="Information Technologies"
+				isOpen={openSubMenu === "it"}
+				onClick={() => toggleSubMenu("it")}
+				items={[
+				{ to: "/dashboard/equipments/equipments", label: "Inventory" },
+				{ to: "/dashboard/promotores", label: "Promotores" },
+				{ to: "/dashboard/brokers", label: "Brokers" },
+				{ to: "/dashboard/comisionistas", label: "Comisionistas" },
+				]}
+			/>
+
 
     </ul>
 
@@ -150,7 +162,7 @@ const styles = {
     listStyle: "none",
     padding: 0,
     margin: 0,
-    backgroundColor: "#333",
+    backgroundColor: "#242948",
     width: "180px",
     color: "white",
     fontFamily: "sans-serif",
@@ -165,7 +177,7 @@ const styles = {
     cursor: "pointer",
   },
   toggle: {
-    backgroundColor: "#333",
+    backgroundColor: "#242948",
   },
   subMenuWrapper: {
     overflow: "hidden",

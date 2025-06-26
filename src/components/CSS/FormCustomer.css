@@ -119,7 +119,6 @@
     font-size: 12px;
     border-radius: 5px;
   }
-
   
   
 .headerLayoutSup-Customers {
@@ -154,6 +153,64 @@
   margin-left: 10px;
   height: 40px;
 }
+
+
+/* Estilo general del input select */
+.react-select__control {
+  background-color: #e2dede;
+  height: 30px;
+  min-height: 30px; /* Garantiza que no se expanda */
+  font-size: 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 300px;
+  padding: 0 5px;
+  box-shadow: none;
+  display: flex;
+  align-items: center; /* Centra verticalmente el contenido */
+}
+
+/* Contenedor del valor */
+.react-select__value-container {
+  padding: 0 5px;
+  display: flex;
+  align-items: center; /* Centra verticalmente el texto */
+  height: 100%;
+}
+
+/* Indicadores (flecha y limpiar) */
+.react-select__indicators,
+.react-select__indicators-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.react-select__dropdown-indicator,
+.react-select__clear-indicator {
+  padding: 4px;
+}
+
+/* Menú de opciones */
+.react-select__menu {
+  font-size: 12px;
+}
+
+/* Opciones individuales */
+.react-select__option {
+  font-size: 12px;
+  background-color: #e2dede;
+  color: green;
+  padding: 5px 10px;
+}
+
+/* Opción cuando está enfocada */
+.react-select__option--is-focused {
+  background-color: #d4d4d4;
+}
+
+
+
 
 
   /*

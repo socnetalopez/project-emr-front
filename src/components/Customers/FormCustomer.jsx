@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form"
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import Select from 'react-select';
 
 import { getRegimenTipo, getCountry, getStates, getMunicpio, getTipoCalculo, 
         getComprobante, getTax, getTipoPago, getREgimenFiscal, getUsoFactura, 
@@ -218,7 +219,7 @@ export function CustomerFormPage() {
                     zip,
                     tipo_calculo,
                     comprobante,
-                    tax,
+                    //tax,
                     tipo_pago,
                     regimen_fiscal,
                     uso_factura,
@@ -252,12 +253,17 @@ export function CustomerFormPage() {
         })
 
         const handleBack = () => {
-        navigate(-1); // Esto regresa una página en el historial
-    };
+            navigate(-1); // Esto regresa una página en el historial
+        };
+    
+    const opcionesPromotores = promotores.map((p) => ({
+        value: p.id,
+        label: `${p.name} ${p.paternal_surname} ${p.maternal_surname}`,
+    }));
 
     return(
-        <div className="contenedorc">
-            <form onSubmit={onSubmit} class="formulariocustomer">
+        <div className="">
+            <form onSubmit={onSubmit} class="">
 
                 <div className="formulario-rectangulo-flotante">
                     <label>Clientes : {params.id ? 'Editar' : 'Nuevo'}</label>
@@ -589,19 +595,17 @@ export function CustomerFormPage() {
 
                         <div className="campo-formulariocustomer">
                             <label >Promotor </label>
-                            <select
-                                value={promotorSeleccionado}
-                                onChange={(e) => setPromotorSeleccionado(e.target.value)}
-                                className="bg-zinc-200 rounded-lg select-field"
-                                required
-                            >
-                                <option value="">Selecciona</option>
-                                    {promotores.map((p) => (
-                                <option key={p.id} value={p.id}>
-                                    {p.name}
-                                </option>
-                                    ))}
-                            </select>
+                            <Select
+                                options={opcionesPromotores}
+                                value={opcionesPromotores.find((op) => op.value === promotorSeleccionado) || null}
+                                onChange={(selectedOption) => setPromotorSeleccionado(selectedOption ? selectedOption.value : '')}
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                placeholder="Selecciona"
+                                isClearable
+                                isSearchable={true}
+
+                            />
                         </div>
                     
 
@@ -613,7 +617,7 @@ export function CustomerFormPage() {
                             <select
                                 value={comision_venta} 
                                 onChange={(e) => setcomision_venta(e.target.value)}
-                                className="bg-zinc-200 rounded-lg select-field"
+                                className="select-field"
                                 required
                             >
                                 <option value="">Selecciona</option>
