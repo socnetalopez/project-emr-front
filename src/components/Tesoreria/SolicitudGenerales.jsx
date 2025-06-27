@@ -572,7 +572,7 @@ const SolicitudGeneral = () => {
                         <SolicitudClientes 
                             promotorId={selectedPromotor} 
                             clientesData={clientesData} setClientesData={setClientesData} 
-                            datosComision={datosComision} setDatosComision={setDatosComision} 
+                            datosComision={datosComision} setDatosComision={setDatosComision}
                         />
                     </div>
                             

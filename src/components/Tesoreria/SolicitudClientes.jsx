@@ -5,6 +5,7 @@ import Select from 'react-select';
 import SolicitudComisiones from './SolicitudComisiones';
 import { getCustomersPromotorId, getCustomerIdRequest } from "../../api/customers.api";
 import { getAllCompanies, getBankAccountDetail } from "../../api/companies.api";
+import { getAllConciliations } from '../../api/catalogos.api';
 
 import "../CSS/DataTable.css"
 import '../CSS/TreasuryMovements.css'
@@ -19,6 +20,25 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
     const [percentageTax, setPercentageTax] = useState([]);
     const [empresas, setEmpresas] = useState([]);
     const [cuentasPorEmpresa, setCuentasPorEmpresa] = useState({}); // { empresaId: [cuentas] }
+    const [conciliations, setConciliations] = useState([]);
+
+    // Obtener los datos de la API
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const conciliationsResponse = await getAllConciliations();
+                    
+                    setConciliations(conciliationsResponse.data);                    
+    
+                } catch (error) {
+                    console.error("Error al cargar los datos", error);
+                    //setLoading(false);
+                }
+            };
+        
+            fetchData();
+        }, []);
+    
 
     
     //console.log("Sol_clientes: clientesData", clientesData)
@@ -38,6 +58,14 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         desglose: client.breakdown,
         comisionistas: client.commission_agents,
         tax_percentage: client.tax_percentage,
+
+        subitems: client.subitems?.map(sub => ({
+          company: sub.company,
+          account: sub.account,
+          amount: sub.amount,
+          conciliation: sub.conciliation,
+          cuentasEmpresa: [] // Esto se llenará cuando se seleccione la empresa
+        })) || [],
       }));
         
 		};
@@ -52,7 +80,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
       setClientesData({ clientesSeleccionados });
     }, [clientesSeleccionados]);
 
-    
+
 
     useEffect(() => {
         const fetchClientsAvailable = async () => {
@@ -151,11 +179,33 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 
 
 	useEffect(() => {
-		if (clientesData?.length) {
-			const clientesConvertidos = convertirClientes(clientesData);
-			setClientesSeleccionados(clientesConvertidos); 
+	const cargarClientesConCuentas = async () => {
+		if (!clientesData?.length) return;
+
+		const clientesConvertidos = convertirClientes(clientesData);
+
+		for (const cliente of clientesConvertidos) {
+			if (cliente.subitems?.length > 0) {
+				for (const subitem of cliente.subitems) {
+					if (subitem.company) {
+						try {
+							const res = await getBankAccountDetail(subitem.company);
+							subitem.cuentasEmpresa = res.data;
+						} catch (error) {
+							console.error('Error cargando cuentas para empresa', subitem.company, error);
+							subitem.cuentasEmpresa = [];
+						}
+					}
+				}
+			}
 		}
-    }, [clientesData]);
+
+		setClientesSeleccionados(clientesConvertidos);
+	};
+
+	cargarClientesConCuentas();
+}, [clientesData]);
+
     //console.log("clientes cobertidos",clientesData, clientesSeleccionados)
 
     const totales_Importe = clientesSeleccionados.reduce((total, c) => total + Number(c.importe || 0), 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
@@ -177,7 +227,7 @@ useEffect(() => {
     company: '',
     account: '',
     amount: '',
-    conciliacion: '',
+    conciliation: '',
     cuentasEmpresa: [],
   });
   setClientesSeleccionados(nuevos);
@@ -194,14 +244,37 @@ const eliminarSubitem = (clienteIdx, subIdx) => {
 const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
   const nuevos = [...clientesSeleccionados];
   const subitem = nuevos[clienteIdx].subitems[subIdx];
-  subitem[field] = value;
 
-  // Si cambia la empresa, carga cuentas bancarias
+  // Si es empresa, cargar cuentas
   if (field === 'company') {
     const res = await getBankAccountDetail(value);
     subitem.account = '';
     subitem.cuentasEmpresa = res.data;
   }
+
+  // Si es monto, validar que no se exceda
+  if (field === 'amount') {
+    const nuevoMonto = parseFloat(value) || 0;
+
+    // Calcular la suma de los demás subitems
+    const sumaOtros = nuevos[clienteIdx].subitems.reduce((sum, s, i) => {
+      if (i === subIdx) return sum;
+      return sum + parseFloat(s.amount || 0);
+    }, 0);
+
+    const nuevoTotal = sumaOtros + nuevoMonto;
+    const importeCliente = parseFloat(nuevos[clienteIdx].importe || 0);
+
+    if (nuevoTotal > importeCliente) {
+      alert('La suma de montos en las cuentas no puede ser mayor al importe del cliente.');
+      return; // 🔒 Bloquea el cambio
+    }
+
+    subitem.amount = nuevoMonto;
+  } else {
+    subitem[field] = value;
+  }
+
   setClientesSeleccionados(nuevos);
 };
 
@@ -215,27 +288,25 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
           	</h3>
           
 			<table className="table-sin-borde">
-			<thead>
-				<tr>
-				<th>Cliente</th>
-				<th>Tipo de Calculo</th>
-				<th>Comprobante</th>
-				<th>Tasa de IVA</th>
-				<th>Tipo de Pago</th>
-				<th>Importe Nominal</th>
-				<th>% Comision</th>
-				<th>% IVA</th>
-				<th>Retorno</th>
-				<th>Desglose</th>
-				<th></th>
-				</tr>
-			</thead>
-
-          	<tbody>
+        
+        <tbody>
           
 			{ clientesSeleccionados.length > 0 ? (
 				clientesSeleccionados.map((item, index) => (
 				<React.Fragment key={index}>
+          <tr style={{ backgroundColor: '#dbeafe', borderTop: '2px solid #3b82f6' }}>
+          <th colSpan="11" style={{ padding: '8px', textAlign: 'left' }}>Cliente</th>
+          <th>Tipo de Calculo</th>
+          <th>Comprobante</th>
+          <th>Tasa de IVA</th>
+          <th>Tipo de Pago</th>
+          <th>Importe Nominal</th>
+          <th>% Comision</th>
+          <th>% IVA</th>
+          <th>Retorno</th>
+          <th>Desglose</th>
+          <th></th>
+        </tr>
                   <tr style={{ marginBottom: '1rem' }}>
 				<td>
 					<select
@@ -363,7 +434,7 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
                             }))}
                             value={(sub.cuentasEmpresa || [])
                               .map(acc => ({ value: acc.id, label: acc.name }))
-                              .find(opt => opt.value === sub.account) || null}
+                              .find(opt => opt.value === Number(sub.account)) || null}
                             onChange={selected =>
                               actualizarSubitem(index, subIdx, 'account', selected ? selected.value : '')
                             }
@@ -372,7 +443,7 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
                             placeholder="Seleccione Cuenta"
                             isClearable
                             isSearchable
-                            isDisabled={!sub.cuentasEmpresa?.length}
+                            
                           />
                         </div>
                         {/* Monto */}
@@ -386,20 +457,17 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
                         {/* Conciliación */}
                         <div className="campo-formulariocustomer" style={{ width: 140 }}>
                           <Select
-                            options={[
-                              { value: '', label: 'Conciliación' },
-                              { value: 'conciliado', label: 'Conciliado' },
-                              { value: 'no_conciliado', label: 'No conciliado' }
-                            ]}
+                            options={conciliations.map(conc => ({
+                              value: conc.id, // Ajusta si tu objeto tiene otro nombre de campo
+                              label: conc.name  // Ajusta si tu objeto tiene otro nombre de campo
+                            }))}
                             value={
-                              [
-                                { value: '', label: 'Conciliación' },
-                                { value: 'conciliado', label: 'Conciliado' },
-                                { value: 'no_conciliado', label: 'No conciliado' }
-                              ].find(opt => opt.value === sub.conciliacion) || null
+                              conciliations
+                                .map(conc => ({ value: conc.id, label: conc.name }))
+                                .find(opt => opt.value === sub.conciliation) || null
                             }
                             onChange={selected =>
-                              actualizarSubitem(index, subIdx, 'conciliacion', selected ? selected.value : '')
+                              actualizarSubitem(index, subIdx, 'conciliation', selected ? selected.value : '')
                             }
                             className="react-select"
                             classNamePrefix="react-select"
