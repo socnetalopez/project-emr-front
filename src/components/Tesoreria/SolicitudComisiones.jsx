@@ -116,8 +116,8 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         };
                     }
                     acumuladoBrokers[brokerId].commission += parseFloat(costo.costo_com.toFixed(2));
-                    acumuladoBrokers[brokerId].tax += costo.costo_tax;
-                    acumuladoBrokers[brokerId].retorno += costo.costo_total;
+                    acumuladoBrokers[brokerId].tax +=  parseFloat(costo.costo_tax.toFixed(2));
+                    acumuladoBrokers[brokerId].retorno +=  parseFloat(costo.costo_total.toFixed(2));
 
                 }
 
@@ -149,8 +149,8 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                     
                     let costo_com = parseFloat(costo.costo_com)
                     acumuladoComisionistas[comisionistaId].commission += parseFloat(costo_com.toFixed(2));
-                    acumuladoComisionistas[comisionistaId].tax += costo.costo_tax;
-                    acumuladoComisionistas[comisionistaId].retorno += costo.costo_total;
+                    acumuladoComisionistas[comisionistaId].tax += parseFloat(costo.costo_tax.toFixed(2));
+                    acumuladoComisionistas[comisionistaId].retorno += parseFloat(costo.costo_total.toFixed(2));
                 }
             }
         }

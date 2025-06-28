@@ -135,9 +135,83 @@
   background-color: gray;
 }
 
+
+
+
+
+.cliente-card {
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.cliente-header {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+  min-width: 150px;
+}
+
+.subitem-card {
+  border: 1px solid #e0e0e0;
+  background-color: #fafafa;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 6px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.subitem-campo {
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+}
+
+.subitem-actions {
+  margin-left: auto;
+}
 /* < --- */ 
 
+table {
+   
+    border-collapse: collapse;
 
+  }
+  
+  th, td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 11px;
+  }
+  
+  th {
+    background-color: #dfdfdf;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+
+
+  tr:hover {
+    background-color: transparent;
+  }
+  
 
 /* App.css 
 .contenedor {

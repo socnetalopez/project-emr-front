@@ -13,6 +13,8 @@ import { getMonedas, getFormaPago, getTipoOperacion, getTipoSolicitud, getTipoPa
 import { getAllPromoters } from "../../api/catalogos.api";
 import { getIncomeType } from "../../api/income_expenses.api";
 
+import { CreateBalances } from "../../api/balances.api";
+
 import LayoutSUP from "./LayoutSup";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -99,6 +101,7 @@ const SolicitudGeneral = () => {
         loadRequest()
     }, [params.id]);
     //request.promoter = request.promoter.id
+   
     console.log("Load initial",request)
     console.log("selected promoter",selectedPromotor)
    //console.log("General customer", clientesData)
@@ -132,6 +135,7 @@ const SolicitudGeneral = () => {
     
         fetchData();
     }, []);
+     console.log("tiposolicitud", tipoSolicitudes)
 
 
     // Manejo de la fecha
@@ -274,6 +278,68 @@ const SolicitudGeneral = () => {
         );
     };
 
+   const handleSubmitBalances = async (e) => {
+    e.preventDefault();
+
+    const { folio, id, status } = request || {};
+    const brokers = datosComision.brokers || [];
+    const commissionAgents = datosComision.comisionistas || [];
+
+    // Filtrar brokers válidos y agregar campos necesarios
+    const brokersConFolio = brokers
+        .filter(broker => broker && typeof broker === 'object' && broker.brokerId && broker.retorno !== undefined)
+        .map(broker => ({
+            ...broker,
+            broker: broker.brokerId,
+            folio: folio,
+            request: id,
+            amount_income: broker.retorno,
+        }));
+
+    // Filtrar comisionistas válidos y agregar campos necesarios
+    const commissionAgentsConFolio = commissionAgents
+        .filter(comisionista => comisionista && typeof comisionista === 'object' && comisionista.comisionistaId && comisionista.retorno !== undefined)
+        .map(comisionista => ({
+            ...comisionista,
+            comisionista: comisionista.comisionistaId,
+            folio: folio,
+            request: id,
+            amount_income: comisionista.retorno,
+        }));
+
+    const data = {
+        brokers: brokersConFolio,
+        commission_agents: commissionAgentsConFolio,
+    };
+
+    if (status === 2) {
+        data.status = 3; // saldo cancelado
+        console.log(params.id, "updated:", data);
+        // await Requestupdate(params.id, data);
+        toast.success('Saldo cancelado correctamente', {
+            position: "bottom-right",
+            style: {
+                background: "#101010",
+                color: "#fff",
+            },
+        });
+    } else {
+        data.status = 2; // saldo aplicado
+        console.log("created:", data);
+        await CreateBalances(data);
+        toast.success('Saldo creado correctamente', {
+            position: "bottom-right",
+            style: {
+                background: "#101010",
+                color: "#fff",
+            },
+        });
+    }
+
+    console.log("Saldo brokers enviado:", brokersConFolio);
+};
+
+
     //console.log("al final general", request)
     //console.log("al final",clientesData );
 
@@ -289,6 +355,12 @@ const SolicitudGeneral = () => {
 
     // <<<<
 
+    const debeMostrarBoton = () => {
+        const status = request.status;
+        console.log("status", status)
+    return status !== 0 && status !== '' && status !== null, status !== undefined;
+};
+
     return (
 
     <div>   
@@ -301,6 +373,9 @@ const SolicitudGeneral = () => {
                 <div className="formulario-rectangulo--movements-flotante">
                     
                     <h2>Solicitudes : {params.id ? 'Editar  ' : 'Nuevo  '}
+                        {request.folio && (
+                            <p>Folio: {request.folio}</p>
+                        )}
                     {/*}
                     <span className={`status-label ${
                         request.status === 1 ? 'orange' :
@@ -316,12 +391,25 @@ const SolicitudGeneral = () => {
                     </span>
                     */}
 
+                                        
                     </h2>
 
                     <button type="button" onClick={handleSubmit}>
                         {params.id ? 'Actualizar ' : 'Guardar'}
                     </button>
 
+                    {debeMostrarBoton() && (
+
+                    <button 
+                        onClick={handleSubmitBalances} 
+                        className="btn-cancelar"
+                        style={{padding:'6px', margin:'4px', background: 'orange '}}    
+                    >
+                        Aplicar Saldos
+                    </button>
+                    )}
+                    
+                    
                     <button 
                         onClick={handleBack} 
                         className="btn-cancelar"
@@ -329,14 +417,7 @@ const SolicitudGeneral = () => {
                     >
                         Regresar
                     </button>
-
-                    <button 
-                        onClick={newIncome} 
-                        className="btn-cancelar"
-                        style={{padding:'6px', margin:'4px', background: 'orange '}}    
-                    >
-                        Crear Ingreso
-                    </button>
+    
 
                     
                 </div>

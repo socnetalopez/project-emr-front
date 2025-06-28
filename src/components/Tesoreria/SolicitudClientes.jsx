@@ -7,7 +7,7 @@ import { getCustomersPromotorId, getCustomerIdRequest } from "../../api/customer
 import { getAllCompanies, getBankAccountDetail } from "../../api/companies.api";
 import { getAllConciliations } from '../../api/catalogos.api';
 
-import "../CSS/DataTable.css"
+
 import '../CSS/TreasuryMovements.css'
 
 
@@ -293,9 +293,16 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
           
 			{ clientesSeleccionados.length > 0 ? (
 				clientesSeleccionados.map((item, index) => (
+          <div key={index} style={{
+            //border: '1px solid #ccc',
+            //borderRadius: '8px',
+            //padding: '16px',
+            marginBottom: '40px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
 				<React.Fragment key={index}>
-          <tr style={{ backgroundColor: '#dbeafe', borderTop: '2px solid #3b82f6' }}>
-          <th colSpan="11" style={{ padding: '8px', textAlign: 'left' }}>Cliente</th>
+          <tr style={{ background: '#f4f4f4', borderTop: '2px' }}>
+          <th style={{ padding: '8px', textAlign: 'left' }}>Cliente</th>
           <th>Tipo de Calculo</th>
           <th>Comprobante</th>
           <th>Tasa de IVA</th>
@@ -389,7 +396,7 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
             </tr>
                 {/* Subitems */}
                 {item.subitems && item.subitems.length > 0 && (
-                  <tr style={{ background: '#ececec' }}>
+                  <tr style={{ background: '#eaeaea' }}>
                     <td colSpan={11}>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontWeight: 'bold' }}>
                         <span style={{ width: 180 }}>Empresa</span>
@@ -482,17 +489,24 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
                   </tr>
                 ))}
                 </React.Fragment>
-          )) 
+         </div> )) 
         ):( 
             
-        <tr>
+        <tr colSpan={11}>
                 <td colSpan="11" style={{ textAlign: 'center' }}>No hay clientes seleccionados</td>
               </tr>
         )}
         {clientesSeleccionados.length > 0 && (
+          <div style={{
+            //border: '1px solid #ccc',
+            //borderRadius: '8px',
+            //padding: '16px',
+            marginBottom: '40px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
               <tr style={{ backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>
-                <td colSpan="5" style={{ textAlign: 'right' }}>Totales:</td>
-                <td>
+                <td style={{ textAlign: 'right' }}>Totales:</td>
+                <td>Total Importe: 
                   <input
                     value={totales_Importe}
                     className="input-field"
@@ -500,7 +514,7 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
                     readOnly
                   />
                 </td>
-                <td>
+                <td> Total Comsion:
                   <input
                     type="number"
                     value={totales_PComision}
@@ -509,7 +523,7 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
                     readOnly
                   />
                 </td>
-                <td>
+                <td> Total IVA:
                   <input
                     value={totales_IVA}
                     className="input-field"
@@ -517,7 +531,7 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
                     readOnly
                   />
                 </td>
-                <td>
+                <td> Total Retorno:
                   <input
                     value={totales_Retorno}
                     className="input-field"
@@ -535,6 +549,7 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
                 </td>
                 <td></td>
               </tr>
+            </div>
             )}
           
         </tbody>
