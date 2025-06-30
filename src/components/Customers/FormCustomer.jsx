@@ -219,7 +219,7 @@ export function CustomerFormPage() {
                     zip,
                     tipo_calculo,
                     comprobante,
-                    //tax,
+                    tax,
                     tipo_pago,
                     regimen_fiscal,
                     uso_factura,
@@ -696,7 +696,89 @@ export function CustomerFormPage() {
                     </div>
                     
                     )}
+
+                {/*Empiza iva */}
+                {/* Detalle de Comisión */}
+                    {detalle && (
+                    
+                    <div style={{ display: 'flex', gap: '40px', marginTop: '30px', fontSize:'14px' }}>
+                        
+                        {/* Tabla porcentajes */}
+                        <div style={{ flex: '0 0 430px' }}>
+                            
+                            <table border="1" cellPadding="30" style={{ width: '100%'}}>
+
+                                <thead>
+                                    <tr>
+                                        <th colSpan={5}>IVA</th>
+                                    </tr>
+                                    <tr>
+                                    <th>% Venta</th>
+                                    <th>% Costo</th>
+                                    <th>% Casa</th>
+                                    <th>% Comisión</th>
+                                    <th>% Promotor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <td></td>
+                                    <td>{detalle.percentage_iva_cost}%</td>
+                                    <td>{detalle.percentage_iva_house}%</td>
+                                    <td>{detalle.percentage_iva_commission}%</td>
+                                    <td>{detalle.percentage_iva_commission}%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Lista brokers y comisionistas */}
+                        
+                        <div style={{ flex: '1 1 auto' }}>
+                            <table border="1" cellPadding="8" style={{ width: '100%', fontSize:'12px' }}>
+                                <thead>
+                                    <tr>
+                                    <th>Tipo</th>
+                                    <th>Nombre</th>
+                                    <th>Comisión (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* Brokers */}
+                                    { detalle.comision_brokers
+                                        .filter(b => b.percentage_iva && parseFloat(b.percentage_iva) !== 0)
+                                        .map(b => (
+                                            <tr key={`broker-${b.id}`}>
+                                                <td>Broker</td>
+                                                <td style={{width:'500px'}}>{getNombreCompleto(b.broker)}</td>
+                                                <td>{b.percentage_iva}%</td>
+                                            </tr>
+                                        ))
+                                    }
+
+                                    {/* Comisionistas */}
+                                    { detalle.comisionistas
+                                        .filter(c=> c.percentage_iva && parseFloat(c.percentage_iva) !== 0)
+                                        .map(c => (
+                                            <tr key={`comisionista-${c.id}`}>
+                                                <td>Comisionista</td>
+                                                <td>{getNombreCompleto(c.comisionista)}</td>
+                                                <td>{c.percentage_iva}%</td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                            
+                    </div>
+                    
+                    )}
+                
+                {/* Termina IVA*/}
                 </div>
+
+                
 
                 <div className="formulario-rectangulo">
                     <label>Beneficiarios</label>
@@ -719,6 +801,8 @@ export function CustomerFormPage() {
                         </tbody>
                     </table>
                 </div>
+
+                
 
                 <div className="formulario-rectangulo">
                     <label>Contactos</label>

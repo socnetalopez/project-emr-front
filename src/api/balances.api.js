@@ -4,7 +4,7 @@ import axios from 'axios'
 
 const URLApi = axios.create({
     //baseURL: 'http://192.168.1.10:8000/api/companies'
-    baseURL: 'http://192.168.56.101:8000/api/balances'
+    baseURL: 'http://192.168.56.101:8000/api'
 });
 
 URLApi.interceptors.request.use((config) => {
@@ -85,5 +85,7 @@ URLApi.interceptors.response.use(
 );
 
 
-export const CreateBalances = (data) => URLApi.post('/create/', data)
+export const CreateBalances = (data) => URLApi.post('/balances/create/', data)
+
+export const BrokersBalanceList = () => URLApi.get('/promoters/brokersbalance/')
 

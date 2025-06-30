@@ -25,6 +25,7 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
   const [ivaCosto, setIVACosto] = useState(0);
   const [ivaCasa, setIVACasa] = useState(0);
   const [ivaComision, setIVAComision] = useState();
+  const [ivaPromotor, setIVAPromotor] = useState();
   const [pPromotor, setpPromotor] = useState([]);
   const [comisionPromotor, setComisionPromotor] = useState([]);
   const [tax, setTax] = useState(1);
@@ -99,9 +100,9 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
             setBase(data.base.id)
 			setTax(data.tax)
 			setIVA(data.comiva)
-			setIVACosto(data.iva_cost)
-			setIVACasa(data.iva_house)
-			setIVAComision(data.iva_commission)
+			setIVACosto(data.percentage_iva_cost)
+			setIVACasa(data.percentage_iva_house)
+			setIVAComision(data.percentage_iva_commission)
             setVenta(data.percentage_sales)
             setCosto(data.percentage_cost)
             setCasa(data.percentage_house)
@@ -277,6 +278,42 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
     }
 
   };
+
+
+useEffect(() => {
+  const ivaUsado = [...brokersSeleccionados, ...comisionistasSeleccionados]
+    .reduce((acc, item) => acc + Number(item.percentage_iva || 0), 0);
+
+  const porcentajeBase = parseFloat(ivaComision) || 0;
+
+  // El promotor recibe lo que resta del IVA sobre esa base
+  const restanteIVA = toFixed5(Math.max(porcentajeBase - ivaUsado, 0));
+
+  setIVAPromotor(restanteIVA);
+}, [brokersSeleccionados, comisionistasSeleccionados, ivaComision]);
+
+
+
+const cambiarPorcentajeIVA = (tipo, id, valor) => {
+  const actualizados = (tipo === 'broker' ? brokersSeleccionados : comisionistasSeleccionados)
+    .map(item =>
+      item.id === id ? { ...item, percentage_iva: Number(valor) } : item
+    );
+
+  const totalOtros = [...(tipo === 'broker' ? comisionistasSeleccionados : brokersSeleccionados)]
+    .reduce((acc, cur) => acc + Number(cur.percentage_iva || 0), 0);
+
+  const totalActual = actualizados.reduce((acc, cur) => acc + Number(cur.percentage_iva || 0), 0);
+
+  if ((totalActual + totalOtros) > ivaComision) return;
+
+  if (tipo === 'broker') {
+    setBrokersSeleccionados(actualizados);
+  } else {
+    setComisionistasSeleccionados(actualizados);
+  }
+};
+
 
 
 // **** Final 2
@@ -514,7 +551,8 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
 									<label>% Promotor</label>
 									<input 
 										type="text" 
-										value={ivaComision}
+										value={ivaPromotor}
+										onChange={(e) => setIVAPromotor(e.target.value)}
 										placeholder="0.00" />
 								</div>
 							</>
@@ -562,7 +600,17 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
 											onChange={e => cambiarPorcentaje('broker', b.id, e.target.value)}
 											style={{ width: '80px' }}
 										/>%
-										<button 
+
+										{iva === 2 && (
+											<input
+												type="number"
+												value={b.percentage_iva || ''}
+												onChange={e => cambiarPorcentajeIVA('broker', b.id, e.target.value)}
+												placeholder="IVA %"
+												style={{ width: '80px', marginLeft: '10px' }}
+											/>
+										)}
+																				<button 
 											onClick={() => eliminarItem('broker', b.id)} 
 											className="boton-eliminar"
 										>
@@ -609,6 +657,16 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
 												onChange={e => cambiarPorcentaje('comisionista', c.id, e.target.value)}
 												style={{ width: '90px',  }}
 											/>%
+
+											{iva === 2 && (
+												<input
+													type="number"
+													value={c.percentage_iva || ''}
+													onChange={e => cambiarPorcentajeIVA('comisionista', c.id, e.target.value)}
+													placeholder="IVA %"
+													style={{ width: '90px', marginLeft: '10px' }}
+												/>
+												)}
 											<button 
 												onClick={() => eliminarItem('comisionista', c.id)} 
 												className="boton-eliminar"

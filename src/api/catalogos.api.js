@@ -116,3 +116,4 @@ export const getAllTaxes = () => URLApi.get('/commissions/taxes/')
 
 // Requests Income
 export const getAllConciliations = () => URLApi.get('/global/conciliations/')
+export const getAllAgentsType = () => URLApi.get('/global/agentstype/')

@@ -26,6 +26,7 @@ import Sidebar from './components/Sidebar';
 import { RequestsList } from './components/Tesoreria/ListsRequests';
 import Layout from './components/Tesoreria/Layout';
 import { Movements } from './components/Tesoreria/Movements';
+import { Balances } from './components/Balances/Balances_Sidebar';
 
 import { CompaniesList } from './components/Companies/ListsCompanies';
 
@@ -75,6 +76,9 @@ function App() {
 
           { /*<Route path="treasury/movements/*" element={<TreasuryPage/>} /> */}
           <Route path="treasury/movements/*" element={<Movements/>}>
+          </Route>
+
+          <Route path="treasury/balances/*" element={<Balances/>}>
           </Route>
 
           <Route path="companies/*" element={<CompaniesList/>}>
