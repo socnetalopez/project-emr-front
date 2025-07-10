@@ -6,10 +6,15 @@ import { toast } from "react-hot-toast";
 
 //import React, {  useMemo } from 'react';
 import { useTable, useSortBy, usePagination, useFilters, useGlobalFilter } from 'react-table';
-import { getAllPromoters, getComisionVenta, updateComisionVenta } from "../../api/catalogos.api";
+//import { getAllPromoters, getComisionVenta, updateComisionVenta } from "../../api/catalogos.api";
+
+import { getAllPromoters } from "../../services/promoters.api";
+import { getComisionVenta, updateComisionVenta } from "../../services/commissions.api";
+
+
 import FormularioComision from "./FormComisionVenta";
 
-import '../CSS/Comisiones.css'; // Estilos que definiremos después
+import '../../components/CSS/Comisiones.css';
 
 const ComisionVentaLists = ({ promotorId }) => {
     const [data, setData] = useState([]);
@@ -47,6 +52,17 @@ const ComisionVentaLists = ({ promotorId }) => {
         // Definir columnas
         const columns = useMemo(() => [
             { Header: 'ID', accessor: 'id', Filter: DefaultColumnFilter, width: '50px' },
+            
+            {
+              Header: 'Estatus',
+              accessor: 'status', Filter: DefaultColumnFilter, width: '30px',
+              Cell: ({ value }) => (
+                <span className={value === 1 ? 'status-activo' : 'status-inactivo'}>
+                  {value === 1 ? 'Activo' : 'Inactivo'}
+                </span>
+              )
+            },
+
             { Header: 'Codigo', accessor: 'code', Filter: DefaultColumnFilter, width: '60px' },
             { Header: 'Nombre', accessor: 'name', Filter: DefaultColumnFilter },
             { Header: 'Tipo', accessor: 'tipo.name', Filter: DefaultColumnFilter, width: '60px' },

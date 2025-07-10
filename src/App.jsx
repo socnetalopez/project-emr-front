@@ -1,19 +1,20 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './Login';
+import Login from './features/auth/login';
+
 import DashboardLayout from './components/Dashboard';
 import DashboardHome from './components/DashboardHome';
 import ProtectedRoute from './components/ProtectedRoute';
 
-import { PromotorFormPage } from "./components/Promoters/FormPromotor";
-import { PromotersPage } from './pages/PromotersPage';
-import { PromotorDetail } from './components/Promoters/DetailPromotor';
+import  PromotersList  from './Features/Promoters/ListsPromoters';
+import { PromotorFormPage } from "./Features/Promoters/FormPromotor";
+import { PromotorDetail } from './Features/Promoters/DetailPromotor';
 
-import { BrokersPage } from './pages/BrokersPage';
-import { BrokerFormPage } from './components/Brokers/FormBrokers';
+import BrokersList from './Features/Brokers/ListsBrokers';
+import { BrokerFormPage } from './Features/Brokers/FormBrokers';
 
-import { ComisionistaPage } from './pages/ComisionistaPage';
-import { ComisionistaFormPage } from "./components/Comisionistas/FormComisionista";
+import ComAgentsLists from './Features/Commission_Agents/ListsComAgents';
+import { ComAgentsForm } from './Features/Commission_Agents/FormComAgents';
 
 import { CustomersPage } from "./pages/CustomerPage";
 import { CustomerFormPage } from "./components/Customers/FormCustomer";
@@ -42,6 +43,7 @@ function App() {
       <Routes>
       
         <Route path="/" element={<Login />} />
+        {/* <Route path="/login" element={<LoginForm />} /> */}
         
 
         <Route 
@@ -52,19 +54,19 @@ function App() {
             </ProtectedRoute>
         }>
 
-          <Route path="promotores" element={<PromotersPage/>} />
+          <Route index element={<DashboardHome />} />
+          <Route path="promotores" element={<PromotersList/>} />
           <Route path="promotor" element={<PromotorFormPage/>} />
           <Route path="promotor/:id" element={<PromotorFormPage/>} />
           <Route path="promotordetail/:id" element={<PromotorDetail/>} />
           
-          <Route index element={<DashboardHome />} />
-          <Route path="brokers" element={<BrokersPage />} />
+          <Route path="brokers" element={<BrokersList />} />
           <Route path="broker" element={<BrokerFormPage/>} />
           <Route path="broker/:id" element={<BrokerFormPage/>} />
 
-          <Route path="comisionistas" element={<ComisionistaPage />} />
-          <Route path="comisionista" element={<ComisionistaFormPage/>} />
-          <Route path="comisionista/:id" element={<ComisionistaFormPage/>} />
+          <Route path="comisionistas" element={<ComAgentsLists />} />
+          <Route path="comisionista" element={<ComAgentsForm/>} />
+          <Route path="comisionista/:id" element={<ComAgentsForm/>} />
 
           <Route path="customers" element={<CustomersPage/>} />
           <Route path="customer" element={<CustomerFormPage/>} />

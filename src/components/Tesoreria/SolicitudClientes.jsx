@@ -13,7 +13,6 @@ import '../CSS/TreasuryMovements.css'
 
 const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosComision, setDatosComision }) => {
   
-
     const [clientesDisponibles, setClientesDisponibles] = useState([]);
     const [clientesSeleccionados, setClientesSeleccionados] = useState([]);
     const [importeComision, setImporteComision] = useState([]);
@@ -122,6 +121,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
         nuevos[index].comision_venta = data.comision_venta;
         nuevos[index].percentage_commission = data.comision_venta.percentage_commission;
         nuevos[index].percentage_sales = data.comision_venta.percentage_sales;
+		    nuevos[index].percentage_iva_cost = data.comision_venta.percentage_iva_cost
         //console.log("porcentaje de cliente tax", nuevos[index].taxpercentage = data.tax.percentage)
         //nuevos[index].comision = data.comision_venta.percentage_commission;
         //setImporteComision(data.comision_venta.percentage_commission)
@@ -146,26 +146,41 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 
         const percentagecomsion = nuevos[index].percentage_commission;
         const percentagesales = nuevos[index].percentage_sales;
-        console.log("percentage comision", percentagesales)
+        //console.log("percentage comision", percentagesales)
 
         nuevos[index].importe = parseFloat(importe);
-        console.log("nuevos", nuevos[index], percentagecomsion)
+        //console.log("nuevos", nuevos[index], percentagecomsion)
         
         nuevos[index].totalimportecomision = parseFloat(parseFloat(nuevos[index].importe  *  percentagesales/100));
         nuevos[index].commission = nuevos[index].totalimportecomision;
-        console.log("percentgae_tac_actualizar import",percentagecomsion)
+        //console.log("percentgae_tac_actualizar import",percentagecomsion)
+
+
+		 nuevos[index].amountNoVAT = parseFloat((nuevos[index].importe) / ( 1 + (nuevos[index].tax_percentage/100)));
+
 
         if (percentageTax?.length){
           console.log("Nuevo", percentageTax)
-          nuevos[index].taxes = parseFloat((nuevos[index].totalimportecomision) * (percentageTax/100));
+          //nuevos[index].taxes = parseFloat((nuevos[index].totalimportecomision) * (percentageTax/100));
+          nuevos[index].taxes = parseFloat((nuevos[index].importe) - nuevos[index].amountNoVAT).toFixed(2);
         } else{
-          console.log("update", nuevos[index].tax_percentage)
-          nuevos[index].taxes = parseFloat((nuevos[index].totalimportecomision) * (nuevos[index].tax_percentage/100));
+          //console.log("update : importe comision ", nuevos[index].importe, "iva=", nuevos[index].tax_percentage)
+          nuevos[index].taxes = parseFloat((nuevos[index].importe) - nuevos[index].amountNoVAT.toFixed(2));
+          
+          //console.log("total IVA", nuevos[index].amountNoVAT, nuevos[index].taxes)
         }
-        nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)));
-        console.log("actualizar Importe",nuevos)
+        //nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].importe) - (nuevos[index].totalimportecomision) - (nuevos[index].taxes)));
+
+        nuevos[index].calculoretorno = parseFloat(Number((nuevos[index].amountNoVAT) / ( 1 + (nuevos[index].percentage_sales/100))));
+        nuevos[index].commission = parseFloat(nuevos[index].amountNoVAT - nuevos[index].calculoretorno)
+		//console.log("commission:", nuevos[index].commission)
+		//console.log("retorno:", nuevos[index].calculoretorno)
+
+
+        //console.log("actualizar Importe",nuevos)
         setClientesSeleccionados(nuevos);
     };
+
     
     const eliminarCliente = (index) => {
         const nuevos = clientesSeleccionados.filter((_, i) => i !== index);
@@ -180,6 +195,7 @@ const SolicitudClientes = ({ promotorId, clientesData, setClientesData,  datosCo
 
 	useEffect(() => {
 	const cargarClientesConCuentas = async () => {
+		console.log("covertir clientes", clientesData)
 		if (!clientesData?.length) return;
 
 		const clientesConvertidos = convertirClientes(clientesData);
@@ -341,12 +357,12 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
 				<td>
 					<label> {item.tipo_pago || ''} </label>
 				</td>
-				<td>  
+				<td>
 					<input
 						type="number"
 						placeholder="Importe"
 						min="0" pattern="^[0-9]+"
-						value={item.importe}
+						value={ item.importe}
 						onChange={(e) => actualizarImporte(index, e.target.value)}
 						className="input-field"
 						style={{ width: '100px', }}
@@ -357,7 +373,7 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
 					<input
 						type="text"
 						className="input-field"
-						value = {(Number(item.commission) || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+						value = {`$${(Number(item.commission) || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}`}
 						//onChange={(e) => actualizarImporte(index, e.target.value)}
 						style={{ width: '100px', }}
 					/>
@@ -366,8 +382,8 @@ const actualizarSubitem = async (clienteIdx, subIdx, field, value) => {
 
               <td>
                 <input
-                    type="number"
-                    value = {(Number(item.taxes || 0)).toLocaleString('es-MX', { minimumFractionDigits: 2 }) }
+                    type="text"
+                    value = {(Number(item.taxes) || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                     className="input-field"
                     style={{ width: '100px', }}
                 />

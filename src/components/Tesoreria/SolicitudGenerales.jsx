@@ -58,6 +58,7 @@ const SolicitudGeneral = () => {
         setValue // Poner valores en el formulario
     } = useForm();
     
+    console.log("ClientesData iniital",clientesData)
 
     useEffect(() => {
         async function loadRequest(){
@@ -103,7 +104,7 @@ const SolicitudGeneral = () => {
     //request.promoter = request.promoter.id
    
     console.log("Load initial",request)
-    console.log("selected promoter",selectedPromotor)
+    //console.log("selected promoter",selectedPromotor)
    //console.log("General customer", clientesData)
        
 
@@ -135,7 +136,7 @@ const SolicitudGeneral = () => {
     
         fetchData();
     }, []);
-     console.log("tiposolicitud", tipoSolicitudes)
+     //console.log("tiposolicitud", tipoSolicitudes)
 
 
     // Manejo de la fecha
@@ -336,7 +337,7 @@ const SolicitudGeneral = () => {
         });
     }
 
-    console.log("Saldo brokers enviado:", brokersConFolio);
+   // console.log("Saldo brokers enviado:", brokersConFolio);
 };
 
 

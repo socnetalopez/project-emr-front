@@ -23,6 +23,11 @@ export function Movements() {
 					<li>
 						<Link to="/dashboard/treasury/movements/ingresos">Ingresos</Link>
 					</li>
+
+					<li>
+						<Link to="/dashboard/treasury/movements/balances">Saldos</Link>
+					</li>
+
 				</ul>
 			</div>
 

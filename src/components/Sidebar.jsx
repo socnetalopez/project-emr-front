@@ -80,7 +80,7 @@ function Sidebar() {
         </li>
         
 			 <MenuItem
-				label="Estructura"
+				label="Agentes"
 				isOpen={openSubMenu === "estructura"}
 				onClick={() => toggleSubMenu("estructura")}
 				items={[

@@ -1,0 +1,29 @@
+.input-group {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.input-field {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  font-size: 12px;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.input-field:focus {
+  border-color: #007bff;
+}
+
+.input-error {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+

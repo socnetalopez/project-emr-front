@@ -4,9 +4,11 @@ import { useForm } from "react-hook-form"
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-import { getComisionista, createComisionista, updateComisionista } from "../../api/catalogos.api";
+import { getPromoter, createPromoter, updatePromoter } from "../../services/promoters.api";
 
-export function ComisionistaFormPage() {
+import '../../components/CSS/FormGeneral.css';
+
+export function PromotorFormPage() {
 
     const {
         register,
@@ -18,11 +20,32 @@ export function ComisionistaFormPage() {
     const navigate = useNavigate();
     const params = useParams()
 
+    useEffect(() => {
+        async function loadPromoter(){
+            if (params.id){
+                // const res = await getTask(params.id)
+                const {data} = await getPromoter(params.id)
+                //console.log(data)
+                const {
+                    data: {code, name, paternal_surname, maternal_surname, email, phone, notes}
+                } = await getPromoter(params.id)
+                setValue('code', code)
+                setValue('name', name)
+                setValue('paternal_surname', paternal_surname)
+                setValue('maternal_surname', maternal_surname)
+                setValue('email', email)
+                setValue('phone', phone)
+                setValue('notes', notes)
+            }   
+        }
+        loadPromoter()
+    }, [])
+
     const onSubmit = handleSubmit( async (data) => {
         if (params.id) {
-            await updateComisionista(params.id, data)
+            await updatePromoter(params.id, data)
             console.log(data)
-            toast.success('Comisionista updated success', {
+            toast.success('Promotor updated success', {
                 position: "bottom-right",
                 style: {
                     background: "#101010",
@@ -30,8 +53,11 @@ export function ComisionistaFormPage() {
                 },
             })
         } else {
-            await createComisionista(data);
-            toast.success('Comisioista created success', {
+            if (!data.code || data.code.trim() === "") {
+                data.code = "c000";
+                }
+            await createPromoter(data);
+            toast.success('Promotor created success', {
                 position: "bottom-right",
                 style: {
                     background: "#101010",
@@ -40,108 +66,111 @@ export function ComisionistaFormPage() {
             })
         }
     
-        navigate("/dashboard/comisionistas")
+        navigate("/dashboard/promotores")
     })
     
-    useEffect(() => {
-        async function load(){
-            if (params.id){
+    
+    const handleBack = () => {
+        navigate(-1);
+    };
 
-                const {
-                    data: { code, name, paternal_surname, maternal_surname, phone, email, notes}
-                } = await getComisionista(params.id)
-                setValue('code', code)
-                setValue('name', name)
-                setValue('paternal_surname', paternal_surname)
-                setValue('maternal_surname', maternal_surname)
-                setValue('phone', phone)
-                setValue('email', email)
-                setValue('notes', notes)
-            }   
-        }
-        load()
-    }, [])
 
     return(
         
         <div className="container">
             <form onSubmit={onSubmit}>
 
-            <div className="formulario-rectangulo">
-                <div className="title-button-wrapper"> 
-                    <h1>
-                        {params.id ? 'Editar ' : 'Nuevo'} Comisionista 
-                    </h1>
-                    <button> {params.id ? 'Actualizar' : 'Guardar'} </button>
-                </div>
-            </div>
+                <div className="form-rectangulo-head">
+                    <div className="title-button-wrapper"> 
+                        <h1>
+                            {params.id ? 'Editar ' : 'Nuevo '} Promotor 
+                        </h1>
 
-            <div className="formulario-rectangulo">
-                <div className="form-row row-3 ">
-                    <div className="form-group-inline">
-                        <label>Codigo</label>
-                        <input 
-                            type="text" 
-                            placeholder="code" 
-                            {...register("code", {required: true})}
-                            
-                        />
-                        {errors.code && <span>this field is required</span>}
+                        <button onClick={handleBack}
+                            style={{backgroundColor: 'gray'}}
+                        > 
+                            Regresar
+                        </button> 
 
+                        <button 
+                            onClick={handleBack}
+                            style={{backgroundColor: 'orange'}}
+                        > 
+                            Desactivar
+                        </button> 
+                        
+                        <button type="submit"> 
+                            {params.id ? 'Actualizar' : 'Guardar'} 
+                        </button> 
                     </div>
                 </div>
 
+            <div className="form-rectangulo">
+                {params.id && (
+                <div className="form-row row-3 ">
+                    <div className="form-group-inline">
+                        <input 
+                            type="text" 
+                            placeholder="Code"
+                            {...register("code", {required: true})} 
+                            disabled
+                        />
+
+                    </div>
+                </div>
+                )}
+
                 <div className="form-row row-3">
                     <div className="form-group">
-                        <label>Nombre</label>
+                        <label>Nombre(s)</label>
                         <input 
                             type="text" 
                             placeholder="Nombre"
                             {...register("name", {required: true})}
                             style={{width : '200px'}}
-                            
                         />
-
                         {errors.name && <span style={{ color: 'red', fontSize: '12px' }}>Este campo es requerido</span>}
                     </div>
-                    
-                     <div className="form-group">
+                        
+                    <div className="form-group">
                         <label>Apellido Paterno</label>
                         <input 
                             type="text" 
-                            placeholder="Apellido Paterno" 
+                            placeholder="Apellido Paterno"
                             {...register("paternal_surname", {required: true})}
                             style={{width : '200px'}}
                         />
                         {errors.paternal_surname && <span style={{ color: 'red', fontSize: '12px' }}>Este campo es requerido</span>}
                     </div>
                     
-                     <div className="form-group">
+                    <div className="form-group">
                         <label>Apellido Materno</label>
                         <input 
                             type="text" 
-                            placeholder="Apellido Materno" 
+                            placeholder="Apellido Materno"
                             {...register("maternal_surname", {required: true})}
+                            style={{width : '200px'}}
                         />
                         {errors.maternal_surname && <span style={{ color: 'red', fontSize: '12px' }}>Este campo es requerido</span>}
                     </div>
                 </div>
-
+                
                 <div className="form-row row-3">
                     <div className="form-group">
                         <label>Email</label>
                         <input 
                             type="text" 
-                            placeholder="Email" 
+                            placeholder="Email"
                             {...register("email", {required: false})}
                             style={{width : '200px'}}
                         />
                     </div>
+                    
                     <div className="form-group">
                         <label>Telefono</label>
                         <input 
                             type="text" 
-                            placeholder="Telefono" 
+                            placeholder="Telefono"
                             {...register("phone", {required: false})}
                             style={{width : '200px'}}
                         />
@@ -151,13 +180,13 @@ export function ComisionistaFormPage() {
                 <div className="form-group textarea-full">
                     <label>Observaciones</label>
                     <textarea 
-                        rows="3"
+                        rows="3" 
                         placeholder="Observaciones"
                         {...register("notes", {required: false})}
-                        
                     ></textarea>
-                    {errors.notes && <span>this field is required</span>}
-                </div> 
+                </div>
+                
+        
             </div>
             </form>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import URLApi from '../../services/axiosConfig.api'; // Ajusta el path si es diferente
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -10,27 +10,28 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://192.168.56.101:8000/api/users/token/', {
+      const response = await URLApi.post('/users/token/', {
         username,
         password,
       });
-      
-      localStorage.setItem('accessToken', response.data.access);
-      localStorage.setItem('refreshToken', response.data.refresh);
-      navigate('/dashboard'); // Redirige al layout con sidebar
+
+      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('refreshToken', response.data.refreshToken);
+      navigate('/dashboard');
     } catch (err) {
       alert('Credenciales incorrectas');
+      console.error(err.response?.data || err);
     }
   };
 
   return (
     <div style={styles.container}>
-    <form onSubmit={handleSubmit} style={styles.form}>
-       <h2 style={styles.title}>Iniciar Sesión</h2>
-      <input type="text" placeholder="Usuario" value={username} onChange={(e) => setUsername(e.target.value)} style={styles.input} />
-      <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} style={styles.input} />
-      <button type="submit" style={styles.button} >Iniciar sesión</button>
-    </form>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <h2 style={styles.title}>Iniciar Sesión</h2>
+        <input type="text" placeholder="Usuario" value={username} onChange={(e) => setUsername(e.target.value)} style={styles.input} />
+        <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} style={styles.input} />
+        <button type="submit" style={styles.button}>Iniciar sesión</button>
+      </form>
     </div>
   );
 }

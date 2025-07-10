@@ -5,11 +5,11 @@ import { useEffect,  useState } from 'react';
 
 export default function SolicitudComisiones({ clientes, datosComision, setDatosComision}) {
     const resumen = {
-      brokers: {},
-      comisionistas: {},
-      promotores: {},
-      casa: {},
-      costo: {},
+        brokers: {},
+        comisionistas: {},
+        promotores: {},
+        casa: {},
+        costo: {},
     };
 
     const [datos, setDatos] = useState([]);
@@ -38,6 +38,7 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
     });
 
 
+    console.log("clietes inicial",clientes)
     useEffect(() => {
        
         const nuevosCostos = [];
@@ -52,27 +53,30 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
 
         const calcularCosto = (porcentaje, importe, tax) => {
             const costo_com = (porcentaje * importe) / 100;
-            const costo_tax = (costo_com * tax) / 100;
-            const costo_total = costo_com - costo_tax;
+            const costo_tax = (tax) / 100;
+            const costo_total = costo_com + costo_tax;
             return { costo_com, costo_tax, costo_total };
         };
-        console.log("clientes", clientes)
+
+        
         for (const cliente of clientes) {
-            const { importe, taxpercentage, id, comision_venta } = cliente;
+            //const { importe, taxpercentage, id, comision_venta } = cliente;
+            const { calculoretorno, taxpercentage, id, comision_venta } = cliente;
             const tax = parseFloat(taxpercentage || 0);
-            console.log("importe | com venta", importe, comision_venta)
-            if (!importe || !comision_venta) continue;
+            //console.log("Retorno | com venta", calculoretorno, comision_venta, taxpercentage)
+            console.log("cliente", cliente)
+            if (!calculoretorno || !comision_venta) continue;
                 
 
             const porcentajeCom = parseFloat(comision_venta.percentage_cost || 0);
             const porcentajeHouse = parseFloat(comision_venta.percentage_house || 0);
             const porcentajePromotor = parseFloat(comision_venta.percentage_promotor || 0);
 
-            const comision = calcularCosto(porcentajeCom, importe, tax);
-            const houseCost = calcularCosto(porcentajeHouse, importe, tax);
-            const promotorCost = calcularCosto(porcentajePromotor, importe, tax);
+            const comision = calcularCosto(porcentajeCom, calculoretorno, ((cliente.importe -cliente.taxes)*(comision_venta.percentage_iva_cost )));
+            const houseCost = calcularCosto(porcentajeHouse, calculoretorno, ((cliente.importe -cliente.taxes)*(comision_venta.percentage_iva_house)));
+            const promotorCost = calcularCosto(porcentajePromotor, calculoretorno , ((cliente.importe -cliente.taxes)*(comision_venta.percentage_iva_promoter)));
             
-            //console.log("comisioncosto",comision)
+            //console.log("comision promotor iva", porcentajeHouse)
             
 
             nuevosCostos.push({
@@ -96,15 +100,17 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
             
             // Procesar brokers
             if (Array.isArray(cliente.comision_venta.comision_brokers)) {
+                console.log("brokers:", cliente.comision_venta.comision_brokers)
                 for (const broker of cliente.comision_venta.comision_brokers) {
                     const porcentaje = parseFloat(broker.percentage || 0);
+                    const porcentaje_iva = parseFloat(broker.percentage_iva || 0);
 
-                    if (!broker.id || !porcentaje) continue;
+                    if (!broker.id ) continue;
 
                     const brokerId = broker.broker?.id || broker?.bid;
                     const nombre = broker.broker?.name || broker?.name || 'Sin nombre';
                     const fullname = `${nombre} ${broker.broker?.paternal_surname || broker?.paternal_surname} ${broker.broker?.maternal_surname || broker?.maternal_surname}`;
-                    const costo = calcularCosto(porcentaje, importe, tax);
+                    const costo = calcularCosto(porcentaje, calculoretorno, porcentaje_iva);
 
                     if (!acumuladoBrokers[brokerId]) {
                         acumuladoBrokers[brokerId] = {
@@ -125,17 +131,19 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
             // -----
 
             // Procesar comisionistas
+            //console.log("broker costo", acumuladoBrokers)
             //console.log("cliente comvta comisionista", cliente.comision_venta.comisionistas)
             if (Array.isArray(cliente.comision_venta.comisionistas)) {
                 for (const comisionista of cliente.comision_venta.comisionistas) {
                     const porcentaje = parseFloat(comisionista.percentage || 0);
+                    const porcentaje_iva = parseFloat(comisionista.percentage_iva || 0);
                     
                     if (!comisionista.id || !porcentaje) continue;
 
                     const comisionistaId = comisionista.comisionista?.id || comisionista?.cid;
                     const nombre = comisionista.comisionista?.name || comisionista?.name || 'Sin nombre';
                     const fullname = `${nombre} ${comisionista.comisionista?.paternal_surname || comisionista?.paternal_surname} ${comisionista.comisionista?.maternal_surname || comisionista?.maternal_surname}`;
-                    const costo = calcularCosto(porcentaje, importe, tax);
+                    const costo = calcularCosto(porcentaje, calculoretorno, porcentaje_iva);
                     
                     if (!acumuladoComisionistas[comisionistaId]) {
                         acumuladoComisionistas[comisionistaId] = {
@@ -172,14 +180,15 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         // Sumar brokers
         for (const brokerId in acumuladoBrokers) {
             const broker = acumuladoBrokers[brokerId];
-            if (totalGeneral.commission === undefined) {
+            if (totalGeneral.commission === undefined ) {
                 totalGeneral.commission = 0;
             }
-           // console.log("broker comision", broker.commission)
+            //console.log("broker comision", broker)
             //totalGeneral.commission += parseFloat(broker.commission);
             totalGeneral.total_com += broker.commission;
             totalGeneral.tax += broker.tax;
-            totalGeneral.retorno += broker.retorno;
+            totalGeneral.total_total += broker.retorno;
+            //totalGeneral.retorno += broker.retorno;
         }
 
         // Sumar comisionistas
@@ -189,9 +198,10 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                 totalGeneral.total_com = 0;
             }
             //totalGeneral.commission += comisionista.commission.toFixed(2);
+            //console.log("comisio comision", comisionista)
             totalGeneral.total_com += parseFloat(comisionista.commission);
             totalGeneral.tax += comisionista.tax.toFixed(2);
-            totalGeneral.retorno += comisionista.retorno.toFixed(2);
+            totalGeneral.total_total += parseFloat(comisionista.retorno.toFixed(2));
         }
 
 
@@ -228,10 +238,11 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
         datosComision.brokers = acumuladoBrokers;
         datosComision.comisionistas = acumuladoComisionistas;
 
-        datosComision.total_com = totalGeneral.total_com
-        datosComision.total_tax = totalGeneral.total_tax;
-        datosComision.total_retorno = totalGeneral.total_total;
-        //console.log("total_comision", datosComision.total_com)
+        datosComision.total_com = parseFloat(totalGeneral.total_com.toFixed(2));
+        datosComision.total_tax = parseFloat(totalGeneral.total_tax.toFixed(2));
+        datosComision.total_retorno = parseFloat(totalGeneral.total_total.toFixed(2));
+        //console.log("total_comm", datosComision.total_com)
+        //console.log("total_retorno", datosComision.total_retorno)
 
 
     
@@ -268,17 +279,20 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                     <tr> 
                         <td style={{ textAlign: 'center' }}> Costo  </td>
                         <td style={{ textAlign: 'left' }}>  </td>
-                        <td> 
+                        <td>
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                                 value={datosComision.cost_commission}
                             />
                         </td>
                         <td> 
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                                 value={datosComision.cost_tax}
                             />
                         </td>
                         <td> 
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                             value={datosComision.cost_retorno} />
                         </td>
@@ -293,15 +307,18 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         <td style={{ textAlign: 'center' }}> Casa  </td>
                         <td style={{ textAlign: 'left' }}> </td>
                         <td> 
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                                 value={datosComision.house_commission} 
                             />
                         </td>
                         <td> 
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                                 value={datosComision.house_tax} />
                         </td>
                         <td> 
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                             value={datosComision.house_retorno} />
                         </td>
@@ -316,13 +333,15 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         <td style={{ textAlign: 'left' }}> {datosComision.promoter_fullname} </td>
                         <td> 
                             <input
-                                value={ Number(datosComision.promoter_commission || 0 )} />
+                                value={`$${Number(datosComision.promoter_commission)} `} />
                         </td>
                         <td> 
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
-                                value={ Number(datosComision.promoter_tax || 0 )} />
+                                value={ datosComision.promoter_tax } />
                         </td>
                         <td> 
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                             //readonly="readonly"
                             value={ datosComision.promoter_retorno || 0} />
@@ -338,13 +357,15 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         <td style={{ textAlign: 'left' }}> {val.fullname} </td>
                         <td> 
                             <input
-                                value={val.commission || ''} />
+                                value={`$${Number(val.commission || 0).toFixed(2)}`} />
                         </td>
                         <td> 
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                                 value={val.tax} />
                         </td>
                         <td> 
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                             value={val.retorno} />
                         </td>
@@ -359,14 +380,17 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         <td style={{ textAlign: 'center' }}>Comisionista</td> 
                         <td style={{ textAlign: 'left' }}>{val.fullname}</td>
                         <td>
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                                 value={val.commission} />
                         </td>
-                        <td> 
+                        <td>
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                                 value={val.tax} />
                         </td>
-                        <td> 
+                        <td style={{ backgroundColor: '#f0f0f0', color: '#000', fontWeight: 'bold' } }>
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input
                             value={val.retorno} />
                         </td>
@@ -378,18 +402,24 @@ export default function SolicitudComisiones({ clientes, datosComision, setDatosC
                         <td></td>
                         <td>total:</td>
                         <td>
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input 
                                 value={ Number(datosComision.total_com || 0 )}
+                                style={{ backgroundColor: '#f0f0f0', color: '#000', fontWeight: 'bold' } }
                             />
                         </td>
                         <td>
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input 
                                 value={ Number(datosComision.total_tax || 0 )}
+                                style={{ backgroundColor: '#f0f0f0', color: '#000', fontWeight: 'bold' } }
                             />
                         </td>
                         <td>
+                            <span style={{ marginRight: '4px' }}>$</span>
                             <input 
                                 value={ Number(datosComision.total_retorno || 0 )}
+                                style={{ backgroundColor: '#f0f0f0', color: '#000', fontWeight: 'bold' } }
                             />
                         </td>
                     </tr>

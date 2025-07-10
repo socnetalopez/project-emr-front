@@ -3,10 +3,16 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form"
 import { useNavigate, useParams } from "react-router-dom";
 
-import '../CSS/Comisiones.css';
+import '../../components/CSS/Comisiones.css';
 
-import { getComisionVta, getAllTipo, getAllBase, getAllTaxes, getAllBrokers, getAllComisionistas } from '../../api/catalogos.api';
-import { getCommIVA } from '../../api/commissions.api';
+//import { getComisionVta,  getAllBrokers, getAllComisionistas } from '../../api/catalogos.api';
+
+import { getAllBrokers } from '../../services/brokers.api';
+import { getAllComisionistas } from '../../services/commission_agents.api'
+import { getComisionVta, getCommIVA, getAllTipo, getAllBase, getAllTaxes, } from '../../services/commissions.api';
+
+
+//port { getCommIVA } from '../../api/commissions.api';
 
 //import { ColumnSizing } from '@tanstack/react-table';
 
@@ -31,9 +37,11 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
   const [tax, setTax] = useState(1);
   const [commIVA, setCommIVA] = useState([]);
   const [tax_All, setTax_All] = useState([]);
+  
 
   const [tipos, setTipos] = useState([]);
   const [bases, setBases] = useState([]);
+  const [status, setStatus] = useState([]);
 
   const [brokersDisponibles, setBrokersDisponibles] = useState([]);
   const [comisionistasDisponibles, setComisionistasDisponibles] = useState([]);
@@ -103,20 +111,24 @@ const FormularioComision = ({ promotorId, comisionventaId, onGuardar, onCancelar
 			setIVACosto(data.percentage_iva_cost)
 			setIVACasa(data.percentage_iva_house)
 			setIVAComision(data.percentage_iva_commission)
+			setIVAPromotor(data.percentage_iva_promoter)
             setVenta(data.percentage_sales)
             setCosto(data.percentage_cost)
             setCasa(data.percentage_house)
             setComision(data.percentage_commission)
             setpPromotor(data.percentage_promotor)
+			setStatus(data.status)
 
             const brokersExtraidos = data.comision_brokers.map(item => ({
               ...item.broker,
-              porcentaje: parseFloat(item.percentage) // Guardamos también el porcentaje original
+              porcentaje: parseFloat(item.percentage), // Se visualiza el porcentaje
+			  percentage_iva: parseFloat(item.percentage_iva)
             }));
 
             const comisionistasExtraidos = data.comisionistas.map(item => ({
               ...item.comisionista,
-              porcentaje: parseFloat(item.percentage) // Guardamos también el porcentaje original
+              porcentaje: parseFloat(item.percentage), 
+			  percentage_iva: parseFloat(item.percentage_iva)
             }));
     
             setBrokersApi(brokersExtraidos);
@@ -295,6 +307,7 @@ useEffect(() => {
 
 
 const cambiarPorcentajeIVA = (tipo, id, valor) => {
+	console.log("Percentage IVA", tipo, " - ",id,valor)
   const actualizados = (tipo === 'broker' ? brokersSeleccionados : comisionistasSeleccionados)
     .map(item =>
       item.id === id ? { ...item, percentage_iva: Number(valor) } : item
@@ -319,8 +332,9 @@ const cambiarPorcentajeIVA = (tipo, id, valor) => {
 // **** Final 2
 
   const handleSubmit = (e) => {
-	console.log("submit", iva)
-    e.preventDefault();
+
+	console.log("Guardar Form")
+	e.preventDefault();
     //if (!descripcion || !monto) return;
     const brokers = brokersSeleccionados;
     const comisionistas = comisionistasSeleccionados;
@@ -329,6 +343,7 @@ const cambiarPorcentajeIVA = (tipo, id, valor) => {
 	const iva_cost = ivaCosto;
 	const iva_house = ivaCasa;
 	const iva_commission = ivaComision;
+	const percentage_iva_promoter = ivaPromotor;
     const percentage_cost = costo;
     const percentage_sales = venta;
     const percentage_house = casa;
@@ -336,10 +351,10 @@ const cambiarPorcentajeIVA = (tipo, id, valor) => {
     const percentage_promotor = pPromotor;
     const id = comisionventaId;
 
-    if (code.trim()) {
+    if (name.trim()) {
       onGuardar({
         promotor,
-        code,
+        //code,
         name,
         tipo,
         base,
@@ -348,6 +363,7 @@ const cambiarPorcentajeIVA = (tipo, id, valor) => {
 		iva_cost,
 		iva_house,
 		iva_commission,
+		percentage_iva_promoter,
         percentage_cost,
         percentage_sales,
         percentage_house,
@@ -363,7 +379,7 @@ const cambiarPorcentajeIVA = (tipo, id, valor) => {
     setDescripcion('');
   };
   
-
+  console.log(status)
   return (
 
     <div className="modal-overlay">
@@ -373,9 +389,12 @@ const cambiarPorcentajeIVA = (tipo, id, valor) => {
 			
 				<div className="encabezado-con-botones">
 
-					<span style={{fontSize:'18px', fontWeight:'bold'}}>Comision de Venta</span>			
+					<h1 style={{fontSize:'18px', fontWeight:'bold'}}>Comision de Venta</h1>			
 					
 					<div className="botones">
+						{status === 1 &&
+							<button> Desactivar </button>
+						}
 						<button 
 							type='submit'  
 							className="btn-guardar"
@@ -387,7 +406,7 @@ const cambiarPorcentajeIVA = (tipo, id, valor) => {
 							type="button" 
 							onClick={onCancelar} 
 							className="btn-cancelar"
-						> Cancelar
+						> X
 						</button>
 					</div>
 				</div>
@@ -400,9 +419,10 @@ const cambiarPorcentajeIVA = (tipo, id, valor) => {
 							<input
 								type="text"
 								value={code}
-								style={{ width: '150px', }}
+								style={{ width: '150px' }}
 								onChange={(e) => setCode(e.target.value)}
-								required
+								disabled
+								//required
 							/>
 						</div>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from "react-router-dom"
 
-import  PromoterLists  from '../components/Promoters/ListPromoters';
+import  PromoterLists  from '../Features/Promoters/ListPromoters';
 
 export function PromotersPage() {
     

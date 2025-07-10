@@ -4,9 +4,11 @@ import { useForm } from "react-hook-form"
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-import { getBroker, createBroker, updateBroker } from "../../api/catalogos.api";
+import { getBroker, createBroker, updateBroker } from "../../services/brokers.api";
 
-import '../CSS/FormGeneral.css';
+//import '../../components/CSS/FormGeneral.css';
+import '../../components/css/CustomForm.css';
+
 
 export function BrokerFormPage() {
 
@@ -19,6 +21,11 @@ export function BrokerFormPage() {
 
     const navigate = useNavigate();
     const params = useParams()
+
+    const handleBack = () => {
+        navigate(-1); // Esto regresa una página en el historial
+    };
+
 
     const onSubmit = handleSubmit( async (data) => {
         if (params.id) {
@@ -69,31 +76,41 @@ export function BrokerFormPage() {
     return(
         
        
-            <div className="container">
+            <div>
     
                 <form onSubmit={onSubmit} >
      
                 <div className="form-rectangulo-head">
                     <div className="title-button-wrapper"> 
-                        <h1>
-                            {params.id ? 'Editar ' : 'Nuevo '} Broker 
-                        </h1>
+                        <div className="title-section">
+                            <div className="title-row">
+                                <h1> Broker | </h1> 
+                                <h2> {params.id ? 'Editar ' : 'Nuevo '} </h2>
+                            </div>
+                            <p className="subtitle">Registro de brokers</p  >
+                        </div>
                         
-                        <button type="submit"> 
-                            {params.id ? 'Actualizar' : 'Guardar'} 
-                        </button> 
+                        <div className="button-section">
+                            <button  onClick={handleBack} type="button"  className="btn-secondary"> 
+                                regresar 
+                            </button> 
+
+                            <button type="submit"  className="btn-primary"> 
+                                {params.id ? 'Actualizar' : 'Guardar'} 
+                            </button>
+                        </div> 
                     </div>
                 </div>
 
                 
                 <div className="form-rectangulo">
-                    <div className="form-row row-3 ">
-                        <div className="form-group-inline">
+                    <div className="form-row row-4 ">
+                        <div className="form-group">
                             <label>Codigo:</label>
                             <input 
                                 type="text" 
                                 placeholder="code" 
-                                {...register("code", {required: true})}
+                                {...register("code", {required: false})}
                                 disabled
                                 //className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 "
                                 autoFocus
@@ -101,16 +118,16 @@ export function BrokerFormPage() {
                             />
                             {errors.code && <span>this field is required</span>}
                         </div>
-                    </div>
+                  
 
-                    <div className="form-row row-3">
+                   
                         <div className="form-group">
                             <label>Nombre</label>
                             <input 
                                 type="text" 
                                 placeholder="Nombre"
                                 {...register("name", {required: true})} 
-                                style={{width : '200px'}}
+                                //style={{width : '200px'}}
                             />
 
                             {errors.code && <span>this field is required</span>}
@@ -122,7 +139,7 @@ export function BrokerFormPage() {
                                 type="text" 
                                 placeholder="Apellido Paterno" 
                                 {...register("paternal_surname", {required: false})}
-                                style={{width : '200px'}}
+                                //style={{width : '200px'}}
                             />
                             {errors.paternal && <span>this field is required</span>}
                         </div>
@@ -132,20 +149,20 @@ export function BrokerFormPage() {
                                 type="text" 
                                 placeholder="Apellido Materno" 
                                 {...register("maternal_surname", {required: false})}
-                                style={{width : '200px'}}
+                                //style={{width : '200px'}}
                             />
                             {errors.maternal && <span>this field is required</span>}
                         </div>
                     </div>
 
-                    <div className="form-row row-3">
+                    <div className="form-row row-4">
                         <div className="form-group">
                             <label>Email</label>
                             <input 
                                 type="text" 
                                 placeholder="Email" 
                                 {...register("email", {required: false})}
-                                style={{width : '200px'}}
+                                //style={{width : '200px'}}
                             />
                         </div>
                         <div className="form-group">
@@ -154,7 +171,7 @@ export function BrokerFormPage() {
                                 type="text" 
                                 placeholder="Telefono" 
                                 {...register("phone", {required: false})}
-                                style={{width : '200px'}}
+                                //style={{width : '200px'}}
                             />
                         </div>
                     </div>
